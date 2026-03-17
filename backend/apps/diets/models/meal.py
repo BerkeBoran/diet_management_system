@@ -18,7 +18,9 @@ class Meal(models.Model):
     fat = models.FloatField(default=0)
 
     class Meta:
-        ordering = ['-meal_type']
+        verbose_name = 'Öğün'
+        verbose_name_plural = 'Öğünler'
+        ordering = ['meal_type']
         unique_together = (('daily_plan', 'meal_type'),)
 
     def __str__(self):

@@ -9,6 +9,8 @@ class WeeklyPlan(models.Model):
     end_date = models.DateTimeField()
 
     class Meta:
+        verbose_name = 'Haftalık Plan'
+        verbose_name_plural = 'Haftalık Planlar'
         ordering = ['week_number']
         unique_together = (('diet_plan', 'week_number'),)
 
@@ -18,13 +20,13 @@ class WeeklyPlan(models.Model):
 class DailyPlan(models.Model):
 
     class DayOfWeek(models.TextChoices):
-        MONDAY = 'Monday' 'Pazartesi'
-        TUESDAY = 'Tuesday' 'Salı'
-        WEDNESDAY = 'Wednesday' 'Çarşamba'
-        THURSDAY = 'Thursday' 'Perşembe'
-        FRIDAY = 'Friday' 'Cuma'
-        SATURDAY = 'Saturday' 'Cumartesi'
-        SUNDAY = 'Sunday' 'Pazar'
+        MONDAY = 'Monday', 'Pazartesi'
+        TUESDAY = 'Tuesday', 'Salı'
+        WEDNESDAY = 'Wednesday', 'Çarşamba'
+        THURSDAY = 'Thursday', 'Perşembe'
+        FRIDAY = 'Friday', 'Cuma'
+        SATURDAY = 'Saturday', 'Cumartesi'
+        SUNDAY = 'Sunday', 'Pazar'
 
     weekly_plan = models.ForeignKey('WeeklyPlan', on_delete=models.CASCADE, related_name='daily_plan')
     day = models.CharField(max_length=10, choices=DayOfWeek.choices)
@@ -36,6 +38,8 @@ class DailyPlan(models.Model):
     class Meta:
         ordering = ['day']
         unique_together = (('weekly_plan', 'day'),)
+        verbose_name = 'Günlük Plan'
+        verbose_name_plural = 'Günlük Planlar'
 
     def __str__(self):
         return f"{self.weekly_plan} - {self.day}"
