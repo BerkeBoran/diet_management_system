@@ -4,9 +4,8 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, email, password, phone_number, **extra_fields):
+    def _create_user(self, email, phone_number, password, **extra_fields):
         email = self.normalize_email(email)
-        phone_number = self.phone_number.strip()
         user = self.model(email=email, phone_number=phone_number, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -15,12 +14,12 @@ class UserManager(BaseUserManager):
     def create_user(self, email, phone_number, password, **extra_fields):
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        return self._create_user(email, phone_number, **extra_fields)
+        return self._create_user(email, phone_number, password, **extra_fields)
 
     def create_superuser(self, email, phone_number, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self._create_user(email, phone_number, **extra_fields)
+        return self._create_user(email, phone_number, password, **extra_fields)
 
 class User(AbstractBaseUser, PermissionsMixin):
     class Role(models.TextChoices):
@@ -39,4 +38,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['phone_number']
+
+    class Meta:
+        verbose_name = 'Kullanıcı'
+        verbose_name_plural = 'Kullanıcılar'
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} - {self.email}"
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"

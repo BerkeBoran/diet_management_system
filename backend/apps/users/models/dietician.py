@@ -1,12 +1,12 @@
-from backend.apps.users.models.base import User
+from .base import User
 from django.db import models
 
 
 class Dietician(User):
     class VerificationStatus(models.TextChoices):
-        PENDING = 'Pending'
-        ACCEPTED = 'Accepted'
-        REJECTED = 'Rejected'
+        PENDING = 'Pending', 'Beklemede'
+        ACCEPTED = 'Accepted', 'Onaylandı'
+        REJECTED = 'Rejected', 'Reddedildi'
 
     tc_no = models.CharField(max_length=11, unique=True)
     tc_verified = models.BooleanField(default=False)
@@ -17,9 +17,22 @@ class Dietician(User):
     verification_status = models.CharField(
         choices=VerificationStatus.choices,
         default=VerificationStatus.PENDING,
+        max_length=20,
     )
 
     verified_at = models.DateTimeField(null=True, blank=True)
     rejection_reason = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Diyetisyen Profili'
+        verbose_name_plural = 'Diyetisyen Profilleri'
+
+    def __str__(self):
+        return f"{self.full_name} - {self.verification_status}"
+
+    @property
+    def is_accepted(self):
+        return self.verification_status == self.VerificationStatus.ACCEPTED
 
