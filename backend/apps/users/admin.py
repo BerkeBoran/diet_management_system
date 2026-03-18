@@ -1,3 +1,14 @@
 from django.contrib import admin
 
-# Register your models here.
+from apps.users.models import User, Client, Dietician
+
+
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "email", "phone_number")
+    exclude = ("is_staff", "is_superuser", "is_active", "user_permissions", "groups", "last_login", "date_joined","role")
+
+@admin.register(Dietician)
+class DieticianAdmin(admin.ModelAdmin):
+    list_display = ("full_name", "email", "phone_number")
+    exclude = ("last_login", "date_joined","is_staff", "is_superuser", "is_active", "user_permissions","groups","role", "verified_at", "rejection_reason","tc_verified")
