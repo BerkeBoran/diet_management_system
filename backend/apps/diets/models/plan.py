@@ -1,19 +1,7 @@
 from django.db import models
 
-from apps.users.models import Client, Dietician
-
 
 class DietPlan(models.Model):
-
-
-    class Goal(models.TextChoices):
-        LOSE = 'Lose','Kilo Vermek'
-        Gain = 'Gain', 'Kilo Almak'
-        MAINTAIN = 'Maintain', 'Formumu Korumak'
-
-    class PlanType(models.TextChoices):
-        AI = 'AI', 'Yapay Zeka Diyetisteni'
-        DIETICIAN = 'Dietician','Diyetisyen'
 
     class Status(models.TextChoices):
         PENDING = 'Pending', 'Beklemede'
@@ -21,28 +9,20 @@ class DietPlan(models.Model):
         COMPLETED = 'Completed', 'Tamamlandı'
         CANCELED = 'Canceled',   'İptal Edildi'
 
-    client = models.ForeignKey(
-        Client, on_delete=models.CASCADE, related_name='diet_plans'
-    )
-    dietician = models.ForeignKey(
-        Dietician, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_diet_plans'
-    )
+    assignment= models.ForeignKey('diets.DieticianAssignment', on_delete=models.SET_NULL, null=True, blank=True, related_name='plans')
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
 
-    plan_type = models.CharField(max_length=20, choices=PlanType.choices)
-    goal = models.CharField(max_length=20, choices=Goal.choices)
-    status = models.CharField(max_length=20, choices=Status.choices)
+    start_weight = models.FloatField(blank=True, null=True)
+    target_weight = models.FloatField(blank=True, null=True, default=0)
 
-    start_weight = models.FloatField()
-    target_weight = models.FloatField()
+    daily_calories = models.IntegerField(blank=True, null=True, default=0)
+    daily_protein = models.FloatField(blank=True, null=True, default=0)
+    daily_carbs = models.FloatField(blank=True, null=True, default=0)
+    daily_fat = models.FloatField(blank=True, null=True, default=0)
+    daily_water = models.FloatField(blank=True, null=True, default=0)
 
-    daily_calories = models.IntegerField()
-    daily_protein = models.FloatField()
-    daily_carbs = models.FloatField()
-    daily_fat = models.FloatField()
-    daily_water = models.FloatField()
-
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -53,8 +33,9 @@ class DietPlan(models.Model):
         ordering = ('-created_at',)
 
     def __str__(self):
+        client_name = self.client.full_name if self.client else ''
         dietician_name = self.dietician.full_name if self.dietician else 'Yapay Zeka Diyetisteni'
-        return f'{self.client.full_name} -> {dietician_name} - {self.goal} - {self.plan_type}'
+        return f'{client_name} -> {dietician_name}'
 
     @property
     def age(self):
@@ -65,8 +46,12 @@ class DietPlan(models.Model):
         return self.client.height
 
     @property
-    def is_ai_plan(self):
-        return self.plan_type == self.PlanType.AI
+    def client(self):
+        return self.assignment.client if self.assignment else None
+
+    @property
+    def dietician(self):
+        return self.assignment.dietician if self.assignment else None
 
 
 
