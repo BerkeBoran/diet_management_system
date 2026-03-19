@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from apps.diets.models import Meal, DailyPlan, WeeklyPlan, DietPlan
+from apps.diets.models import Meal, DailyPlan, WeeklyPlan, DietPlan, MealItem
 from apps.diets.models.assignment import DieticianAssignment
 
 
@@ -24,4 +24,8 @@ class DieticianAssignmentAdmin(admin.ModelAdmin):
 @admin.register(DailyPlan)
 class DailyPlanAdmin(admin.ModelAdmin):
     list_display = ("weekly_plan", "day")
+
+@admin.register(MealItem)
+class MealItemAdmin(admin.ModelAdmin):
+    list_display = ("meal",)
 
