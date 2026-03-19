@@ -23,3 +23,6 @@ class Client(User):
     def __str__(self):
         return f"{self.full_name}"
 
+    def save(self, *args, **kwargs):
+        self.role = User.Role.CLIENT
+        super().save(*args, **kwargs)

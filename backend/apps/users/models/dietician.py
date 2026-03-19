@@ -36,3 +36,7 @@ class Dietician(User):
     def is_accepted(self):
         return self.verification_status == self.VerificationStatus.ACCEPTED
 
+    def save(self, *args, **kwargs):
+        self.role = User.Role.DIETICIAN
+        super().save(*args, **kwargs)
+
