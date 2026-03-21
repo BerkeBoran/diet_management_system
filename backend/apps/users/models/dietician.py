@@ -13,6 +13,7 @@ class Dietician(User):
     license_number = models.CharField(max_length=50, blank=True)
     license_document = models.FileField(upload_to='licenses/%Y/%m/%d/', blank=True)
     biography = models.TextField(blank=True)
+    profile_photo = models.ImageField(upload_to='dietician_profile_photos/', blank=True)
 
     verification_status = models.CharField(
         choices=VerificationStatus.choices,
@@ -39,4 +40,16 @@ class Dietician(User):
     def save(self, *args, **kwargs):
         self.role = User.Role.DIETICIAN
         super().save(*args, **kwargs)
+
+    @property
+    def average_rating(self):
+        reviews = self.reviews.all()
+        if not reviews.exists():
+            return 0
+        return round(sum(r.rating for r in reviews) / reviews.count(), 1)
+
+    @property
+    def review_count(self):
+        return self.reviews.count()
+
 
