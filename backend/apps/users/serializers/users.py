@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.users.models import Client, Dietician
+from apps.users.serializers.review import DieticianReviewSerializer
 
 
 class ClientProfileSerializer(serializers.ModelSerializer):
@@ -14,4 +15,14 @@ class DieticianProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'profile_photo')
+
+
+class DieticianListSerializer(serializers.ModelSerializer):
+    average_rating = serializers.FloatField(read_only=True)
+    review_count = serializers.IntegerField(read_only=True)
+    reviews = DieticianReviewSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Dietician
+        fields = ['id', 'first_name', 'last_name', 'biography', 'average_rating', 'reviews', 'review_count', 'profile_photo']

@@ -1,9 +1,11 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from apps.users.models import Client, Dietician
-from apps.users.serializers.users import ClientProfileSerializer, DieticianProfileSerializer
+from apps.users.serializers.review import DieticianReviewSerializer, CreateDieticianReviewSerializer
+from apps.users.serializers.users import ClientProfileSerializer, DieticianProfileSerializer, DieticianListSerializer
 
 
 class ProfileView(generics.RetrieveAPIView):
@@ -19,3 +21,32 @@ class ProfileView(generics.RetrieveAPIView):
             dietician = Dietician.objects.get(id=request.user.dietician_id)
             serializer = DieticianProfileSerializer(dietician)
             return Response(serializer.data)
+
+class DieticianViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = DieticianListSerializer
+    def get_queryset(self):
+        return Dietician.objects.filter(
+            verification_status = 'Accepted',
+        )
+    @action(detail=True, methods=['get', 'post'], url_path='reviews')
+    def reviews(self, request, pk=None):
+        dietician = self.get_object()
+
+        if request.method == 'GET':
+            serializer = DieticianReviewSerializer(dietician.reviews.all(), many=True)
+
+            return Response({
+                'average_rating': dietician.average_rating,
+                'review_count': dietician.review_count,
+                'reviews': serializer.data,
+            })
+        serializer = CreateDieticianReviewSerializer(
+            data=request.data,
+            context={'request': request, 'dietician': dietician}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
