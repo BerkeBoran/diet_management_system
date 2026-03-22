@@ -12,7 +12,6 @@ class Client(User):
 
     height = models.FloatField(default=0)
     weight = models.FloatField(default=0)
-    age = models.IntegerField(default=0)
     gender = models.CharField(max_length=50, choices=Gender.choices)
     created_at = models.DateTimeField(auto_now_add=True)
 
