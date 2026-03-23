@@ -35,7 +35,7 @@ class Food(models.Model):
 
     #API İÇİN GEREKLİ OLANLAR
 
-    barcode = models.CharField(max_length=255, blank=True, unique=True)
+    barcode = models.CharField(max_length=255, null=True, blank=True, unique=True)
     source = models.CharField(
         max_length=255,
         choices=Source.choices,
