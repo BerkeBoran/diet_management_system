@@ -5,3 +5,4 @@ djangorestframework-simplejwt
 psycopg2-binary
 python-dotenv
 Pillow==10.2.0
+requests

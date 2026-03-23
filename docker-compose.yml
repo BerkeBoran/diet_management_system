@@ -1,5 +1,4 @@
 services:
-
   db:
     image: postgres:15
     container_name: diet_db
@@ -9,6 +8,8 @@ services:
       POSTGRES_PASSWORD: admin123
     ports:
       - "5433:5432"
+    networks:
+      - diet_network
 
   backend:
     build: ./backend
@@ -19,12 +20,18 @@ services:
       - "8000:8000"
     depends_on:
       - db
+      - libretranslate
+    env_file:
+      - .env
     environment:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_NAME=diet_db
       - DB_USER=admin
       - DB_PASSWORD=admin123
+      - LIBRETRANSLATE_URL=http://libretranslate:5000
+    networks:
+      - diet_network
 
   frontend:
     build: ./frontend
@@ -36,3 +43,21 @@ services:
       - "5173:5173"
     depends_on:
       - backend
+    networks:
+      - diet_network
+
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: diet_libretranslate
+    environment:
+      - LT_LOAD_ONLY=en,tr
+      - LT_UPDATE_MODELS=true
+    ports:
+      - "5000:5000"
+    networks:
+      - diet_network
+    restart: unless-stopped
+
+networks:
+  diet_network:
+    driver: bridge
