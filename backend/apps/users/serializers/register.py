@@ -42,6 +42,6 @@ class DieticianRegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         dietician = Dietician(**validated_data)
         dietician.set_password(password)
-        dietician.is_active = False
+        dietician.is_active = True
         dietician.save()
         return dietician

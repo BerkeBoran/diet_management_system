@@ -1,5 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from apps.users.models import Dietician
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -22,9 +24,32 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
                 from rest_framework.exceptions import PermissionDenied
 
                 raise PermissionDenied({
-                    "code": "invalid_role",
                     "detail": "Seçtiğiniz rol ile hesabınız eşleşmiyor!"
                 })
+
+        if self.user.role.upper() == 'DIETICIAN':
+            try:
+                dietician_profile = self.user.dietician
+
+                if dietician_profile.verification_status != Dietician.VerificationStatus.ACCEPTED:
+                    from rest_framework.exceptions import PermissionDenied
+                    if dietician_profile.verification_status == Dietician.VerificationStatus.PENDING:
+                        raise PermissionDenied({
+                        "detail": "Hesabınız değerlendirme sürecindedir en kısa sürede geri dönüş yapacağız."
+                         })
+                    if dietician_profile.verification_status == Dietician.VerificationStatus.REJECTED:
+                        raise PermissionDenied({
+                            "detail": "Hesabınız diyetisyen hesabı için yeterli bulunmamış ve reddedilmiştir."
+                        })
+
+            except Dietician.DoesNotExist:
+
+                from rest_framework.exceptions import PermissionDenied
+                raise PermissionDenied({
+                    "detail": "Diyetisyen profili bulunamadı."
+                })
+
+            return data
 
         data['email'] = self.user.email
         data['full_name'] = self.user.full_name
