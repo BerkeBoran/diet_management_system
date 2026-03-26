@@ -14,6 +14,7 @@ class Client(User):
     weight = models.FloatField(default=0)
     gender = models.CharField(max_length=50, choices=Gender.choices)
     created_at = models.DateTimeField(auto_now_add=True)
+    allergies = models.JSONField(default=list, blank=True, null=True, verbose_name="Alerjiler")
 
     class Meta:
         verbose_name = 'Danışan Profili'
