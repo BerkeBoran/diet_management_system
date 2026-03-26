@@ -15,10 +15,24 @@ class DieticianAssignment(models.Model):
         AI = 'AI', 'Yapay Zeka Diyetisteni'
         DIETICIAN = 'Dietician','Diyetisyen'
 
-    class Status(models.TextChoices):
+
+    class VerificationStatus(models.TextChoices):
         PENDING = 'Pending', 'Beklemede'
         ACCEPTED = 'Accepted', 'Kabul Edildi'
         REJECTED = 'Rejected', 'Reddedildi'
+
+
+    class Duration(models.TextChoices):
+        ONE_MONTH = '1M', '1 Ay'
+        THREE_MONTHS = '3M', '3 Ay'
+        SIX_MONTHS = '6M', '6 Ay'
+        ONE_YEAR = '12M', '1 Yıl'
+
+
+    class Status(models.TextChoices):
+        PENDING = 'Pending', 'Beklemede'
+        CANCELED = 'Canceled', 'İptal edildi'
+        INPROGRESS = 'InProgress', 'Devam ediyor'
         ENDED = 'Ended', 'Sonlandırıldı'
 
 
@@ -27,21 +41,41 @@ class DieticianAssignment(models.Model):
 
     client_note = models.TextField(blank=True)
     dietician_note = models.TextField(blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    accepted_at = models.DateTimeField(null=True, blank=True)
+
+
+
 
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
         default=Status.PENDING,
+        null=True,
+        blank=True
     )
+
+    verification_status = models.CharField(
+        max_length=20,
+        choices=VerificationStatus.choices,
+        default=VerificationStatus.PENDING,
+    )
+
     assignment_type = models.CharField(
         max_length=20,
         choices=AssignmentType.choices
     )
+
     goal = models.CharField(
         max_length=20,
         choices=Goal.choices
+    )
+
+    duration = models.CharField(
+        max_length=20,
+        choices=Duration.choices,
     )
 
 
