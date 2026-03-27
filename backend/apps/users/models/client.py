@@ -9,7 +9,7 @@ class Client(User):
         FEMALE = 'Female', 'Kadın'
         OTHER = 'Other', 'Diğer'
 
-
+    assignment= models.ForeignKey('diets.DieticianAssignment', on_delete=models.SET_NULL, null=True, blank=True, related_name='dietplans')
     height = models.FloatField(default=0)
     weight = models.FloatField(default=0)
     gender = models.CharField(max_length=50, choices=Gender.choices)
@@ -26,3 +26,12 @@ class Client(User):
     def save(self, *args, **kwargs):
         self.role = User.Role.CLIENT
         super().save(*args, **kwargs)
+
+
+    @property
+    def activity_level(self):
+        return self.assignment.activity_level if self.assignment else None
+
+    @property
+    def sugar_intake(self):
+        return self.assignment.sugar_intake if self.assignment else None
