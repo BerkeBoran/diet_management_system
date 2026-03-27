@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.diets.views.assignment import DieticianAssignmentViewSet
 from apps.diets.views.dietician_clients import DieticianClientsViewSet, DieticianClientDetailViewSet
+from apps.diets.views.meal import MealViewSet, MealItemViewSet
 from apps.diets.views.plan import DietPlanViewSet
 from apps.diets.views.weekly import WeeklyPlanViewSet, DailyPlanViewSet
 
@@ -14,6 +15,8 @@ router.register(r'client-detail', DieticianClientDetailViewSet, basename='client
 router.register(r'diet-plan', DietPlanViewSet, basename='diet-plan')
 router.register(r'weekly-plan', WeeklyPlanViewSet, basename='weekly-plan')
 router.register(r'daily-plan', DailyPlanViewSet, basename='daily-plan')
+router.register(r'meals', MealViewSet, basename='meals')
+router.register(r'meal-items', MealItemViewSet, basename='meal-items')
 
 urlpatterns = [
     path('', include(router.urls)),
