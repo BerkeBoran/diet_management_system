@@ -2,7 +2,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from apps.diets.models import DietPlan
-from apps.diets.serializers.plan import DietPlanCreateSerializer, DietPlanListSerializer, DietPlanDetailSerializer
+from apps.diets.serializers.plan import DietPlanCreateSerializer, DietPlanListSerializer, DietPlanDetailSerializer, \
+    DietPlanFullDetailSerializer
 
 
 class DietPlanViewSet(viewsets.ModelViewSet):
@@ -10,6 +11,9 @@ class DietPlanViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
+        DietPlan.objects.prefetch_related(
+            'weekly_plan__daily_plan__meals__items'
+        )
 
         if hasattr(user, 'dietician'):
             return DietPlan.objects.filter(assignment__dietician=user)
@@ -23,7 +27,7 @@ class DietPlanViewSet(viewsets.ModelViewSet):
             return DietPlanCreateSerializer
         elif self.action == 'list':
             return DietPlanListSerializer
-        return DietPlanDetailSerializer
+        return DietPlanFullDetailSerializer
 
     def perform_create(self, serializer):
         assignment = serializer.validated_data.get('assignment')
@@ -37,3 +41,4 @@ class DietPlanViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("Bu danışan size atanmamış. Plan oluşturamazsınız.")
 
         serializer.save()
+
