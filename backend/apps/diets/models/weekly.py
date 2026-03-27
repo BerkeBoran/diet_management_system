@@ -5,14 +5,13 @@ class WeeklyPlan(models.Model):
 
     diet_plan = models.ForeignKey('diets.DietPlan', on_delete=models.CASCADE, related_name='weekly_plan')
     week_number = models.IntegerField()
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     class Meta:
         verbose_name = 'Haftalık Plan'
         verbose_name_plural = 'Haftalık Planlar'
         ordering = ['week_number']
-        unique_together = (('diet_plan', 'week_number'),)
 
     def __str__(self):
         return f"{self.diet_plan} - Hafta: {self.week_number}"
