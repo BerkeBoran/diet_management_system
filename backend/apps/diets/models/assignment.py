@@ -6,10 +6,27 @@ from apps.users.models import Client, Dietician
 
 class DieticianAssignment(models.Model):
 
+    class SugarIntake(models.TextChoices):
+        NONE = 'NONE', 'Hiç'
+        LOW = 'LOW', 'Haftada 1-2 kez'
+        MEDIUM = 'MEDIUM', 'Haftada 3-4 kez'
+        HIGH = 'HIGH', 'Her gün'
+        CRAVINGS = 'CRAVINGS', 'Anlık gelen tatlı krizleri var'
+
+
+    class ActivityLevel(models.TextChoices):
+        NONE = 'NONE', 'Hiç'
+        LOW = 'LOW', 'Haftada 1-2 kez'
+        MEDIUM = 'MEDIUM', 'Haftada 3-4 kez'
+        HIGH = 'HIGH', 'Haftada 4-5 kez'
+        VERY_HIGH = 'VERY_HIGH', 'Her gün'
+
+
     class Goal(models.TextChoices):
         LOSE = 'Lose','Kilo Vermek'
         Gain = 'Gain', 'Kilo Almak'
         MAINTAIN = 'Maintain', 'Formumu Korumak'
+
 
     class AssignmentType(models.TextChoices):
         AI = 'AI', 'Yapay Zeka Diyetisteni'
@@ -47,7 +64,16 @@ class DieticianAssignment(models.Model):
     accepted_at = models.DateTimeField(null=True, blank=True)
 
 
-
+    sugar_intake = models.CharField(
+        max_length=20,
+        choices=SugarIntake.choices,
+        default=SugarIntake.NONE
+    )
+    activity_level = models.CharField(
+        max_length=20,
+        choices=ActivityLevel.choices,
+        default=ActivityLevel.NONE
+    )
 
     status = models.CharField(
         max_length=20,
