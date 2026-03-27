@@ -24,5 +24,5 @@ class DietDailyPlanCreateSerializer(serializers.ModelSerializer):
 class DietDailyPlanDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyPlan
-        fields = ['weekly_plan', 'day', 'total_calories', 'total_fat', 'total_proteins', 'total_carbs']
+        fields = ['weekly_plan', 'day', 'total_calories', 'total_fat', 'total_proteins', 'total_carbs', 'id']
 
