@@ -21,8 +21,16 @@ class DieticianProfileSerializer(serializers.ModelSerializer):
 class DieticianListSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
     review_count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Dietician
+        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo']
+
+class DieticianDetailSerializer(serializers.ModelSerializer):
+    average_rating = serializers.FloatField(read_only=True)
+    review_count = serializers.IntegerField(read_only=True)
     reviews = DieticianReviewSerializer(many=True, read_only=True)
 
     class Meta:
         model = Dietician
-        fields = ['id', 'first_name', 'last_name', 'biography', 'average_rating', 'reviews', 'review_count', 'profile_photo']
+        fields = ['id', 'first_name', 'last_name', 'profile_photo', 'biography', 'average_rating', 'review_count', 'reviews']

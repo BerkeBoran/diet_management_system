@@ -5,7 +5,8 @@ from rest_framework.response import Response
 
 from apps.users.models import Client, Dietician
 from apps.users.serializers.review import DieticianReviewSerializer, CreateDieticianReviewSerializer
-from apps.users.serializers.users import ClientProfileSerializer, DieticianProfileSerializer, DieticianListSerializer
+from apps.users.serializers.users import ClientProfileSerializer, DieticianProfileSerializer, DieticianListSerializer, \
+    DieticianDetailSerializer
 
 
 class ProfileView(generics.RetrieveAPIView):
@@ -24,11 +25,17 @@ class ProfileView(generics.RetrieveAPIView):
 
 class DieticianViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    serializer_class = DieticianListSerializer
+
     def get_queryset(self):
         return Dietician.objects.filter(
             verification_status = 'Accepted',
         )
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return DieticianListSerializer
+        return DieticianDetailSerializer
+
     @action(detail=True, methods=['get', 'post'], url_path='reviews')
     def reviews(self, request, pk=None):
         dietician = self.get_object()
