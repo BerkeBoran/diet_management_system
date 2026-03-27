@@ -21,3 +21,9 @@ dist/
 
 # Media
 backend/media/
+
+celerybeat-schedule
+celerybeat-schedule.db
+celerybeat-schedule.*
+
+backend/apps/foods/fixtures

@@ -8,7 +8,7 @@ class ClientRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('id', 'phone_number', 'email', 'password', 'password_confirm', "first_name", "last_name", "gender", "weight", "height", "age")
+        fields = ('id', 'phone_number', 'email', 'password', 'password_confirm', 'first_name', 'last_name', 'gender', 'weight', 'height', 'age', 'chronic_conditions')
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:
@@ -30,7 +30,7 @@ class DieticianRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ['id', 'phone_number', 'email', 'first_name', 'last_name', 'tc_no', 'license_number', 'age', "license_document", "biography", "password", "password_confirm"]
+        fields = ['id', 'phone_number', 'email', 'first_name', 'last_name', 'tc_no', 'license_number', 'age', 'license_document', 'biography', 'password', 'password_confirm']
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:

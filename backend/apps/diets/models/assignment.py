@@ -6,12 +6,17 @@ from apps.users.models import Client, Dietician
 
 class DieticianAssignment(models.Model):
 
+    class DietaryPreference(models.TextChoices):
+        VEGAN = 'VEGAN', 'Vegan'
+        VEGETARIAN = 'VEGETARIAN', 'Vejetaryan'
+        NORMAL = 'NORMAL', 'Normal'
+
     class SugarIntake(models.TextChoices):
         NONE = 'NONE', 'Hiç'
         LOW = 'LOW', 'Haftada 1-2 kez'
         MEDIUM = 'MEDIUM', 'Haftada 3-4 kez'
         HIGH = 'HIGH', 'Her gün'
-        CRAVINGS = 'CRAVINGS', 'Anlık gelen tatlı krizleri var'
+        CRAVINGS = 'CRAVINGS', 'Anlık gelen tatlı krizlerim var'
 
 
     class ActivityLevel(models.TextChoices):
@@ -62,8 +67,19 @@ class DieticianAssignment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
+    is_pregnant = models.BooleanField(default=False)
+    is_breastfeeding = models.BooleanField(default=False)
+    alcohol_use = models.BooleanField(default=False)
+    smoking_use = models.BooleanField(default=False)
+    medications = models.TextField(blank=True)
+    dislike_foods = models.JSONField(default=list, blank=True, null=True)
 
 
+    dietary_preference = models.CharField(
+        max_length=20,
+        choices=DietaryPreference.choices,
+        default=DietaryPreference.NORMAL
+    )
     sugar_intake = models.CharField(
         max_length=20,
         choices=SugarIntake.choices,

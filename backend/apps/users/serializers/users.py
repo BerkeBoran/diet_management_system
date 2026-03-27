@@ -8,7 +8,7 @@ class ClientProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'allergies')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'allergies','weight', 'height', 'age', 'chronic_conditions')
 
 
 class DieticianProfileSerializer(serializers.ModelSerializer):
