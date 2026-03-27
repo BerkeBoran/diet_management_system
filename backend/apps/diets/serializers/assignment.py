@@ -11,7 +11,7 @@ class DieticianAssignmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DieticianAssignment
-        fields = ['id', 'client_note', 'dietician', 'dietician_note', 'status', 'dietician_detail', 'created_at', 'updated_at','verification_status', 'duration', 'accepted_at', 'goal']
+        fields = ['id', 'client_note', 'dietician', 'dietician_note', 'status', 'dietician_detail', 'created_at', 'updated_at','verification_status', 'duration', 'accepted_at', 'goal', 'activity_level', 'sugar_intake']
         read_only_fields = ['id', 'status', 'dietician_note', 'created_at', 'updated_at']
 
     def validate(self, data):

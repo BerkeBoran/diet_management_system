@@ -16,4 +16,4 @@ class DieticianClientDetailSerializer(serializers.ModelSerializer):
     name = serializers.CharField(source='full_name',max_length=255)
     class Meta:
         model = Client
-        fields = ['name', 'allergies', 'height', 'weight', 'age', 'gender']
+        fields = ['name', 'allergies', 'height', 'weight', 'age', 'gender', 'activity_level', 'sugar_intake']
