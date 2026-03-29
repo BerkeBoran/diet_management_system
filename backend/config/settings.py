@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost','diet_backend']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,8 +43,20 @@ INSTALLED_APPS = [
     'apps.diets',
     'apps.foods',
     'apps.users',
+    'channels',
 
 ]
+
+ASGI_APPLICATION = 'config.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
 
 AUTH_USER_MODEL = 'users.User'
 
