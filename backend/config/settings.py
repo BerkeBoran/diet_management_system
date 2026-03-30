@@ -40,10 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'channels',
+    'apps.chat',
     'apps.diets',
     'apps.foods',
     'apps.users',
-    'channels',
+
 
 ]
 
