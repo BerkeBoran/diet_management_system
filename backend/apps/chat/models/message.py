@@ -18,4 +18,8 @@ class Message(models.Model):
 
     def __str__(self):
         sender_name = self.sender.full_name if self.sender else "Silinmiş Kullanıcı"
-        return f"{sender_name}: {self.content[20]}"
+        if hasattr(self.sender,'role') and self.sender.role == 'Dietician':
+            if hasattr(self.sender,'dieticianprofile') and self.sender.dieticianprofile.title:
+                title = self.sender.dieticianprofile.get_title_display()
+                return f"{title}.{sender_name}: {self.content[:20]}"
+        return f"{sender_name}: {self.content[:20]}"

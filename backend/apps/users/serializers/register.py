@@ -30,7 +30,7 @@ class DieticianRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ['id', 'phone_number', 'email', 'first_name', 'last_name', 'tc_no', 'license_number', 'age', 'license_document', 'biography', 'password', 'password_confirm']
+        fields = ['id', 'phone_number', 'email', 'first_name', 'last_name', 'tc_no', 'license_number', 'age', 'license_document', 'biography', 'password', 'password_confirm', 'title']
 
     def validate(self, data):
         if data['password'] != data['password_confirm']:

@@ -19,7 +19,19 @@ class ChatRoomListSerializer(serializers.ModelSerializer):
         chat_user = obj.client if user == obj.dietician else obj.dietician
         if not chat_user:
             return {'id': None, 'full_name': "Silinmiş Kullanıcı"}
-        return {'id': chat_user.id, 'full_name': chat_user.full_name}
+
+        title_value = None
+
+        if hasattr(chat_user, 'role') and chat_user.role == 'Dietician':
+
+            if hasattr(chat_user, 'dietician') and chat_user.dietician:
+
+                title = getattr(chat_user.dietician, 'title', None)
+
+                if title:
+                    title_value = chat_user.dietician.get_title_display()
+
+        return {'id': chat_user.id, 'title':title_value, 'full_name': chat_user.full_name}
 
     def get_last_message(self, obj):
         last = obj.messages.last()
@@ -46,6 +58,20 @@ class ChatRoomDetailSerializer(serializers.ModelSerializer):
     def get_chat_user(self, obj):
         user = self.context['request'].user
         chat_user = obj.client if user == obj.dietician else obj.dietician
+
         if not chat_user:
             return {'id': None, 'full_name': "Silinmiş Kullanıcı"}
-        return {'id': chat_user.id, 'full_name': chat_user.full_name}
+
+        title_value = None
+
+        if hasattr(chat_user, 'role') and chat_user.role == 'Dietician':
+
+            if hasattr(chat_user, 'dietician') and chat_user.dietician:
+
+                title = getattr(chat_user.dietician, 'title', None)
+
+                if title:
+                    title_value = chat_user.dietician.get_title_display()
+
+        return {'id': chat_user.id, 'title': title_value, 'full_name': chat_user.full_name}
+

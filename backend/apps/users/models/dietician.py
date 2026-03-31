@@ -8,12 +8,23 @@ class Dietician(User):
         ACCEPTED = 'Accepted', 'Onaylandı'
         REJECTED = 'Rejected', 'Reddedildi'
 
+    class Title(models.TextChoices):
+        DIETICIAN = 'DIETICIAN', 'Diyetisyen'
+        EXPERT_DIETICIAN = 'EXPERT_DIETICIAN', 'Uzman Diyetisyen'
+        INTERN_DIETICIAN = 'INTERN_DIETICIAN', 'Stajyer Diyetisyen'
+
+
     tc_no = models.CharField(max_length=11, unique=True)
     tc_verified = models.BooleanField(default=False)
     license_number = models.CharField(max_length=50, blank=True)
     license_document = models.FileField(upload_to='licenses/%Y/%m/%d/', blank=True)
     biography = models.TextField(blank=True)
     profile_photo = models.ImageField(upload_to='dietician_profile_photos/', blank=True)
+
+    title = models.CharField(
+        max_length=20,
+        choices=Title.choices,
+        blank=True)
 
     verification_status = models.CharField(
         choices=VerificationStatus.choices,

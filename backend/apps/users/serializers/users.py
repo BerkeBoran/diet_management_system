@@ -15,7 +15,7 @@ class DieticianProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'profile_photo')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'profile_photo', 'title')
 
 
 class DieticianListSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class DieticianListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo']
+        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo','title']
 
 class DieticianDetailSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
@@ -33,4 +33,4 @@ class DieticianDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ['id', 'first_name', 'last_name', 'profile_photo', 'biography', 'average_rating', 'review_count', 'reviews']
+        fields = ['id', 'first_name', 'last_name', 'profile_photo', 'biography', 'average_rating', 'review_count', 'reviews', 'title']
