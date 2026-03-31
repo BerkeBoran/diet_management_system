@@ -11,3 +11,4 @@ redis
 channels
 daphne
 channels-redis
+whitenoise
