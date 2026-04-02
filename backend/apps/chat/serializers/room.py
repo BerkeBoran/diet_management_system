@@ -38,7 +38,7 @@ class ChatRoomListSerializer(serializers.ModelSerializer):
         if last:
             return {
                 'content': last.content,
-                'timestamp': last.timestamp,
+                'timestamp': last.timestamp.strftime('%Y-%m-%d'),
             }
         return None
 

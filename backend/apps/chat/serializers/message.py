@@ -9,6 +9,7 @@ class MessageSerializer(serializers.ModelSerializer):
     sender_name = serializers.SerializerMethodField(read_only=True)
     sender_title = serializers.SerializerMethodField(read_only=True)
     is_mine = serializers.SerializerMethodField()
+    timestamp = serializers.DateTimeField(format='%H:%M', read_only=True)
 
     class Meta:
         model = Message
@@ -22,20 +23,22 @@ class MessageSerializer(serializers.ModelSerializer):
 
     def get_is_mine(self, obj):
         request = self.context.get('request')
-        return request and obj.sender == request
+        if request and request.user.is_authenticated:
+            return obj.sender == request.user
+        return False
 
     def get_sender_title(self, obj):
         sender = obj.sender
 
         if not sender:
-            return ""
+            return None
 
         if hasattr(sender, 'dietician') and sender.dietician:
 
             if getattr(sender.dietician, 'title', None):
                 return sender.dietician.get_title_display()
 
-        return ""
+        return None
 
 
 
