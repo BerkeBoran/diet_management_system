@@ -39,24 +39,40 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         content = data.get('message', '').strip()
+        action = data.get('action')
 
-        if not content:
-            return
 
-        saved_message = await self.save_message(content)
 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat_message',
-                'message': saved_message.content,
-                'sender_id': self.user.id,
-                'sender_name': self.user.full_name,
-                'message_id': saved_message.id,
-                'timestamp': str(saved_message.timestamp),
-                'is_read': saved_message.is_read,
-            }
-        )
+        if action in ['peer-msg']:
+            await  self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'send_signal',
+                    'payload': data['payload'],
+                }
+            )
+        if content:
+            saved_message = await self.save_message(content)
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat_message',
+                    'message': saved_message.content,
+                    'sender_id': self.user.id,
+                    'sender_name': self.user.full_name,
+                    'message_id': saved_message.id,
+                    'timestamp': str(saved_message.timestamp),
+                    'is_read': saved_message.is_read,
+                }
+            )
+
+
+    async def send_signal(self, event):
+        await  self.send(text_data=json.dumps({
+            'action': 'peer-msg',
+            'payload': event['payload'],
+        }))
+
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
