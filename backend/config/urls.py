@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/diets/', include('apps.diets.urls')),
     path('api/foods/', include('apps.foods.urls')),
     path('api/chat/', include('apps.chat.urls')),
+    path('api/ai-dietician/', include('apps.ai_dietician.urls')),
 
 ]
 if settings.DEBUG:

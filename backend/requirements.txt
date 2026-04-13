@@ -12,3 +12,5 @@ channels
 daphne
 channels-redis
 whitenoise
+langchain-google-genai
+langgraph

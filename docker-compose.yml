@@ -45,7 +45,7 @@ services:
   celery_worker:
     build: ./backend
     container_name: diet_celery_worker
-    command: celery -A config worker -l info # 'core' yerine proje klasör adını yaz
+    command: celery -A config worker -l info
     volumes:
       - ./backend:/app
     depends_on:
@@ -67,7 +67,7 @@ services:
   celery_beat:
     build: ./backend
     container_name: diet_celery_beat
-    command: celery -A config beat -l info # 'core' yerine proje klasör adını yaz
+    command: celery -A config beat -l info
     volumes:
       - ./backend:/app
     depends_on:

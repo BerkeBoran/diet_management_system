@@ -25,7 +25,17 @@ SECRET_KEY = 'django-insecure-8(#yj35#lh6yoxmx%_q%vx(===_8h*&@j_p+$*jx@$+!$(sals
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost','diet_backend']
+ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost', 'diet_backend']
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]
 
 
 # Application definition
@@ -33,6 +43,7 @@ ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost','diet_backend']
 INSTALLED_APPS = [
     'daphne',
     'rest_framework',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +56,8 @@ INSTALLED_APPS = [
     'apps.diets',
     'apps.foods',
     'apps.users',
+    'apps.appointments',
+    'apps.ai_dietician'
 
 
 ]
@@ -66,6 +79,7 @@ AUTH_USER_MODEL = 'users.User'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -163,3 +177,5 @@ CELERY_BROKER_URL = 'redis://redis:6379/0'
 CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
