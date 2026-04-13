@@ -24,4 +24,4 @@ class DieticianClientDetailViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if hasattr(user, 'dietician'):
-            return Client.objects.filter(assignments__dietician=user)
+            return Client.objects.filter(assignments__dietician=user).distinct()

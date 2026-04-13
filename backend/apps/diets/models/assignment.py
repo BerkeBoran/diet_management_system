@@ -6,33 +6,6 @@ from apps.users.models import Client, Dietician
 
 class DieticianAssignment(models.Model):
 
-    class DietaryPreference(models.TextChoices):
-        VEGAN = 'VEGAN', 'Vegan'
-        VEGETARIAN = 'VEGETARIAN', 'Vejetaryan'
-        NORMAL = 'NORMAL', 'Normal'
-
-    class SugarIntake(models.TextChoices):
-        NONE = 'NONE', 'Hiç'
-        LOW = 'LOW', 'Haftada 1-2 kez'
-        MEDIUM = 'MEDIUM', 'Haftada 3-4 kez'
-        HIGH = 'HIGH', 'Her gün'
-        CRAVINGS = 'CRAVINGS', 'Anlık gelen tatlı krizlerim var'
-
-
-    class ActivityLevel(models.TextChoices):
-        NONE = 'NONE', 'Hiç'
-        LOW = 'LOW', 'Haftada 1-2 kez'
-        MEDIUM = 'MEDIUM', 'Haftada 3-4 kez'
-        HIGH = 'HIGH', 'Haftada 4-5 kez'
-        VERY_HIGH = 'VERY_HIGH', 'Her gün'
-
-
-    class Goal(models.TextChoices):
-        LOSE = 'Lose','Kilo Vermek'
-        Gain = 'Gain', 'Kilo Almak'
-        MAINTAIN = 'Maintain', 'Formumu Korumak'
-
-
     class AssignmentType(models.TextChoices):
         AI = 'AI', 'Yapay Zeka Diyetisteni'
         DIETICIAN = 'Dietician','Diyetisyen'
@@ -67,29 +40,6 @@ class DieticianAssignment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     accepted_at = models.DateTimeField(null=True, blank=True)
-    is_pregnant = models.BooleanField(default=False)
-    is_breastfeeding = models.BooleanField(default=False)
-    alcohol_use = models.BooleanField(default=False)
-    smoking_use = models.BooleanField(default=False)
-    medications = models.TextField(blank=True)
-    dislike_foods = models.JSONField(default=list, blank=True, null=True)
-
-
-    dietary_preference = models.CharField(
-        max_length=20,
-        choices=DietaryPreference.choices,
-        default=DietaryPreference.NORMAL
-    )
-    sugar_intake = models.CharField(
-        max_length=20,
-        choices=SugarIntake.choices,
-        default=SugarIntake.NONE
-    )
-    activity_level = models.CharField(
-        max_length=20,
-        choices=ActivityLevel.choices,
-        default=ActivityLevel.NONE
-    )
 
     status = models.CharField(
         max_length=20,
@@ -110,10 +60,6 @@ class DieticianAssignment(models.Model):
         choices=AssignmentType.choices
     )
 
-    goal = models.CharField(
-        max_length=20,
-        choices=Goal.choices
-    )
 
     duration = models.CharField(
         max_length=20,
