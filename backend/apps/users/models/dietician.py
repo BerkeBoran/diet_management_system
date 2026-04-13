@@ -3,6 +3,12 @@ from django.db import models
 
 
 class Dietician(User):
+    class AppointmentDuration(models.IntegerChoices):
+        SHORT = 30, '30 Dakika'
+        MEDIUM = 45, '45 Dakika'
+        LONG = 60, '60 Dakika'
+        VERY_LONG = 90, '90 Dakika'
+
     class VerificationStatus(models.TextChoices):
         PENDING = 'Pending', 'Beklemede'
         ACCEPTED = 'Accepted', 'Onaylandı'
@@ -30,6 +36,11 @@ class Dietician(User):
         choices=VerificationStatus.choices,
         default=VerificationStatus.PENDING,
         max_length=20,
+    )
+
+    appointment_duration = models.IntegerField(
+        choices=AppointmentDuration.choices,
+        default=AppointmentDuration.SHORT,
     )
 
     verified_at = models.DateTimeField(null=True, blank=True)

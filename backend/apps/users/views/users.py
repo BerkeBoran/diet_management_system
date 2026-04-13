@@ -19,7 +19,7 @@ class ProfileView(generics.RetrieveAPIView):
             return Response(serializer.data)
 
         if hasattr(request.user, 'dietician'):
-            dietician = Dietician.objects.get(id=request.user.dietician_id)
+            dietician = Dietician.objects.get(id=request.user.id)
             serializer = DieticianProfileSerializer(dietician)
             return Response(serializer.data)
 
