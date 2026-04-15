@@ -4,7 +4,7 @@ from apps.users.models import Client
 
 
 class ClientHealthSnapshot(models.Model):
-    client = models.ForeignKey('users.Client', on_delete=models.CASCADE, related_name='health_snapshots', null=True, blank=True)
+    client = models.ForeignKey('users.Client', on_delete=models.CASCADE, related_name='client_health_snapshots', null=True, blank=True)
     class DietaryPreference(models.TextChoices):
         VEGAN = 'VEGAN', 'Vegan'
         VEGETARIAN = 'VEGETARIAN', 'Vejetaryan'

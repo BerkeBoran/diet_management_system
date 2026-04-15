@@ -1,3 +1,5 @@
+import uuid
+
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
@@ -5,7 +7,7 @@ from rest_framework.response import Response
 
 from apps.ai_dietician.core.graph import diet_graph
 from apps.ai_dietician.models.ai_diet_plan import AiDietPlan
-from apps.ai_dietician.tools.db_queries import get_user_details, get_past_ai_diest_summary
+from apps.ai_dietician.tools.db_queries import get_user_details, get_past_ai_diet_summary
 
 
 class AICreateDietView(APIView):
@@ -13,40 +15,53 @@ class AICreateDietView(APIView):
 
     def post(self, request):
         user = request.user
+        thread_id = request.data.get("thread_id")
+        revision_note = request.data.get("revision_note")
+        action = request.data.get("action", "start")
+
+        config = {"configurable": {"thread_id": thread_id or str(uuid.uuid4())}}
 
         try:
-            user_context = get_user_details(user)
-            past_diets_text = get_past_ai_diest_summary(user)
+            if action == "start":
+                user_context = get_user_details(user)
+                past_diets_text = get_past_ai_diet_summary(user)
 
-            initial_state = {
-                "messages": [],
-                "user_info": user_context,
-                "all_past_diets": past_diets_text,
-                "analysis_notes": ""
-            }
+                initial_state = {
+                    "user_info": user_context,
+                    "all_past_diets": past_diets_text,
+                    "is_finished": False,
+                    "revision_request": "",
+                    "analysis_notes": "",
+                    "current_diet": ""
+                }
+                diet_graph.invoke(initial_state, config)
+            elif action == "revise":
+                diet_graph.update_state(config, {
+                    "revision_request": revision_note,
+                    "is_finished": False,
+                })
+                diet_graph.invoke(None, config)
 
-            final_state = diet_graph.invoke(initial_state)
+            elif action == "approve":
+                diet_graph.update_state(config, {"is_finished": True})
+                diet_graph.invoke(None, config)
 
-            ai_content = final_state["messages"][-1].content
-            ai_summary = final_state.get("diet_summary")
+                final_state = diet_graph.get_state(config).values
+                diet_plan = AiDietPlan.objects.create(
+                    user=user,
+                    content=final_state["current_diet"],
+                    summary=final_state["diet_summary"],
+                    client_snapshot=final_state["user_info"]
+                )
+                return Response({"message": "Diyet kaydedildi"})
 
-            diet_plan = AiDietPlan.objects.create(
-                user=user,
-                content=ai_content,
-                summary=ai_summary,
-                client_snapshot=user_context,
-            )
-
+            current_state = diet_graph.get_state(config).values
             return Response({
-                "id": diet_plan.id,
-                "summary": ai_summary,
-                "content": ai_content,
-                "created_at": diet_plan.created_at,
-            },
-            status=status.HTTP_201_CREATED)
+                "thread_id": config["configurable"]["thread_id"],
+                "content": current_state.get("current_diet"),
+                "summary": current_state.get("diet_summary"),
+                "options": ["Onayla", "Değişiklik Yap"]
+            })
 
         except Exception as e:
-
-            print(f"AI Error: {str(e)}")
-            return Response({
-                "error": "Diyet oluşturulurken hata oluştur"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": str(e)}, status=500)

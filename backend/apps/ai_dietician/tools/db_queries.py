@@ -1,7 +1,7 @@
 from apps.ai_dietician.models.ai_diet_plan import AiDietPlan
 
 
-def get_past_ai_diest_summary(user):
+def get_past_ai_diet_summary(user):
     past_plans = AiDietPlan.objects.filter(user=user)[:4]
 
     if not past_plans:
@@ -33,7 +33,7 @@ def get_user_details(user):
             "chronic_conditions": client.chronic_conditions,
         })
 
-    client_health_snapshot = getattr(user, 'client_health_snapshot', None)
+    client_health_snapshot = client.client_health_snapshots.order_by('-id').first()
 
     if client_health_snapshot:
         context.update({
@@ -46,6 +46,7 @@ def get_user_details(user):
             "smoking_use": client_health_snapshot.smoking_use,
             "dislike_foods": client_health_snapshot.dislike_foods,
             "medications": client_health_snapshot.medications,
+            "sugar_intake": client_health_snapshot.sugar_intake,
         })
 
     return context
