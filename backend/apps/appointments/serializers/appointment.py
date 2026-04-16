@@ -6,4 +6,4 @@ from apps.appointments.models.appointment import Appointment
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = '__all__'
+        fields = ['dietician', 'client', 'status', 'date', 'start_time']
