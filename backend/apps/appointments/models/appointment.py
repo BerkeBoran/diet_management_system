@@ -15,7 +15,6 @@ class Appointment(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     date = models.DateField()
     start_time = models.TimeField()
-    end_time = models.TimeField()
     status = models.CharField(
         max_length=10,
         choices=Status.choices,

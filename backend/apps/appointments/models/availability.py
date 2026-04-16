@@ -34,7 +34,7 @@ class Availability(models.Model):
         existing_appointments = Appointment.objects.filter(
             dietician=self.dietician,
             date=date,
-            status='scheduled',
+            status='SCHEDULED',
         )
 
 
