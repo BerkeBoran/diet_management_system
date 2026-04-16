@@ -37,7 +37,7 @@ class AvailabilitySerializer(serializers.ModelSerializer):
 
         is_available = (Availability.objects.filter(
             dietician=dietician,
-            day_of_week=current_day_text,
+            days=current_day_text.upper(),
             start_time__lt=start_time,
             end_time__gt=end_time
         ).exists())
