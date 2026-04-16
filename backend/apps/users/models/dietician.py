@@ -26,6 +26,8 @@ class Dietician(User):
     license_document = models.FileField(upload_to='licenses/%Y/%m/%d/', blank=True)
     biography = models.TextField(blank=True)
     profile_photo = models.ImageField(upload_to='dietician_profile_photos/', blank=True)
+    work_time_start = models.TimeField(null=True, blank=True)
+    work_time_end = models.TimeField(null=True, blank=True)
 
     title = models.CharField(
         max_length=20,
