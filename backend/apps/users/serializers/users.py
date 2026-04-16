@@ -15,7 +15,7 @@ class DieticianProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'profile_photo', 'title')
+        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number', 'profile_photo', 'title', 'appointment_duration', 'work_time_start', 'work_time_end')
 
 
 class DieticianListSerializer(serializers.ModelSerializer):
