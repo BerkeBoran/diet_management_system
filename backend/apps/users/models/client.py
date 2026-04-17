@@ -16,6 +16,7 @@ class Client(User):
     created_at = models.DateTimeField(auto_now_add=True)
     allergies = models.JSONField(default=list, blank=True, null=True, verbose_name="Alerjiler")
     chronic_conditions = models.JSONField(default=list, blank=True, null=True, verbose_name="Kalıcı hastalıklar")
+    static_analysis = models.JSONField(default=list, blank=True, null=True, verbose_name="Analizler")
 
     class Meta:
         verbose_name = 'Danışan Profili'
@@ -36,3 +37,15 @@ class Client(User):
     @property
     def sugar_intake(self):
         return self.assignment.sugar_intake if self.assignment else None
+
+
+class WeightLog(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    weight = models.DecimalField(max_digits=5, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.client.full_name} - {self.weight}kg - {self.created_at}"
