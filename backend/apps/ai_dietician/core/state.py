@@ -3,6 +3,8 @@ from typing import TypedDict
 
 class DieticianState(TypedDict):
 
+    user_id: int
+    force_refresh_analysis: bool
     user_info: dict
     all_past_diets: str
     analysis_notes: str

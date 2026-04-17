@@ -18,7 +18,7 @@ KULLANICI VERİLERİ:
 """
 
 DIET_SYSTEM_PROMPT = """
-Sen iyi bir diyetisyen ve beslenme uzmanısın.
+Sen uzman bir diyetisyen ve beslenme uzmanısın.
 Sana verilen uzman analiz notlarına ve kullanıcının geçmiş diyetlerine dayanarak kullanıcıya özel uygulanabilir haftalık bir diyet planı hazırlarsın.
 
 
@@ -35,6 +35,12 @@ Sana verilen uzman analiz notlarına ve kullanıcının geçmiş diyetlerine day
 DIET_HUMAN_PROMPT = """
 ANALİZ NOTLARI:
 {analysis_notes}
+
+KULLANICININ MEVCUT KİLOSU:
+{current_weight}
+
+KULLANICININ ÖNCEKİ HAFTA GÖRE KİLO DURUMU:
+{weight_status}
 
 GEÇMİŞ DİYETLER (Benzerlik %40'ı geçmemeli):
 {past_diets_input}

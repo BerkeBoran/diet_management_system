@@ -18,6 +18,7 @@ class AICreateDietView(APIView):
         thread_id = request.data.get("thread_id")
         revision_note = request.data.get("revision_note")
         action = request.data.get("action", "start")
+        force_refresh_analysis = request.data.get("force_refresh_analysis", False)
 
         config = {"configurable": {"thread_id": thread_id or str(uuid.uuid4())}}
 
@@ -27,6 +28,8 @@ class AICreateDietView(APIView):
                 past_diets_text = get_past_ai_diet_summary(user)
 
                 initial_state = {
+                    "user_id": user.id,
+                    "force_refresh_analysis": force_refresh_analysis,
                     "user_info": user_context,
                     "all_past_diets": past_diets_text,
                     "is_finished": False,
@@ -35,6 +38,7 @@ class AICreateDietView(APIView):
                     "current_diet": ""
                 }
                 diet_graph.invoke(initial_state, config)
+
             elif action == "revise":
                 diet_graph.update_state(config, {
                     "revision_request": revision_note,
