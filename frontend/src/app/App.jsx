@@ -1,121 +1,102 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AuthProvider } from '../contexts/AuthContext.jsx';
+import { useAuth } from '../contexts/useAuth.js';
+import { ToastProvider } from '../components/Toast';
+import Navbar from '../components/Navbar';
+import ProtectedRoute from '../components/ProtectedRoute';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Pages
+import LandingPage from '../pages/landing/LandingPage';
+import LoginPage from '../pages/auth/LoginPage';
+import RegisterPage from '../pages/auth/RegisterPage';
+import ClientRegisterPage from '../pages/auth/ClientRegisterPage.jsx';
+import DieticianRegisterPage from '../pages/auth/DieticianRegisterPage';
+
+// Client Pages
+import ClientDashboard from '../pages/client/ClientDashboard';
+import DieticianListPage from '../pages/client/DieticianListPage';
+import DieticianDetailPage from '../pages/client/DieticianDetailPage';
+import MyDietPlanPage from '../pages/client/MyDietPlanPage';
+import HealthProfilePage from '../pages/client/HealthProfilePage';
+import AppointmentPage from '../pages/client/AppointmentPage';
+import AIDietPage from '../pages/client/AIDietPage';
+import FoodSearchPage from '../pages/client/FoodSearchPage';
+
+// Dietician Pages
+import DieticianDashboard from '../pages/dietician/DieticianDashboard';
+import ClientsPage from '../pages/dietician/ClientsPage';
+import ClientDetailPage from '../pages/dietician/ClientDetailPage';
+import CreateDietPlanPage from '../pages/dietician/CreateDietPlanPage';
+import DietPlanDetailPage from '../pages/dietician/DietPlanDetailPage';
+
+// Shared Pages
+import ChatPage from '../pages/chat/ChatPage';
+import ProfilePage from '../pages/profile/ProfilePage';
+
+function AppLayout() {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  const publicPaths = ['/', '/login', '/register', '/register/client', '/register/dietician'];
+  const isPublicPage = publicPaths.includes(location.pathname);
+
+  if (isPublicPage) {
+    return (
+      <>
+        {!isAuthenticated && <Navbar />}
+        <main>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/register/client" element={<ClientRegisterPage />} />
+            <Route path="/register/dietician" element={<DieticianRegisterPage />} />
+          </Routes>
+        </main>
+      </>
+    );
+  }
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <Navbar />
+      <main className="lg:ml-64 p-4 lg:p-6 pt-18 lg:pt-6 min-h-screen">
+        <Routes>
+          {/* Client Routes */}
+          <Route path="/dashboard" element={<ProtectedRoute requiredRole="Client"><ClientDashboard /></ProtectedRoute>} />
+          <Route path="/dieticians" element={<ProtectedRoute requiredRole="Client"><DieticianListPage /></ProtectedRoute>} />
+          <Route path="/dieticians/:id" element={<ProtectedRoute requiredRole="Client"><DieticianDetailPage /></ProtectedRoute>} />
+          <Route path="/my-diet" element={<ProtectedRoute requiredRole="Client"><MyDietPlanPage /></ProtectedRoute>} />
+          <Route path="/health-profile" element={<ProtectedRoute requiredRole="Client"><HealthProfilePage /></ProtectedRoute>} />
+          <Route path="/appointments" element={<ProtectedRoute requiredRole="Client"><AppointmentPage /></ProtectedRoute>} />
+          <Route path="/ai-diet" element={<ProtectedRoute requiredRole="Client"><AIDietPage /></ProtectedRoute>} />
 
-      <div className="ticks"></div>
+          {/* Dietician Routes */}
+          <Route path="/dietician/dashboard" element={<ProtectedRoute requiredRole="Dietician"><DieticianDashboard /></ProtectedRoute>} />
+          <Route path="/dietician/clients" element={<ProtectedRoute requiredRole="Dietician"><ClientsPage /></ProtectedRoute>} />
+          <Route path="/dietician/clients/:id" element={<ProtectedRoute requiredRole="Dietician"><ClientDetailPage /></ProtectedRoute>} />
+          <Route path="/dietician/create-plan" element={<ProtectedRoute requiredRole="Dietician"><CreateDietPlanPage /></ProtectedRoute>} />
+          <Route path="/dietician/plans/:id" element={<ProtectedRoute requiredRole="Dietician"><DietPlanDetailPage /></ProtectedRoute>} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          {/* Shared Routes */}
+          <Route path="/foods" element={<ProtectedRoute><FoodSearchPage /></ProtectedRoute>} />
+          <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          {/* Catch-all */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+export default function App() {
+  return (
+    <AuthProvider>
+      <ToastProvider>
+        <AppLayout />
+      </ToastProvider>
+    </AuthProvider>
+  );
+}
