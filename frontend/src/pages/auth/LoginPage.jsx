@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/useAuth.js';
-import { useToast } from '../../components/useToast.js';
-import { HiOutlineSparkles, HiOutlineEnvelope, HiOutlineLockClosed, HiOutlineEye, HiOutlineEyeSlash } from 'react-icons/hi2';
+import { useAuth } from '../../contexts/AuthContext';
+import { useToast } from '../../components/Toast';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -30,93 +29,114 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 relative">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/3 left-1/3 w-80 h-80 bg-emerald-500/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/3 w-80 h-80 bg-teal-500/8 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-4">
+      {/* Top Navigation */}
+      <header className="fixed top-0 left-0 right-0 flex justify-between items-center w-full px-6 py-8">
+        <Link to="/" className="text-2xl font-bold text-primary tracking-tighter font-headline">NutriConnect</Link>
+        <div className="flex items-center gap-2 text-primary font-semibold font-headline">
+          <span className="material-symbols-outlined">help_outline</span>
+        </div>
+      </header>
+
+      {/* Organic Backdrop Decoration */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[10%] left-[5%] w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute bottom-[10%] right-[5%] w-64 h-64 rounded-full bg-tertiary/5 blur-3xl" />
       </div>
 
-      <div className="w-full max-w-md relative z-10 animate-slide-up">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center">
-              <HiOutlineSparkles className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-gradient">NutriAI</span>
-          </Link>
-          <h1 className="text-2xl font-bold text-white">Hoş Geldiniz</h1>
-          <p className="text-slate-400 mt-1">Hesabınıza giriş yapın</p>
-        </div>
-
-        {/* Form Card */}
-        <div className="glass rounded-2xl p-8">
-          {/* Role Selector */}
-          <div className="flex gap-2 mb-6 p-1 bg-slate-800/50 rounded-xl">
-            {[
-              { value: 'Client', label: 'Danışan' },
-              { value: 'Dietician', label: 'Diyetisyen' },
-            ].map((r) => (
-              <button
-                key={r.value}
-                onClick={() => setRole(r.value)}
-                className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
-                  ${role === r.value
-                    ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
-                    : 'text-slate-400 hover:text-white'
-                  }`}
-              >
-                {r.label}
-              </button>
-            ))}
+      {/* Login Card */}
+      <main className="w-full max-w-[480px] mt-12 mb-12 animate-slide-up">
+        <div className="glass-card rounded-3xl p-8 md:p-12 ambient-shadow ghost-border">
+          <div className="mb-10 text-center">
+            <h1 className="text-4xl font-headline font-extrabold text-on-surface tracking-tight mb-2">Hoş Geldiniz</h1>
+            <p className="text-on-surface-variant">Sağlıklı yaşam için hassas beslenme.</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">E-posta</label>
-              <div className="relative">
-                <HiOutlineEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <input
-                  id="login-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="ornek@email.com"
-                  className="w-full pl-11 pr-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/25 transition-all"
-                />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Role Selector */}
+            <div className="bg-surface-container-high p-1.5 rounded-2xl flex items-center">
+              <button
+                type="button"
+                onClick={() => setRole('Client')}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold font-headline transition-all duration-200
+                  ${role === 'Client'
+                    ? 'bg-surface-container-lowest text-primary shadow-sm'
+                    : 'text-on-surface-variant hover:bg-surface-variant/50'
+                  }`}
+              >
+                Danışan
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('Dietician')}
+                className={`flex-1 py-2.5 rounded-xl text-sm font-semibold font-headline transition-all duration-200
+                  ${role === 'Dietician'
+                    ? 'bg-surface-container-lowest text-primary shadow-sm'
+                    : 'text-on-surface-variant hover:bg-surface-variant/50'
+                  }`}
+              >
+                Diyetisyen
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              {/* Email Field */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold font-headline uppercase tracking-widest text-on-surface-variant px-1">
+                  E-posta Adresi
+                </label>
+                <div className="relative group">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">mail</span>
+                  <input
+                    id="login-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="ornek@nutriconnect.com"
+                    className="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center px-1">
+                  <label className="text-xs font-bold font-headline uppercase tracking-widest text-on-surface-variant">
+                    Şifre
+                  </label>
+                  <a className="text-xs font-semibold text-primary hover:underline" href="#">
+                    Unuttunuz mu?
+                  </a>
+                </div>
+                <div className="relative group">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline text-lg">lock</span>
+                  <input
+                    id="login-password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                    className="w-full pl-12 pr-12 py-4 bg-surface-container-low border-none rounded-xl text-on-surface placeholder:text-outline/60 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline hover:text-primary transition-colors"
+                  >
+                    {showPassword ? 'visibility_off' : 'visibility'}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Şifre</label>
-              <div className="relative">
-                <HiOutlineLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <input
-                  id="login-password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="w-full pl-11 pr-12 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/25 transition-all"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-                >
-                  {showPassword ? <HiOutlineEyeSlash className="w-5 h-5" /> : <HiOutlineEye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-
+            {/* Action Button */}
             <button
               id="login-submit"
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 gradient-primary text-white font-headline font-bold text-lg rounded-3xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/10 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -126,14 +146,26 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-slate-400 mt-6">
+          {/* Footer Link */}
+          <p className="mt-10 text-center text-sm text-on-surface-variant">
             Hesabınız yok mu?{' '}
-            <Link to="/register" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
-              Kayıt Ol
+            <Link to="/register" className="text-primary font-bold hover:underline">
+              Hesap oluşturun
             </Link>
           </p>
         </div>
-      </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="mt-auto w-full py-12 flex flex-col md:flex-row justify-between items-center px-8 gap-6 bg-surface-container-low/30">
+        <div className="font-headline text-xs uppercase tracking-widest text-outline">
+          © 2024 NUTRICONNECT. HASSAS BESLENME YÖNETİMİ.
+        </div>
+        <div className="flex gap-6">
+          <a className="font-headline text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Gizlilik Politikası</a>
+          <a className="font-headline text-xs uppercase tracking-widest text-outline hover:text-primary transition-colors" href="#">Destek</a>
+        </div>
+      </footer>
     </div>
   );
 }

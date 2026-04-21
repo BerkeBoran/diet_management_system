@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import dietService from '../../services/dietService';
-import { useToast } from '../../components/useToast.js';
+import { useToast } from '../../components/Toast';
 import LoadingSpinner from '../../components/LoadingSpinner';
-import { HiOutlineClipboardDocumentList, HiOutlineCheckCircle } from 'react-icons/hi2';
 
 export default function CreateDietPlanPage() {
   const [clients, setClients] = useState([]);
@@ -45,101 +44,166 @@ export default function CreateDietPlanPage() {
         daily_water: Number(form.daily_water) || undefined,
       };
       await dietService.createDietPlan(payload);
-      toast.success('Diyet planı oluşturuldu!');
+      toast.success('Klinik beslenme programı kaydedildi.');
       setSuccess(true);
     } catch (err) {
-      const msg = err.response?.data?.assignment?.[0] || err.response?.data?.detail || 'Plan oluşturulamadı.';
+      const msg = err.response?.data?.assignment?.[0] || err.response?.data?.detail || 'Program oluşturulamadı.';
       toast.error(msg);
     }
     setSubmitting(false);
   };
 
-  if (loading) return <LoadingSpinner fullScreen />;
+  if (loading) return <LoadingSpinner size="lg" className="min-h-[50vh]" />;
 
   if (success) {
     return (
-      <div className="animate-fade-in flex flex-col items-center justify-center py-20">
-        <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4">
-          <HiOutlineCheckCircle className="w-10 h-10 text-emerald-400" />
+      <div className="max-w-3xl mx-auto animate-fade-in py-20 text-center">
+        <div className="w-24 h-24 rounded-[2rem] bg-tertiary-container/30 flex items-center justify-center mx-auto mb-6 shadow-inner ghost-border">
+          <span className="material-symbols-outlined text-5xl text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
         </div>
-        <h2 className="text-xl font-semibold text-white mb-2">Plan Oluşturuldu!</h2>
-        <p className="text-slate-400">Diyet planı başarıyla kaydedildi.</p>
-        <button onClick={() => setSuccess(false)} className="mt-6 px-6 py-2.5 glass glass-hover text-white rounded-xl transition-all">Yeni Plan Oluştur</button>
+        <h2 className="font-headline text-4xl font-extrabold text-on-surface mb-3 tracking-tight">Program Aktifleştirildi</h2>
+        <p className="text-on-surface-variant text-lg max-w-lg mx-auto leading-relaxed mb-8">
+          Danışan için oluşturduğunuz klinik diyet planı sisteme işlendi. Danışan kendi paneli üzerinden programa erişebilir.
+        </p>
+        <button onClick={() => setSuccess(false)} className="px-8 py-4 gradient-primary text-white font-headline font-bold rounded-2xl shadow-[0px_8px_16px_rgba(0,104,86,0.2)] hover:scale-[0.98] transition-transform flex items-center gap-2 mx-auto">
+          <span className="material-symbols-outlined text-sm">add</span> Yeni Program Oluştur
+        </button>
       </div>
     );
   }
 
-  const inputClass = "w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/25 transition-all";
+  const DateInput = ({ label, field, type="date" }) => (
+    <div className="space-y-2">
+      <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1">{label}</label>
+      <div className="relative group">
+        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">calendar_month</span>
+        <input 
+          type={type} 
+          value={form[field]} 
+          onChange={(e) => update(field, e.target.value)} 
+          required 
+          className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest focus:bg-surface-container-lowest border-none rounded-xl text-on-surface font-headline font-bold focus:ring-2 focus:ring-primary shadow-[inset_0px_1px_2px_rgba(0,0,0,0.05)] transition-all cursor-pointer" 
+        />
+      </div>
+    </div>
+  );
+
+  const NumberInput = ({ label, field, placeholder, icon, unit }) => (
+    <div className="space-y-2 flex-1 min-w-[200px]">
+      <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1">{label}</label>
+      <div className="relative">
+        <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">{icon}</span>
+        <input 
+          type="number" 
+          step="0.1" 
+          value={form[field]} 
+          onChange={(e) => update(field, e.target.value)} 
+          placeholder={placeholder} 
+          className="w-full pl-12 pr-12 py-4 bg-surface-container-lowest border-none rounded-xl text-on-surface text-sm placeholder-outline-variant focus:ring-2 focus:ring-primary shadow-inner transition-all" 
+        />
+        {unit && <span className="absolute right-4 top-1/2 -translate-y-1/2 font-bold text-outline text-xs">{unit}</span>}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="animate-fade-in max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <HiOutlineClipboardDocumentList className="w-7 h-7 text-emerald-400" /> Diyet Planı Oluştur
+    <div className="max-w-5xl mx-auto animate-fade-in pb-12">
+      
+      {/* Header */}
+      <header className="mb-10">
+        <span className="text-primary font-headline text-xs font-bold tracking-widest uppercase mb-1 block">KLİNİK TASARIM</span>
+        <h1 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface tracking-tight mb-4">
+          Yeni Beslenme Planı.
         </h1>
-        <p className="text-slate-400 mt-1">Danışanınız için yeni bir diyet planı oluşturun</p>
-      </div>
+        <p className="text-lg text-on-surface-variant max-w-xl">
+          Danışanınız için metabolik hedefleri belirleyin ve tedavi/diyet periyodunu planlayın.
+        </p>
+      </header>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="glass rounded-2xl p-6 space-y-4">
-          <h3 className="font-semibold text-white">Genel Bilgiler</h3>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        
+        {/* Step 1: Assignment & Dates */}
+        <div className="bg-surface-container-low rounded-[2.5rem] p-8 shadow-[0px_12px_32px_rgba(23,29,27,0.06)] ghost-border">
+          <h2 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2 border-b border-outline-variant/30 pb-4">
+            <span className="material-symbols-outlined text-primary bg-primary-container/20 p-1.5 rounded-lg">person_search</span> 
+            Danışan ve Periyot
+          </h2>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Danışan (Atama)</label>
-            <select value={form.assignment} onChange={(e) => update('assignment', e.target.value)} required className={inputClass}>
-              <option value="" className="bg-slate-800">Seçin...</option>
-              {clients.map((c) => (
-                <option key={c.id} value={c.id} className="bg-slate-800">
-                  {c.client_name || c.name || `Atama #${c.id}`} ({c.duration})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Başlangıç Tarihi</label>
-              <input type="date" value={form.start_date} onChange={(e) => update('start_date', e.target.value)} required className={`${inputClass} [color-scheme:dark]`} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Bitiş Tarihi</label>
-              <input type="date" value={form.end_date} onChange={(e) => update('end_date', e.target.value)} required className={`${inputClass} [color-scheme:dark]`} />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Başlangıç Kilosu (kg)</label>
-              <input type="number" step="0.1" value={form.start_weight} onChange={(e) => update('start_weight', e.target.value)} placeholder="70.5" className={inputClass} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Hedef Kilo (kg)</label>
-              <input type="number" step="0.1" value={form.target_weight} onChange={(e) => update('target_weight', e.target.value)} placeholder="65.0" className={inputClass} />
-            </div>
-          </div>
-        </div>
-
-        <div className="glass rounded-2xl p-6 space-y-4">
-          <h3 className="font-semibold text-white">Günlük Hedefler</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {[
-              { field: 'daily_calories', label: 'Kalori (kcal)', ph: '2000' },
-              { field: 'daily_protein', label: 'Protein (g)', ph: '120' },
-              { field: 'daily_carbs', label: 'Karbonhidrat (g)', ph: '200' },
-              { field: 'daily_fat', label: 'Yağ (g)', ph: '65' },
-              { field: 'daily_water', label: 'Su (L)', ph: '2.5' },
-            ].map((item) => (
-              <div key={item.field}>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5">{item.label}</label>
-                <input type="number" step="0.1" value={form[item.field]} onChange={(e) => update(item.field, e.target.value)} placeholder={item.ph} className={inputClass} />
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider ml-1">Hedef Danışan</label>
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">person</span>
+                <select 
+                  value={form.assignment} 
+                  onChange={(e) => update('assignment', e.target.value)} 
+                  required 
+                  className="w-full pl-12 pr-4 py-4 bg-surface-container-lowest border-none rounded-xl text-on-surface font-bold focus:ring-2 focus:ring-primary shadow-inner appearance-none transition-all cursor-pointer"
+                >
+                  <option value="" disabled>Lütfen bir danışan seçin...</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.client_name || c.name || `Atama #${c.id}`} — ({c.duration} Aylık Süreç)
+                    </option>
+                  ))}
+                </select>
+                <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
               </div>
-            ))}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <DateInput label="Klinik Başlangıç" field="start_date" />
+              <DateInput label="Hedeflenen Bitiş" field="end_date" />
+            </div>
           </div>
         </div>
 
-        <button type="submit" disabled={submitting} className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-          {submitting ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Plan Oluştur'}
-        </button>
+        {/* Step 2: Metrics */}
+        <div className="bg-surface-container-low rounded-[2.5rem] p-8 shadow-[0px_12px_32px_rgba(23,29,27,0.06)] ghost-border">
+          <h2 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2 border-b border-outline-variant/30 pb-4">
+            <span className="material-symbols-outlined text-secondary bg-secondary-container/20 p-1.5 rounded-lg">monitor_weight</span> 
+            Ağırlık Yönetimi
+          </h2>
+
+          <div className="flex flex-wrap gap-6">
+            <NumberInput label="Mevcut Ağırlık" field="start_weight" placeholder="Örn: 75.0" icon="scale" unit="KG" />
+            <NumberInput label="Hedef Ağırlık" field="target_weight" placeholder="Örn: 68.0" icon="flag" unit="KG" />
+          </div>
+        </div>
+
+        {/* Step 3: Macros */}
+        <div className="bg-surface-container-low rounded-[2.5rem] p-8 shadow-[0px_12px_32px_rgba(23,29,27,0.06)] ghost-border">
+          <h2 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2 border-b border-outline-variant/30 pb-4">
+            <span className="material-symbols-outlined text-tertiary bg-tertiary-container/20 p-1.5 rounded-lg">pie_chart</span> 
+            Günlük Makro Hedefleri
+          </h2>
+
+          <div className="flex flex-wrap gap-6">
+            <div className="w-full">
+               <NumberInput label="Günlük Kalori Limiti" field="daily_calories" placeholder="Örn: 1850" icon="local_fire_department" unit="KCAL" />
+            </div>
+            <NumberInput label="Protein" field="daily_protein" placeholder="120" icon="fitness_center" unit="G" />
+            <NumberInput label="Karbonhidrat" field="daily_carbs" placeholder="200" icon="grain" unit="G" />
+            <NumberInput label="Yağ" field="daily_fat" placeholder="65" icon="water_drop" unit="G" />
+            <NumberInput label="Su Tüketimi" field="daily_water" placeholder="2.5" icon="water" unit="L" />
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="pt-4 pb-12 flex justify-end">
+          <button 
+            type="submit" 
+            disabled={submitting} 
+            className="px-10 py-5 gradient-primary text-white font-headline font-bold text-lg rounded-2xl shadow-[0px_8px_20px_rgba(0,104,86,0.25)] hover:scale-95 transition-transform disabled:opacity-50 disabled:scale-100 flex items-center gap-3 w-full md:w-auto"
+          >
+            {submitting ? (
+              <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            ) : (
+              <><span className="material-symbols-outlined text-xl">assignment_turned_in</span> Klinik Programı Aktifleştir</>
+            )}
+          </button>
+        </div>
+
       </form>
     </div>
   );

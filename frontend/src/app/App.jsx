@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthProvider } from '../contexts/AuthContext.jsx';
-import { useAuth } from '../contexts/useAuth.js';
+import { AuthProvider, useAuth } from '../contexts/AuthContext';
 import { ToastProvider } from '../components/Toast';
 import Navbar from '../components/Navbar';
 import ProtectedRoute from '../components/ProtectedRoute';
@@ -9,7 +8,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import LandingPage from '../pages/landing/LandingPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
-import ClientRegisterPage from '../pages/auth/ClientRegisterPage.jsx';
+import ClientRegisterPage from '../pages/auth/ClientRegisterPage';
 import DieticianRegisterPage from '../pages/auth/DieticianRegisterPage';
 
 // Client Pages
@@ -60,7 +59,7 @@ function AppLayout() {
   return (
     <>
       <Navbar />
-      <main className="lg:ml-64 p-4 lg:p-6 pt-18 lg:pt-6 min-h-screen">
+      <main className="lg:ml-64 p-4 lg:p-8 pt-20 lg:pt-8 pb-24 lg:pb-8 min-h-screen bg-surface">
         <Routes>
           {/* Client Routes */}
           <Route path="/dashboard" element={<ProtectedRoute requiredRole="Client"><ClientDashboard /></ProtectedRoute>} />

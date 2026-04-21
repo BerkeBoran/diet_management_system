@@ -1,12 +1,9 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/useAuth.js';
-import { resolveUserRole } from '../contexts/role-utils';
+import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 
 export default function ProtectedRoute({ children, requiredRole }) {
   const { user, loading, isAuthenticated } = useAuth();
-  const resolvedRole = resolveUserRole(user?.role);
-  const normalizedRequiredRole = resolveUserRole(requiredRole);
 
   if (loading) {
     return <LoadingSpinner fullScreen />;
@@ -16,8 +13,8 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (normalizedRequiredRole && resolvedRole !== normalizedRequiredRole) {
-    const redirect = resolvedRole === 'Client' ? '/dashboard' : '/dietician/dashboard';
+  if (requiredRole && user?.role !== requiredRole) {
+    const redirect = user?.role === 'Client' ? '/dashboard' : '/dietician/dashboard';
     return <Navigate to={redirect} replace />;
   }
 

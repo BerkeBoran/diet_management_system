@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import authService from '../services/authService';
-import AuthContext from './auth-context';
 import { inferRoleFromProfile, resolveUserRole } from './role-utils';
+
+const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -95,8 +96,8 @@ export function AuthProvider({ children }) {
     logout,
     loadUser,
     isAuthenticated: !!user,
-    isClient: resolveUserRole(user?.role) === 'Client',
-    isDietician: resolveUserRole(user?.role) === 'Dietician',
+    isClient: resolveUserRole(user?.role, inferRoleFromProfile(user)) === 'Client',
+    isDietician: resolveUserRole(user?.role, inferRoleFromProfile(user)) === 'Dietician',
   };
 
   return (
@@ -105,3 +106,13 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
+
+export default AuthContext;

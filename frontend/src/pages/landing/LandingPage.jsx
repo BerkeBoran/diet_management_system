@@ -1,184 +1,184 @@
 import { Link } from 'react-router-dom';
-import { HiOutlineSparkles, HiOutlineUserGroup, HiOutlineChatBubbleLeftRight, HiOutlineCalendarDays, HiOutlineChartBarSquare, HiOutlineShieldCheck, HiArrowRight } from 'react-icons/hi2';
 
 const features = [
   {
-    icon: HiOutlineSparkles,
-    title: 'AI Destekli Diyet Planı',
-    desc: 'Yapay zeka, size özel kişiselleştirilmiş diyet planları oluşturur.',
-    color: 'from-emerald-400 to-teal-500',
+    icon: 'neurology',
+    title: 'AI Destekli Biyometrik Program',
+    desc: 'Metabolik verilerinize göre yapay zeka tarafından hesaplanan kişiselleştirilmiş diyet tasarımları.',
+    colorClass: 'text-primary bg-primary-container/20',
   },
   {
-    icon: HiOutlineUserGroup,
-    title: 'Uzman Diyetisyenler',
-    desc: 'Onaylı diyetisyenlerle birebir çalışarak hedeflerinize ulaşın.',
-    color: 'from-blue-400 to-indigo-500',
+    icon: 'group',
+    title: 'Klinik Uzman Diyetisyenler',
+    desc: 'Türkiye\'nin en iyi klinik sertifikalı diyetisyenleri ile doğrudan çalışma fırsatı.',
+    colorClass: 'text-secondary bg-secondary-container/20',
   },
   {
-    icon: HiOutlineChatBubbleLeftRight,
-    title: 'Anlık Mesajlaşma',
-    desc: 'Diyetisyeninizle gerçek zamanlı iletişim kurun.',
-    color: 'from-purple-400 to-pink-500',
+    icon: 'forum',
+    title: 'Anlık Teletıp Mesajlaşma',
+    desc: 'Diyetisyeninizle dilediğiniz an iletişimde kalarak tedavi sürecini hızlandırın.',
+    colorClass: 'text-tertiary bg-tertiary-container/30',
   },
   {
-    icon: HiOutlineCalendarDays,
-    title: 'Randevu Sistemi',
-    desc: 'Online randevu alarak süreci kolayca yönetin.',
-    color: 'from-amber-400 to-orange-500',
+    icon: 'event',
+    title: 'Seans ve Randevu Yönetimi',
+    desc: 'Klinik randevularınızı online takvim üzerinden saniyeler içinde planlayın ve yönetin.',
+    colorClass: 'text-primary bg-primary-container/20',
   },
   {
-    icon: HiOutlineChartBarSquare,
-    title: 'İlerleme Takibi',
-    desc: 'Haftalık ve günlük diyet planlarınızı detaylı takip edin.',
-    color: 'from-rose-400 to-red-500',
+    icon: 'monitoring',
+    title: 'Detaylı İlerleme Takibi',
+    desc: 'Haftalık hedefler, makro dengesi ve kilo ölçümleri üzerinden anlık raporlama.',
+    colorClass: 'text-secondary bg-secondary-container/20',
   },
   {
-    icon: HiOutlineShieldCheck,
-    title: 'Güvenli Besin Veritabanı',
-    desc: 'Binlerce besin ve barkod tarama ile kalori takibi yapın.',
-    color: 'from-cyan-400 to-blue-500',
+    icon: 'database',
+    title: 'Geniş Lokal Besin Veritabanı',
+    desc: 'Yerel ve global USDA verileri üzerinden gramaj ve kalori hesaplamaları yapın.',
+    colorClass: 'text-tertiary bg-tertiary-container/30',
   },
 ];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-dark-900">
+    <div className="min-h-screen bg-surface">
+      
+      {/* Navigation Space (Navbar assumes top rendering) */}
+
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Effects */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl animate-pulse-slow" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl" />
+      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
+        {/* Editorial Background Lighting */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-container/30 rounded-full blur-[100px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-container/20 rounded-full blur-[100px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-tertiary-container/10 rounded-full blur-[120px]" />
         </div>
 
-        {/* Grid Pattern */}
-        <div className="absolute inset-0 opacity-5" style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-          backgroundSize: '40px 40px',
-        }} />
-
         <div className="relative z-10 text-center px-4 max-w-5xl mx-auto pt-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-emerald-400 text-sm font-medium mb-8 animate-fade-in">
-            <HiOutlineSparkles className="w-4 h-4" />
-            Yapay Zeka Destekli Beslenme Platformu
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-container-low text-primary font-headline text-xs font-bold tracking-widest uppercase mb-8 shadow-sm ghost-border animate-fade-in border border-outline-variant/30">
+            <span className="material-symbols-outlined text-[16px] animate-pulse">auto_awesome</span>
+            Klinik Yapay Zeka Diyet Asistanı
           </div>
 
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight mb-6 animate-slide-up">
-            <span className="text-white">Sağlıklı Yaşamın</span>
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-headline font-extrabold leading-[1.1] mb-6 animate-slide-up tracking-tight">
+            <span className="text-on-surface">Beslenmenin</span>
             <br />
-            <span className="text-gradient">Akıllı Yolu</span>
+            <span className="text-transparent bg-clip-text gradient-primary pb-2">Klinik Evrimi.</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-            NutriAI ile kişiselleştirilmiş diyet planları oluşturun, uzman diyetisyenlerle çalışın
-            ve yapay zeka desteğiyle beslenme hedeflerinize ulaşın.
+          <p className="text-lg sm:text-2xl text-on-surface-variant font-medium max-w-3xl mx-auto mb-10 animate-slide-up leading-relaxed" style={{ animationDelay: '0.1s' }}>
+            NutriConnect AI, klinik diyetisyenliği yapay zeka ile birleştirerek metabolizmanıza en uygun, sürdürülebilir beslenme protokollerini tasarlar.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <Link
-              to="/register"
-              className="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/25 hover:scale-105 flex items-center gap-2"
+              to="/client-register"
+              className="px-10 py-5 gradient-primary text-white font-headline font-bold text-lg rounded-[1.5rem] shadow-[0px_8px_24px_rgba(0,104,86,0.25)] hover:scale-95 transition-transform flex items-center justify-center gap-2 min-w-[200px]"
             >
-              Hemen Başla
-              <HiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+               Sürece Başla <span className="material-symbols-outlined text-xl">arrow_forward</span>
             </Link>
             <Link
               to="/login"
-              className="px-8 py-4 glass glass-hover text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105"
+              className="px-10 py-5 bg-surface-container-lowest text-on-surface font-headline font-bold text-lg rounded-[1.5rem] hover:bg-surface-container-low transition-colors shadow-sm ghost-border min-w-[200px]"
             >
-              Giriş Yap
+              Üye Girişi
             </Link>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto mt-20 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            {[
-              { value: '1000+', label: 'Mutlu Danışan' },
-              { value: '50+', label: 'Uzman Diyetisyen' },
-              { value: 'AI', label: 'Destekli Sistem' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div className="text-2xl sm:text-3xl font-bold text-gradient">{stat.value}</div>
-                <div className="text-xs sm:text-sm text-slate-500 mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-slate-600 flex justify-center pt-2">
-            <div className="w-1 h-3 bg-emerald-500 rounded-full animate-pulse" />
+          {/* Editorial Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-20 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+             <div className="bg-surface-container-lowest p-6 rounded-[2rem] ghost-border shadow-[0px_12px_32px_rgba(23,29,27,0.04)]">
+               <span className="font-headline text-4xl font-black text-primary">12K+</span>
+               <p className="text-xs font-bold text-outline uppercase tracking-widest mt-1">Danışan</p>
+             </div>
+             <div className="bg-surface-container-lowest p-6 rounded-[2rem] ghost-border shadow-[0px_12px_32px_rgba(23,29,27,0.04)]">
+               <span className="font-headline text-4xl font-black text-secondary">250+</span>
+               <p className="text-xs font-bold text-outline uppercase tracking-widest mt-1">Diyetisyen</p>
+             </div>
+             <div className="bg-surface-container-lowest p-6 rounded-[2rem] ghost-border shadow-[0px_12px_32px_rgba(23,29,27,0.04)]">
+               <span className="font-headline text-4xl font-black text-tertiary">98%</span>
+               <p className="text-xs font-bold text-outline uppercase tracking-widest mt-1">Başarı Oranı</p>
+             </div>
+             <div className="bg-surface-container-lowest p-6 rounded-[2rem] ghost-border shadow-[0px_12px_32px_rgba(23,29,27,0.04)]">
+               <span className="font-headline text-4xl font-black text-on-surface">GPT4</span>
+               <p className="text-xs font-bold text-outline uppercase tracking-widest mt-1">AI Modeli</p>
+             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 px-4 relative">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              Neden <span className="text-gradient">NutriAI</span>?
+      {/* Value Proposition / Features Block */}
+      <section className="py-32 px-4 relative bg-surface-container-lowest relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20 max-w-3xl mx-auto">
+             <span className="text-secondary font-headline text-xs font-bold tracking-widest uppercase mb-3 block">BİLİMSEL YAKLAŞIM</span>
+             <h2 className="text-4xl sm:text-5xl font-headline font-extrabold text-on-surface mb-6 tracking-tight">
+              Klinik Atelier Standartları
             </h2>
-            <p className="text-slate-400 max-w-xl mx-auto">
-              Modern teknoloji ve uzman bilgisini bir araya getirerek size en iyi beslenme deneyimini sunuyoruz.
+            <p className="text-xl text-on-surface-variant font-medium leading-relaxed">
+              Tıbbi doğruluk, sofistike teknoloji ve modern diyetisyenlik pratiğinin NutriConnect platformunda birleşimi.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, i) => (
               <div
                 key={feature.title}
-                className="group glass glass-hover rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
+                className="group bg-surface rounded-[2.5rem] p-8 transition-all duration-300 hover:shadow-[0px_24px_48px_rgba(23,29,27,0.08)] hover:-translate-y-1 block ghost-border hover:border-transparent"
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                  <feature.icon className="w-6 h-6 text-white" />
+                <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 ${feature.colorClass}`}>
+                  <span className="material-symbols-outlined text-3xl font-light">{feature.icon}</span>
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
+                <h3 className="text-2xl font-headline font-bold text-on-surface mb-3">{feature.title}</h3>
+                <p className="text-on-surface-variant leading-relaxed font-medium">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="glass rounded-3xl p-12 relative overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500" />
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl" />
-            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl" />
+      {/* CTA / Final Section */}
+      <section className="py-32 px-4 bg-surface max-w-6xl mx-auto">
+        <div className="bg-primary text-white rounded-[3rem] p-12 lg:p-20 relative overflow-hidden shadow-[0px_24px_64px_rgba(0,104,86,0.3)] ghost-border">
+          {/* Internal gradients for depth */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 relative z-10">
-              Sağlıklı yaşama bugün başlayın
+          <div className="relative z-10 text-center max-w-2xl mx-auto">
+            <span className="material-symbols-outlined text-6xl text-white/50 mb-6 font-light">vital_signs</span>
+            <h2 className="text-4xl sm:text-5xl font-headline font-extrabold mb-6 tracking-tight">
+              Metabolik potansiyelinize ulaşın.
             </h2>
-            <p className="text-slate-400 mb-8 relative z-10">
-              Ücretsiz hesap oluşturun ve AI destekli kişisel diyet planınızı hemen alın.
+            <p className="text-xl text-white/80 mb-10 font-medium">
+              NutriConnect platformuna bugün ücretsiz katılın, uzman atamalarınızı yapın veya yapay zeka asistanı ile ilk günlük planınızı hazırlayın.
             </p>
             <Link
-              to="/register"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-2xl transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/25 hover:scale-105 relative z-10"
+              to="/client-register"
+              className="inline-flex items-center gap-3 px-10 py-5 bg-white text-primary font-headline font-bold text-lg rounded-[1.5rem] transition-all hover:scale-95 shadow-lg mx-auto"
             >
-              Ücretsiz Kayıt Ol
-              <HiArrowRight className="w-5 h-5" />
+              Danışan Kaydı Oluştur <span className="material-symbols-outlined">arrow_forward</span>
             </Link>
+            
+            <div className="mt-8">
+               <Link to="/dietician-register" className="text-sm font-bold text-white/80 hover:text-white underline underline-offset-4 decoration-white/30 hover:decoration-white transition-all">
+                 Uzman Diyetisyen Başvurusu
+               </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
-              <HiOutlineSparkles className="w-4 h-4 text-white" />
+      <footer className="border-t border-outline-variant/30 py-12 px-4 bg-surface-container-lowest">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-primary/10 rounded-[12px] flex items-center justify-center">
+              <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
             </div>
-            <span className="text-lg font-bold text-gradient">NutriAI</span>
+            <span className="text-xl font-headline font-bold text-on-surface">NutriConnect<span className="text-primary text-2xl leading-none">.</span>AI</span>
           </div>
-          <p className="text-sm text-slate-500">© 2026 NutriAI. Tüm hakları saklıdır.</p>
+          <p className="text-sm font-bold text-outline uppercase tracking-widest">© 2026 CLİNİCAL ATELIER.</p>
         </div>
       </footer>
     </div>

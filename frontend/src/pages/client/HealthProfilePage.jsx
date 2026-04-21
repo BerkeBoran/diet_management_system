@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import userService from '../../services/userService';
-import { useToast } from '../../components/useToast.js';
-import { HiOutlineHeart, HiOutlineCheckCircle } from 'react-icons/hi2';
+import { useToast } from '../../components/Toast';
 
 export default function HealthProfilePage() {
   const toast = useToast();
@@ -33,140 +32,241 @@ export default function HealthProfilePage() {
     setLoading(true);
     try {
       await userService.createHealthSnapshot(form);
-      toast.success('Sağlık bilgileriniz kaydedildi!');
+      toast.success('Klinik verileriniz kaydedildi.');
       setSubmitted(true);
     } catch {
-      toast.error('Kayıt başarısız.');
+      toast.error('Kayıt işlemi başarısız oldu.');
     }
     setLoading(false);
   };
 
   if (submitted) {
     return (
-      <div className="animate-fade-in flex flex-col items-center justify-center py-20">
-        <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mb-4">
-          <HiOutlineCheckCircle className="w-10 h-10 text-emerald-400" />
+      <div className="max-w-3xl mx-auto animate-fade-in py-20 text-center">
+        <div className="w-24 h-24 rounded-[2rem] bg-tertiary-container/30 flex items-center justify-center mx-auto mb-6 shadow-inner ghost-border">
+          <span className="material-symbols-outlined text-5xl text-tertiary" style={{ fontVariationSettings: "'FILL' 1" }}>task_alt</span>
         </div>
-        <h2 className="text-xl font-semibold text-white mb-2">Bilgileriniz Kaydedildi!</h2>
-        <p className="text-slate-400">Sağlık profiliniz başarıyla güncellendi.</p>
+        <h2 className="font-headline text-4xl font-extrabold text-on-surface mb-3 tracking-tight">Klinik Verileriniz Kaydedildi</h2>
+        <p className="text-on-surface-variant text-lg max-w-lg mx-auto leading-relaxed mb-8">
+          Sağlık profiliniz başarıyla güncellendi. Bu veriler diyetisyeniniz ve AI asistanımız tarafından daha isabetli programlar hazırlamak için kullanılacaktır.
+        </p>
+        <button onClick={() => setSubmitted(false)} className="px-8 py-4 gradient-primary text-white font-headline font-bold rounded-2xl shadow-[0px_8px_16px_rgba(0,104,86,0.2)] hover:scale-[0.98] transition-transform">
+          Profilimi Düzenle
+        </button>
       </div>
     );
   }
 
   const selectBtn = (field, value, label) => (
-    <button type="button" key={value} onClick={() => update(field, value)}
-      className={`px-3 py-2 text-sm rounded-lg transition-all ${form[field] === value ? 'bg-emerald-500 text-white' : 'bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/50'}`}
-    >{label}</button>
+    <button 
+      type="button" 
+      key={value} 
+      onClick={() => update(field, value)}
+      className={`px-5 py-3 text-sm font-bold rounded-xl transition-all border-2 flex-grow sm:flex-grow-0
+        ${form[field] === value 
+          ? 'bg-primary-container/20 border-primary text-primary shadow-sm scale-105' 
+          : 'bg-surface-container-lowest border-transparent text-on-surface-variant hover:border-outline-variant/30 hover:bg-surface-container-highest'}`}
+    >
+      {label}
+    </button>
   );
 
   return (
-    <div className="animate-fade-in max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
-          <HiOutlineHeart className="w-7 h-7 text-emerald-400" /> Sağlık Profili
+    <div className="max-w-6xl mx-auto animate-fade-in pb-12">
+      
+      {/* Header */}
+      <header className="mb-10">
+        <span className="text-primary font-headline text-xs font-bold tracking-widest uppercase mb-1 block">TIBBİ ANAMNEZ & VERİLER</span>
+        <h1 className="text-4xl md:text-5xl font-headline font-extrabold text-on-surface tracking-tight mb-4">
+          Sağlık Profili.
         </h1>
-        <p className="text-slate-400 mt-1">Bu bilgiler diyet planınızın kişiselleştirilmesinde kullanılacak.</p>
-      </div>
+        <p className="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+          Klinik durumunuzu, alışkanlıklarınızı ve hedeflerinizi eksiksiz doldurarak, bizim ve uzmanın sizin için en güvenilir beslenme planını hazırlamasını sağlayın.
+        </p>
+      </header>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="glass rounded-2xl p-6 space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Beslenme Tercihi</label>
-            <div className="flex flex-wrap gap-2">
-              {selectBtn('dietary_preference', 'NORMAL', 'Normal')}
-              {selectBtn('dietary_preference', 'VEGETARIAN', 'Vejetaryen')}
-              {selectBtn('dietary_preference', 'VEGAN', 'Vegan')}
-            </div>
-          </div>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        {/* Left Column - Main Form */}
+        <div className="lg:col-span-8 space-y-8">
+          
+          {/* Section 1: Goals and Diets */}
+          <section className="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-[0px_12px_32px_rgba(23,29,27,0.06)] ghost-border">
+            <h2 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary bg-primary-container/20 p-2 rounded-xl">flag</span>
+              Temel Hedefler & Tercihler
+            </h2>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Hedef</label>
-            <div className="flex flex-wrap gap-2">
-              {selectBtn('goal', 'Lose', 'Kilo Vermek')}
-              {selectBtn('goal', 'Gain', 'Kilo Almak')}
-              {selectBtn('goal', 'Maintain', 'Formumu Korumak')}
-            </div>
-          </div>
+            <div className="space-y-8">
+              <div>
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-3 pl-1">Metabolik Hedef</label>
+                <div className="flex flex-wrap gap-3">
+                  {selectBtn('goal', 'Lose', 'Kilo Kaybı')}
+                  {selectBtn('goal', 'Maintain', 'Kilo Koruma')}
+                  {selectBtn('goal', 'Gain', 'Kasa/Kilo Kazanımı')}
+                </div>
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Aktivite Düzeyi</label>
-            <div className="flex flex-wrap gap-2">
-              {selectBtn('activity_level', 'NONE', 'Hiç')}
-              {selectBtn('activity_level', 'LOW', 'Haftada 1-2')}
-              {selectBtn('activity_level', 'MEDIUM', 'Haftada 3-4')}
-              {selectBtn('activity_level', 'HIGH', 'Haftada 4-5')}
-              {selectBtn('activity_level', 'VERY_HIGH', 'Her gün')}
+              <div>
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-3 pl-1">Beslenme Protokolü</label>
+                <div className="flex flex-wrap gap-3">
+                  {selectBtn('dietary_preference', 'NORMAL', 'Standart (Hepçil)')}
+                  {selectBtn('dietary_preference', 'VEGETARIAN', 'Vejetaryen')}
+                  {selectBtn('dietary_preference', 'VEGAN', 'Vegan')}
+                </div>
+              </div>
             </div>
-          </div>
+          </section>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Şeker Tüketimi</label>
-            <div className="flex flex-wrap gap-2">
-              {selectBtn('sugar_intake', 'NONE', 'Hiç')}
-              {selectBtn('sugar_intake', 'LOW', 'Haftada 1-2')}
-              {selectBtn('sugar_intake', 'MEDIUM', 'Haftada 3-4')}
-              {selectBtn('sugar_intake', 'HIGH', 'Her gün')}
-              {selectBtn('sugar_intake', 'CRAVINGS', 'Tatlı krizi')}
+          {/* Section 2: Lifestyle */}
+          <section className="bg-surface-container-lowest rounded-[2.5rem] p-8 shadow-[0px_12px_32px_rgba(23,29,27,0.06)] ghost-border">
+            <h2 className="font-headline text-xl font-bold text-on-surface mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-secondary bg-secondary-container/20 p-2 rounded-xl">directions_run</span>
+              Yaşam Tarzı Puanlaması
+            </h2>
+
+            <div className="space-y-8">
+              <div>
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-3 pl-1">Aktif Egzersiz Yoğunluğu</label>
+                <div className="flex flex-wrap gap-3">
+                  {selectBtn('activity_level', 'NONE', 'Yok / Sedanter')}
+                  {selectBtn('activity_level', 'LOW', 'Düşük (1-2 Gün)')}
+                  {selectBtn('activity_level', 'MEDIUM', 'Orta (3-4 Gün)')}
+                  {selectBtn('activity_level', 'HIGH', 'Yüksek (4-5 Gün)')}
+                  {selectBtn('activity_level', 'VERY_HIGH', 'Atletik / Her Gün')}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-3 pl-1">İlave Şeker Eğilimi</label>
+                <div className="flex flex-wrap gap-3">
+                  {selectBtn('sugar_intake', 'NONE', 'Tüketmiyorum')}
+                  {selectBtn('sugar_intake', 'LOW', 'Nadiren')}
+                  {selectBtn('sugar_intake', 'MEDIUM', 'Haftada Birkaç')}
+                  {selectBtn('sugar_intake', 'HIGH', 'Sık Tüketim')}
+                  {selectBtn('sugar_intake', 'CRAVINGS', 'Kontrolsüz Şeker Krizi')}
+                </div>
+              </div>
             </div>
-          </div>
+          </section>
+
         </div>
 
-        <div className="glass rounded-2xl p-6 space-y-5">
-          <h3 className="font-semibold text-white">Ek Bilgiler</h3>
+        {/* Right Column - Secondary Form & Medical Flags */}
+        <div className="lg:col-span-4 space-y-8">
+          
+          <section className="bg-surface-container-low rounded-[2.5rem] p-8 ghost-border">
+            <h2 className="font-headline text-lg font-bold text-on-surface mb-6 flex items-center gap-2">
+              <span className="material-symbols-outlined text-error">warning</span>
+              Klinik Uyarılar
+            </h2>
 
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { field: 'is_pregnant', label: 'Hamile' },
-              { field: 'is_breastfeeding', label: 'Emziriyor' },
-              { field: 'alcohol_use', label: 'Alkol' },
-              { field: 'smoking_use', label: 'Sigara' },
-            ].map((item) => (
-              <button key={item.field} type="button" onClick={() => update(item.field, !form[item.field])}
-                className={`py-3 text-sm rounded-xl transition-all ${form[item.field] ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800/50 text-slate-400 border border-slate-700/50'}`}
-              >{item.label}: {form[item.field] ? 'Evet' : 'Hayır'}</button>
-            ))}
-          </div>
-
-          {/* Medications */}
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">İlaçlar</label>
-            <div className="flex gap-2">
-              <input type="text" value={medInput} onChange={(e) => setMedInput(e.target.value)} placeholder="İlaç adı ekle" onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addToList('medications', medInput, setMedInput))} className="flex-1 px-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 text-sm focus:border-emerald-500/50 transition-all" />
-              <button type="button" onClick={() => addToList('medications', medInput, setMedInput)} className="px-4 py-2.5 bg-emerald-500/20 text-emerald-400 rounded-xl text-sm hover:bg-emerald-500/30 transition-all">Ekle</button>
-            </div>
-            {form.medications.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {form.medications.map((m, i) => (
-                  <span key={i} className="px-3 py-1 bg-slate-800/50 text-slate-300 text-xs rounded-full flex items-center gap-1.5">
-                    {m} <button type="button" onClick={() => removeFromList('medications', i)} className="text-slate-500 hover:text-red-400">×</button>
+            <div className="space-y-3 mb-8">
+              {[
+                { field: 'is_pregnant', label: 'Hamilelik Durumu' },
+                { field: 'is_breastfeeding', label: 'Laktasyon (Emzirme)' },
+                { field: 'alcohol_use', label: 'Alkol Tüketimi' },
+                { field: 'smoking_use', label: 'Sigara / Tütün Kul.' },
+              ].map((item) => (
+                <button 
+                  key={item.field} 
+                  type="button" 
+                  onClick={() => update(item.field, !form[item.field])}
+                  className={`w-full py-4 px-5 text-sm font-bold rounded-2xl transition-all border-2 flex justify-between items-center
+                    ${form[item.field] 
+                      ? 'bg-error-container/20 border-error text-error shadow-sm' 
+                      : 'bg-surface-container-lowest border-transparent text-on-surface-variant hover:border-outline-variant/30 hover:bg-surface-container-highest'}`}
+                >
+                  {item.label}
+                  <span className="material-symbols-outlined text-lg" style={form[item.field] ? { fontVariationSettings: "'FILL' 1" } : {}}>
+                    {form[item.field] ? 'check_circle' : 'radio_button_unchecked'}
                   </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Dislike Foods */}
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-2">Sevmediğiniz Yiyecekler</label>
-            <div className="flex gap-2">
-              <input type="text" value={dislikeInput} onChange={(e) => setDislikeInput(e.target.value)} placeholder="Yiyecek adı ekle" onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addToList('dislike_foods', dislikeInput, setDislikeInput))} className="flex-1 px-4 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white placeholder-slate-500 text-sm focus:border-emerald-500/50 transition-all" />
-              <button type="button" onClick={() => addToList('dislike_foods', dislikeInput, setDislikeInput)} className="px-4 py-2.5 bg-emerald-500/20 text-emerald-400 rounded-xl text-sm hover:bg-emerald-500/30 transition-all">Ekle</button>
+                </button>
+              ))}
             </div>
-            {form.dislike_foods.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {form.dislike_foods.map((f, i) => (
-                  <span key={i} className="px-3 py-1 bg-slate-800/50 text-slate-300 text-xs rounded-full flex items-center gap-1.5">
-                    {f} <button type="button" onClick={() => removeFromList('dislike_foods', i)} className="text-slate-500 hover:text-red-400">×</button>
-                  </span>
-                ))}
+
+            <div className="space-y-6">
+              {/* Medications */}
+              <div>
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-2 pl-1">Düzenli İlaç/Takviyeler</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={medInput} 
+                    onChange={(e) => setMedInput(e.target.value)} 
+                    placeholder="İlaç veya takviye ismini yazın..." 
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addToList('medications', medInput, setMedInput))} 
+                    className="w-full pl-4 pr-12 py-3 bg-surface-container-lowest border-none rounded-xl text-on-surface text-sm placeholder-outline-variant focus:ring-2 focus:ring-primary shadow-inner transition-all" 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => addToList('medications', medInput, setMedInput)} 
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-1 hover:bg-primary-container/20 rounded-lg transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-xl">add</span>
+                  </button>
+                </div>
+                {form.medications.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3 pl-1">
+                    {form.medications.map((m, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-surface-container text-on-surface-variant text-xs font-bold rounded-lg flex items-center gap-1 shadow-sm">
+                        {m} 
+                        <button type="button" onClick={() => removeFromList('medications', i)} className="text-outline hover:text-error transition-colors mt-0.5">
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+
+              {/* Dislike Foods */}
+              <div>
+                <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-2 pl-1">Tüketilemeyen Gıdalar</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    value={dislikeInput} 
+                    onChange={(e) => setDislikeInput(e.target.value)} 
+                    placeholder="Alerjen veya sevilmeyen gıda..." 
+                    onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addToList('dislike_foods', dislikeInput, setDislikeInput))} 
+                    className="w-full pl-4 pr-12 py-3 bg-surface-container-lowest border-none rounded-xl text-on-surface text-sm placeholder-outline-variant focus:ring-2 focus:ring-primary shadow-inner transition-all" 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => addToList('dislike_foods', dislikeInput, setDislikeInput)} 
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-primary p-1 hover:bg-primary-container/20 rounded-lg transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-xl">add</span>
+                  </button>
+                </div>
+                {form.dislike_foods.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3 pl-1">
+                    {form.dislike_foods.map((f, i) => (
+                      <span key={i} className="px-3 py-1.5 bg-surface-container text-on-surface-variant text-xs font-bold rounded-lg flex items-center gap-1 shadow-sm">
+                        {f} 
+                        <button type="button" onClick={() => removeFromList('dislike_foods', i)} className="text-outline hover:text-error transition-colors mt-0.5">
+                          <span className="material-symbols-outlined text-[14px]">close</span>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            <div className="pt-8 mt-8 border-t border-outline-variant/30">
+               <button 
+                 type="submit" 
+                 disabled={loading} 
+                 className="w-full py-4 gradient-primary text-white font-headline font-bold text-lg rounded-2xl shadow-[0px_8px_16px_rgba(0,104,86,0.2)] hover:scale-[0.98] transition-transform disabled:opacity-50 flex items-center justify-center gap-2"
+               >
+                 {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Verileri Sisteme Kaydet'}
+               </button>
+            </div>
+          </section>
+
         </div>
-
-        <button type="submit" disabled={loading} className="w-full py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white font-semibold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-          {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Kaydet'}
-        </button>
       </form>
     </div>
   );
