@@ -14,3 +14,7 @@ channels-redis
 whitenoise
 langchain-google-genai
 langgraph
+django-allauth[socialaccount]>=0.61
+dj-rest-auth>=6.0
+django-cors-headers>=4.3
+
