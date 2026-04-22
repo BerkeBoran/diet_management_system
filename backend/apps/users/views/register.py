@@ -1,41 +1,76 @@
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.users.serializers.register import ClientRegisterSerializer, DieticianRegisterSerializer
+from allauth.account.models import EmailAddress
+from apps.users.serializers.register import DieticianRegisterSerializer, \
+    ClientRegisterSerializer
 
-
-class ClientRegisterView(APIView):
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        serializer = ClientRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            client = serializer.save()
-            refresh = RefreshToken.for_user(client)
-            return Response({
-                'message': 'Kayıt Başarılı',
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-                'user': {
-                    'id': client.id,
-                    'email': client.email,
-                    'role': client.role,
-                    'full_name': client.full_name,
-                }
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class DieticianRegisterView(APIView):
+
     permission_classes = [AllowAny]
+    parser_classes     = [MultiPartParser, FormParser]
 
     def post(self, request):
         serializer = DieticianRegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                'message': 'Başvurunuz alındı, onay bekleniyor',
-            },status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        user = serializer.save()
+
+
+        email_address, created = EmailAddress.objects.get_or_create(
+            user=user,
+            email=user.email,
+            defaults={'primary': True, 'verified': False}
+        )
+
+        email_address.send_confirmation(request, signup=True)
+
+        return Response(
+            {
+                "detail": (
+                    "Kayıt başarılı. Hesabınızı aktifleştirmek için "
+                    "e-posta adresinize gönderilen doğrulama linkine tıklayın."
+                ),
+                "email": user.email,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class ClientRegisterView(APIView):
+
+    permission_classes = [AllowAny]
+    parser_classes     = [JSONParser]
+
+    def post(self, request):
+        serializer = ClientRegisterSerializer(data=request.data)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        user = serializer.save()
+
+        email_address, created = EmailAddress.objects.get_or_create(
+            user=user,
+            email=user.email,
+            defaults={'primary': True, 'verified': False}
+        )
+
+        email_address.send_confirmation(request, signup=True)
+
+        return Response(
+            {
+                "detail": (
+                    "Kayıt başarılı. Hesabınızı aktifleştirmek için "
+                    "e-posta adresinize gönderilen doğrulama linkine tıklayın."
+                ),
+                "email": user.email,
+            },
+            status=status.HTTP_201_CREATED,
+        )

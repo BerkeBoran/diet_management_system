@@ -1,1 +1,1 @@
-from .auth import MyTokenObtainPairView
+from .auth import CustomTokenObtainPairView
