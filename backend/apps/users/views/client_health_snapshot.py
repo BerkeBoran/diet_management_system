@@ -3,7 +3,7 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from apps.ai_dietician.core.graph import analysis_node
+from apps.ai_dietician.agent.dietician_agent.graph import analysis_node
 from apps.users.models.client_health_snapshot import ClientHealthSnapshot
 from apps.users.serializers.client_health_snapshot import ClientHealthSnapshotSerializer
 

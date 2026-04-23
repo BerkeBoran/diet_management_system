@@ -1,13 +1,13 @@
 import uuid
 
-from rest_framework import status
+from django.db import transaction
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from apps.ai_dietician.core.graph import diet_graph
-from apps.ai_dietician.models.ai_diet_plan import AiDietPlan
-from apps.ai_dietician.tools.db_queries import get_user_details, get_past_ai_diet_summary
+from apps.ai_dietician.agent.dietician_agent.graph import diet_graph
+from apps.ai_dietician.models.ai_diet_plan import AiDietPlan, AiDietMeal
+from apps.ai_dietician.agent.dietician_agent.tools import get_user_details, get_past_ai_diet_summary
 
 
 class AICreateDietView(APIView):
@@ -35,7 +35,8 @@ class AICreateDietView(APIView):
                     "is_finished": False,
                     "revision_request": "",
                     "analysis_notes": "",
-                    "current_diet": ""
+                    "current_diet": "",
+                    "diet_plan": []
                 }
                 diet_graph.invoke(initial_state, config)
 
@@ -51,19 +52,35 @@ class AICreateDietView(APIView):
                 diet_graph.invoke(None, config)
 
                 final_state = diet_graph.get_state(config).values
-                diet_plan = AiDietPlan.objects.create(
-                    user=user,
-                    content=final_state["current_diet"],
-                    summary=final_state["diet_summary"],
-                    client_snapshot=final_state["user_info"]
-                )
-                return Response({"message": "Diyet kaydedildi"})
+                with transaction.atomic():
+                    diet_plan = AiDietPlan.objects.create(
+                        user=user,
+                        content=final_state["current_diet"],
+                        summary=final_state["summary"],
+                        client_snapshot=final_state["user_info"],
+                        analysis_notes=final_state["analysis_notes"],
+                    )
+
+                    diet_meals_data = final_state.get("diet_plan", [])
+                    for meal in diet_meals_data:
+                        AiDietMeal.objects.create(
+                            diet_plan = diet_plan,
+                            day = meal.get("day"),
+                            meal_type = meal.get("meal_type"),
+                            contents = meal.get("contents"),
+                            calories = meal.get("calories", 0),
+                        )
+
+                return Response({
+                    "message": "Diyet ve analiz notları başarıyla kaydedildi.",
+                    "diet_id": diet_plan.id
+                })
 
             current_state = diet_graph.get_state(config).values
             return Response({
                 "thread_id": config["configurable"]["thread_id"],
                 "content": current_state.get("current_diet"),
-                "summary": current_state.get("diet_summary"),
+                "summary": current_state.get("summary"),
                 "options": ["Onayla", "Değişiklik Yap"]
             })
 

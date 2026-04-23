@@ -3,13 +3,12 @@ import re
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.constants import START, END
+from langgraph.constants import END
 from langgraph.graph import StateGraph
 from django.conf import settings
 
-from apps.ai_dietician.core.prompts import ANALYSIS_SYSTEM_PROMPT, ANALYSIS_HUMAN_PROMPT, \
-    DIET_HUMAN_PROMPT, DIET_SYSTEM_PROMPT
-from apps.ai_dietician.core.state import DieticianState
+from apps.ai_dietician.core.agents.dietician.prompts import ANALYSIS_SYSTEM_PROMPT, DIET_HUMAN_PROMPT, DIET_SYSTEM_PROMPT
+from apps.ai_dietician.core.agents.dietician.state import DieticianState
 from apps.users.models import Client
 from apps.users.models.client import WeightLog
 
