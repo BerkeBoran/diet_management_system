@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from allauth.account.models import EmailAddress
-from apps.users.serializers.register import DieticianRegisterSerializer, \
-    ClientRegisterSerializer
+from apps.users.serializers.dietician_register import  DieticianRegisterSerializer
+from apps.users.serializers.client_register import ClientRegisterSerializer
 
 
 class DieticianRegisterView(APIView):
