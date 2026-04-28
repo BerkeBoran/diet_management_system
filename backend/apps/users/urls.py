@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import TokenRefreshView
 from apps.users.views import CustomTokenObtainPairView
 from apps.users.views.auth import GoogleLoginView, AppleLoginView
 from apps.users.views.client_health_snapshot import ClientHealthSnapshotViewSet
+from apps.users.views.dietician_schedule import DieticianScheduleViewSet
 from apps.users.views.register import ClientRegisterView, DieticianRegisterView
 from apps.users.views.review import DieticianReviewView
 from apps.users.views.users import ProfileView, DieticianViewSet
@@ -12,6 +13,7 @@ from apps.users.views.users import ProfileView, DieticianViewSet
 router = DefaultRouter()
 router.register(r'dieticians', DieticianViewSet, basename='dietician')
 router.register(r'client-health-snapshots', ClientHealthSnapshotViewSet, basename='client-health-snapshot')
+router.register(r'schedule', DieticianScheduleViewSet, basename='schedule')
 
 urlpatterns = [
     path('', include(router.urls)),

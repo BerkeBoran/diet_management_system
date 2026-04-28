@@ -4,7 +4,10 @@ from .auth import (
     CustomUserDetailsSerializer,
 
 )
-from .register import (
-    ClientRegisterSerializer,
+from .client_register import (
+    ClientRegisterSerializer
+)
+
+from .dietician_register import (
     DieticianRegisterSerializer,
 )
