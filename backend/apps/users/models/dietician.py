@@ -1,13 +1,10 @@
+from pydantic import ValidationError
+
 from .base import User
 from django.db import models
 
 
 class Dietician(User):
-    class AppointmentDuration(models.IntegerChoices):
-        SHORT = 30, '30 Dakika'
-        MEDIUM = 45, '45 Dakika'
-        LONG = 60, '60 Dakika'
-        VERY_LONG = 90, '90 Dakika'
 
     class VerificationStatus(models.TextChoices):
         PENDING = 'Pending', 'Beklemede'
@@ -26,8 +23,6 @@ class Dietician(User):
     license_document = models.FileField(upload_to='licenses/%Y/%m/%d/', blank=True)
     biography = models.TextField(blank=True)
     profile_photo = models.ImageField(upload_to='dietician_profile_photos/', blank=True)
-    work_time_start = models.TimeField(null=True, blank=True)
-    work_time_end = models.TimeField(null=True, blank=True)
 
     title = models.CharField(
         max_length=20,
@@ -40,19 +35,10 @@ class Dietician(User):
         max_length=20,
     )
 
-    appointment_duration = models.IntegerField(
-        choices=AppointmentDuration.choices,
-        default=AppointmentDuration.SHORT,
-    )
-
     verified_at = models.DateTimeField(null=True, blank=True)
     rejection_reason = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = 'Diyetisyen Profili'
-        verbose_name_plural = 'Diyetisyen Profilleri'
 
     def __str__(self):
         return f"{self.full_name} - {self.verification_status}"
@@ -77,3 +63,48 @@ class Dietician(User):
         return self.reviews.count()
 
 
+    class Meta:
+        verbose_name = 'Diyetisyen Profili'
+        verbose_name_plural = 'Diyetisyen Profilleri'
+
+class DieticianSchedule(models.Model):
+
+    class AppointmentDuration(models.IntegerChoices):
+        SHORT = 30, '30 Dakika'
+        MEDIUM = 45, '45 Dakika'
+        LONG = 60, '60 Dakika'
+        VERY_LONG = 90, '90 Dakika'
+
+    dietician = models.ForeignKey(Dietician, on_delete=models.CASCADE)
+    work_time_start = models.TimeField(null=True, blank=True)
+    work_time_end = models.TimeField(null=True, blank=True)
+    weekend_workings = models.BooleanField(default=False)
+    weekend_work_time_start = models.TimeField()
+    weekend_work_time_end = models.TimeField()
+
+    appointment_duration = models.IntegerField(
+        choices=AppointmentDuration.choices,
+        default=AppointmentDuration.SHORT,
+    )
+
+    def clean(self):
+
+        if self.weekend_wrokings:
+            if not self.weekend_work_time_start or not self.weekend_work_time_end:
+                raise ValidationError("Hafta sonu çalışıyorsanız, mesai saatlerini girmelisiniz.")
+
+            if self.weekend_work_time_start >= self.weekend_work_time_end:
+                raise ValidationError("Hafta sonu mesai başlangıç saati bitiş saatinden önce olmalıdır")
+
+        else:
+            self.weekend_work_time_start = None
+            self.weekend_work_time_end = None
+
+
+        if self.work_time_start >= self.work_time_end:
+            raise ValidationError("Mesai saatinizin başlangıcı bitişinden önce olmalıdır.")
+
+
+    def save(self, *args, **kwargs):
+       self.full_clean()
+       super().save(*args, **kwargs)
