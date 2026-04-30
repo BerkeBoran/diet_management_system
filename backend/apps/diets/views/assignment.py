@@ -16,10 +16,10 @@ class DieticianAssignmentViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         if hasattr(user, 'dietician'):
-            return DieticianAssignment.objects.filter(dietician=user)
+            return DieticianAssignment.objects.filter(dietician=user.dietician)
 
         if hasattr(user, 'client'):
-            return DieticianAssignment.objects.filter(client=user)
+            return DieticianAssignment.objects.filter(client=user.client)
         return DieticianAssignment.objects.none()
 
     def perform_create(self, serializer):

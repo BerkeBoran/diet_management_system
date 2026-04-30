@@ -19,7 +19,7 @@ class WeeklyPlanAdmin(admin.ModelAdmin):
 
 @admin.register(DieticianAssignment)
 class DieticianAssignmentAdmin(admin.ModelAdmin):
-    list_display = ("client", "dietician", "status")
+    list_display = ("client", "dietician", "status", "id")
 
 @admin.register(DailyPlan)
 class DailyPlanAdmin(admin.ModelAdmin):

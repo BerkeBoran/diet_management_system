@@ -5,10 +5,12 @@ from apps.users.models import Client
 
 
 class DieticianClientsSerializer(serializers.ModelSerializer):
+    goal = serializers.CharField(source='client_health_snapshot.goal',read_only=True)
+
 
     class Meta:
         model = DieticianAssignment
-        fields = ['id', 'goal', 'dietician', 'status', 'created_at','updated_at', 'duration', 'accepted_at']
+        fields = ['id', 'goal', 'client', 'status', 'created_at', 'updated_at', 'accepted_at']
         read_only_fields = ['id', 'status','created_at', 'updated_at', 'goal', 'duration']
 
 

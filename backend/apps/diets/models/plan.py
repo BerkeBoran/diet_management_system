@@ -9,7 +9,7 @@ class DietPlan(models.Model):
         COMPLETED = 'Completed', 'Tamamlandı'
         CANCELED = 'Canceled',   'İptal Edildi'
 
-    assignment= models.ForeignKey('diets.DieticianAssignment', on_delete=models.SET_NULL, null=True, blank=True, related_name='plans')
+    assignment= models.ForeignKey('diets.DieticianAssignment', on_delete=models.SET_NULL, null=True, blank=True, related_name='assignment')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
 
     start_weight = models.FloatField(blank=True, null=True)

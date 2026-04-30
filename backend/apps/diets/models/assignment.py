@@ -49,11 +49,6 @@ class DieticianAssignment(models.Model):
         blank=True
     )
 
-    verification_status = models.CharField(
-        max_length=20,
-        choices=VerificationStatus.choices,
-        default=VerificationStatus.PENDING,
-    )
 
     assignment_type = models.CharField(
         max_length=20,
@@ -64,6 +59,12 @@ class DieticianAssignment(models.Model):
     duration = models.CharField(
         max_length=20,
         choices=Duration.choices,
+    )
+
+    verification_status = models.CharField(
+        max_length=20,
+        choices=VerificationStatus.choices,
+        default=VerificationStatus.PENDING,
     )
 
 
@@ -79,4 +80,4 @@ class DieticianAssignment(models.Model):
     def __str__(self):
         client_name = self.client.full_name if self.client else ''
         dietician_name = self.dietician.full_name if self.dietician else 'Yapay Zeka Diyetisteni'
-        return f'{client_name} -> {dietician_name} - {self.goal}'
+        return f'{client_name} -> {dietician_name}'
