@@ -6,6 +6,7 @@ from apps.users.models import Dietician, Client, User
 
 
 class DieticianProfileSerializer(serializers.ModelSerializer):
+    is_verified = serializers.BooleanField(source="is_accepted", read_only=True)
     class Meta:
         model  = Dietician
         fields = [

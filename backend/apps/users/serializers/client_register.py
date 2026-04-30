@@ -41,7 +41,7 @@ class ClientRegisterSerializer(serializers.Serializer):
             last_name = data["last_name"],
             phone_number = data["phone_number"],
             role = User.Role.CLIENT,
-            is_active = False,
+            is_active = True,
 
             gender = data["gender"],
             age = data["age"],

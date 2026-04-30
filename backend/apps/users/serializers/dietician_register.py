@@ -90,7 +90,7 @@ class DieticianRegisterSerializer(serializers.Serializer):
             last_name=data["last_name"],
             phone_number=data["phone_number"],
             role=User.Role.DIETICIAN,
-            is_active=False,
+            is_active=True,
 
             tc_no=data["tc_no"],
             license_number=data["license_number"],
