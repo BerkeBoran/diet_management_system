@@ -25,6 +25,8 @@ class DieticianScheduleSerializer(serializers.Serializer):
         weekend_work_time_end = attrs.get('weekend_work_time_end')
         appointment_duration = attrs.get('appointment_duration')
 
+        return attrs
+
 
 class DieticianRegisterSerializer(serializers.Serializer):
     first_name = serializers.CharField(max_length=150)
@@ -97,8 +99,6 @@ class DieticianRegisterSerializer(serializers.Serializer):
             biography=data.get("biography", ""),
             license_document=data["license_document"],
             profile_photo=data.get("profile_photo", None),
-            work_time_start=data.get("work_time_start", None),
-            work_time_end=data.get("work_time_end", None),
         )
 
         dietician.set_password(data["password"])

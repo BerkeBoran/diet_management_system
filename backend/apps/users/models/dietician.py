@@ -76,11 +76,11 @@ class DieticianSchedule(models.Model):
         VERY_LONG = 90, '90 Dakika'
 
     dietician = models.OneToOneField(Dietician, on_delete=models.CASCADE)
-    work_time_start = models.TimeField(null=True, blank=True)
-    work_time_end = models.TimeField(null=True, blank=True)
+    work_time_start = models.TimeField()
+    work_time_end = models.TimeField()
     weekend_workings = models.BooleanField(default=False)
-    weekend_work_time_start = models.TimeField()
-    weekend_work_time_end = models.TimeField()
+    weekend_work_time_start = models.TimeField(null=True, blank=True,)
+    weekend_work_time_end = models.TimeField(null=True, blank=True,)
 
     appointment_duration = models.IntegerField(
         choices=AppointmentDuration.choices,
@@ -89,7 +89,7 @@ class DieticianSchedule(models.Model):
 
     def clean(self):
 
-        if self.weekend_wrokings:
+        if self.weekend_workings:
             if not self.weekend_work_time_start or not self.weekend_work_time_end:
                 raise ValidationError("Hafta sonu çalışıyorsanız, mesai saatlerini girmelisiniz.")
 
