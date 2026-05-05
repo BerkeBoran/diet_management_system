@@ -77,14 +77,14 @@ class DietPlanListSerializer(serializers.ModelSerializer):
 class MealItemNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealItem
-        fields = ['id', 'food_name', 'amount', 'unit', 'calories', 'protein', 'carbs', 'fat']
+        fields = ['id', 'food_name', 'amount', 'unit']
 
 
 class MealNestedSerializer(serializers.ModelSerializer):
-    items = MealItemNestedSerializer(many=True, read_only=True)
+    items = MealItemNestedSerializer(source='meal_items',many=True, read_only=True)
     class Meta:
         model = Meal
-        fields = ['id', 'meal_type', 'calories', 'items']
+        fields = ['id', 'meal_type', 'calories', 'items', 'protein', 'carbs', 'fat']
 
 
 class DailyPlanNestedSerializer(serializers.ModelSerializer):
