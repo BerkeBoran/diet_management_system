@@ -10,5 +10,5 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Dietician)
 class DieticianAdmin(admin.ModelAdmin):
-    list_display = ("full_name", "email", "phone_number", "title", "id")
+    list_display = ("full_name", "email", "phone_number", "title", "id", "is_accepted")
     exclude = ("last_login", "date_joined","is_staff", "is_superuser", "is_active", "user_permissions","groups","role", "verified_at", "rejection_reason","tc_verified")
