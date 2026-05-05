@@ -7,7 +7,10 @@ from apps.users.serializers.dietician_schedule import DieticianScheduleSerialize
 
 class DieticianScheduleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
-    seryalizer_class = DieticianScheduleSerializer
+    serializer_class = DieticianScheduleSerializer
+
+    def get_queryset(self):
+        return DieticianSchedule.objects.filter(dietician=self.request.user.dietician)
 
     def get_object(self):
         return DieticianSchedule.objects.get(dietician=self.request.user.dietician)
