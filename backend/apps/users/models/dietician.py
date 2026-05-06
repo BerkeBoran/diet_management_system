@@ -75,7 +75,7 @@ class DieticianSchedule(models.Model):
         LONG = 60, '60 Dakika'
         VERY_LONG = 90, '90 Dakika'
 
-    dietician = models.OneToOneField(Dietician, on_delete=models.CASCADE)
+    dietician = models.OneToOneField(Dietician, on_delete=models.CASCADE, related_name='dietician_schedule')
     work_time_start = models.TimeField()
     work_time_end = models.TimeField()
     weekend_workings = models.BooleanField(default=False)

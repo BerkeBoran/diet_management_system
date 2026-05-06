@@ -12,7 +12,7 @@ class Client(User):
     assignment= models.ForeignKey('diets.DieticianAssignment', on_delete=models.SET_NULL, null=True, blank=True, related_name='dietplans')
     height = models.FloatField(default=0)
     weight = models.FloatField(default=0)
-    gender = models.CharField(max_length=50, choices=Gender.choices)
+    gender = models.CharField(max_length=50, choices=Gender.choices, blank=True , default='')
     created_at = models.DateTimeField(auto_now_add=True)
     allergies = models.JSONField(default=list, blank=True, null=True, verbose_name="Alerjiler")
     chronic_conditions = models.JSONField(default=list, blank=True, null=True, verbose_name="Kalıcı hastalıklar")
