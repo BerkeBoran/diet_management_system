@@ -43,7 +43,23 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["role"] = user.role
         token["email"] = user.email
         token["full_name"] = user.full_name
+        token["is_profile_complete"] = cls._is_profile_complete(user)
         return token
+
+    @staticmethod
+    def _is_profile_complete(user):
+        if user.role != "Client":
+            return True
+        try:
+            client = user.client
+            return bool(
+                user.phone_number and
+                client.gender and
+                client.height > 0 and
+                client.weight > 0
+            )
+        except Exception:
+            return False
 
     def validate(self, attrs):
         request = self.context.get("request")

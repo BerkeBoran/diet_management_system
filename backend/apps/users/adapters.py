@@ -43,7 +43,7 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         from .models import Client
         Client.objects.get_or_create(
             user=user,
-            defaults={"gender": "other", "age": 0, "height_cm": 0, "weight_kg": 0},
+            defaults={"gender": "other", "age": 0, "height": 0, "weight": 0, "allergies": "", "chronic_conditions": ""},
         )
 
         return user

@@ -24,7 +24,7 @@ class GoogleLoginView(SocialLoginView):
 
         if response.status_code == 200:
             user = self.user
-            if user.role == "dietician":
+            if user.role == "Dietician":
                 from rest_framework_simplejwt.tokens import RefreshToken
                 try:
                     refresh = RefreshToken(response.data.get("refresh"))
@@ -35,6 +35,19 @@ class GoogleLoginView(SocialLoginView):
                     {"detail": "Diyetisyen hesapları Google ile giriş yapamaz."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
+
+            try:
+                client = user.client
+                is_complete = bool(
+                    user.phone_number and
+                    client.gender and
+                    client.height > 0 and
+                    client.weight > 0
+                )
+            except Exception:
+                is_complete = False
+
+            response.data["is_profile_complete"] = is_complete
 
         return response
 
