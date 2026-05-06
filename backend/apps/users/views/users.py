@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from apps.users.models import Client, Dietician
 from apps.users.serializers.review import DieticianReviewSerializer, CreateDieticianReviewSerializer
 from apps.users.serializers.users import ClientProfileSerializer, DieticianProfileSerializer, DieticianListSerializer, \
-    DieticianDetailSerializer
+    DieticianDetailSerializer, ClientCompleteProfileSerializer, DieticianUpdateSerializer
 
 
 class ProfileView(generics.RetrieveAPIView):
@@ -22,6 +22,23 @@ class ProfileView(generics.RetrieveAPIView):
             dietician = Dietician.objects.get(id=request.user.id)
             serializer = DieticianProfileSerializer(dietician)
             return Response(serializer.data)
+
+    def patch(self, request):
+        if hasattr(request.user, 'client'):
+            client = Client.objects.get(id=request.user.id)
+            serializer = ClientCompleteProfileSerializer(client, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
+
+        if hasattr(request.user, 'dietician'):
+            dietician = Dietician.objects.get(id=request.user.id)
+            serializer = DieticianUpdateSerializer(dietician, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=400)
 
 class DieticianViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
