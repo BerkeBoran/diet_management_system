@@ -3,25 +3,43 @@ from django.utils import timezone
 from apps.diets.models.assignment import DieticianAssignment
 from rest_framework import serializers
 
+from apps.users.models import Client
 from apps.users.serializers.users import DieticianListSerializer
 
+class ClientDetailAssignmentSerializer(serializers.ModelSerializer):
+    health_snapshot = serializers.SerializerMethodField()
+
+
+    class Meta:
+        model = Client
+        fields = ['id', 'first_name', 'last_name', 'health_snapshot']
+
+
+    def get_health_snapshot(self, obj):
+        snapshot = obj.client_health_snapshots.order_by('-id').first()
+        if snapshot:
+            return {
+                'goal': snapshot.goal,
+                'activity_level': snapshot.activity_level,
+                'sugar_intake': snapshot.sugar_intake,
+                'dietary_preference': snapshot.dietary_preference,
+                'is_pregnant': snapshot.is_pregnant,
+                'is_breastfeeding': snapshot.is_breastfeeding,
+                'alcohol_use': snapshot.alcohol_use,
+                'smoking_use': snapshot.smoking_use,
+                'medications': snapshot.medications,
+                'dislike_foods': snapshot.dislike_foods,
+            }
+        return None
 
 class DieticianAssignmentSerializer(serializers.ModelSerializer):
     dietician_detail = DieticianListSerializer(source='dietician', read_only=True)
-    goal = serializers.CharField(source='client_health_snapshot.goal',read_only=True)
-    activity_level = serializers.CharField(source='client_health_snapshot.activity_level',read_only=True)
-    sugar_intake = serializers.CharField(source='client_health_snapshot.sugar_intake',read_only=True)
-    is_pregnant = serializers.BooleanField(source='client_health_snapshot.is_pregnant',read_only=True)
-    is_breastfeeding = serializers.BooleanField(source='client_health_snapshot.is_breastfeeding',read_only=True)
-    alcohol_use = serializers.BooleanField(source='client_health_snapshot.alcohol_use',read_only=True)
-    smoking_use = serializers.BooleanField(source='client_health_snapshot.smoking_use',read_only=True)
-    medications = serializers.JSONField(source='client_health_snapshot.medications',read_only=True)
-    dislike_foods = serializers.JSONField(source='client_health_snapshot.dislike_foods',read_only=True)
+    client_detail = ClientDetailAssignmentSerializer(source='client', read_only=True)
 
     class Meta:
         model = DieticianAssignment
-        fields = ['id', 'client_note', 'dietician', 'dietician_note', 'status', 'dietician_detail', 'created_at', 'updated_at','status',
-                  'duration', 'accepted_at', 'goal', 'activity_level', 'sugar_intake', 'is_pregnant', 'is_breastfeeding', 'alcohol_use', 'smoking_use', 'medications', 'dislike_foods', 'assignment_type']
+        fields = ['id','client_detail', 'client_note', 'dietician', 'dietician_note', 'status', 'dietician_detail', 'created_at', 'updated_at','status',
+                  'duration', 'accepted_at']
         read_only_fields = ['id', 'status', 'dietician_note', 'created_at', 'updated_at']
 
     def validate(self, data):
