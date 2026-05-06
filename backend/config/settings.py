@@ -197,6 +197,12 @@ CELERY_TASK_SERIALIZER = 'json'
 
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
 
+
+GOOGLE_CALLBACK_URL = os.environ.get(
+    'GOOGLE_CALLBACK_URL',
+    'http://localhost:8000/api/users/social/google/'
+)
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -218,3 +224,5 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['email', 'name'],
     },
 }
+
+
