@@ -1,6 +1,7 @@
 import uuid
 
 from django.db import transaction
+from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,6 +9,7 @@ from rest_framework.response import Response
 from apps.ai_dietician.agent.dietician_agent.graph import diet_graph
 from apps.ai_dietician.models.ai_diet_plan import AiDietPlan, AiDietMeal
 from apps.ai_dietician.agent.dietician_agent.tools import get_user_details, get_past_ai_diet_summary
+from apps.ai_dietician.serializers.ai_diet_plan import AiDietPlanListSerializer, AiDietPlanDetailSerializer
 
 
 class AICreateDietView(APIView):
@@ -86,3 +88,20 @@ class AICreateDietView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+
+class AIDietPlanListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AiDietPlanListSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return AiDietPlan.objects.filter(user=user).order_by('-created_at')
+
+class AIDietPlanDetailView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AiDietPlanDetailSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return AiDietPlan.objects.filter(user=user)
