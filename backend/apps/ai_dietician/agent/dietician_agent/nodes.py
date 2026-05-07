@@ -3,8 +3,8 @@ import json
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from apps.ai_dietician.agent.config import DIETICIAN_AGENT_MODEL_NAME, MODEL_TEMPERATURE, GOOGLE_API_KEY
-from apps.ai_dietician.agent.dietician_agent.prompts import ANALYSIS_SYSTEM_PROMPT, DIET_HUMAN_PROMPT, \
-    DIET_SYSTEM_PROMPT
+from apps.ai_dietician.agent.dietician_agent.prompts import ANALYSIS_SYSTEM_PROMPT, ANALYSIS_HUMAN_PROMPT, \
+    DIET_HUMAN_PROMPT, DIET_SYSTEM_PROMPT
 from apps.ai_dietician.agent.dietician_agent.schemas import DietResponse
 from apps.ai_dietician.agent.dietician_agent.state import DieticianState
 from apps.ai_dietician.models.ai_diet_plan import AiDietPlan
@@ -38,7 +38,7 @@ def analysis_node(state: DieticianState):
 
     response = llm.invoke([
         ("system", ANALYSIS_SYSTEM_PROMPT),
-        ("human", f"Kullanıcı Bilgileri: {user_info_json}")
+        ("human", ANALYSIS_HUMAN_PROMPT.format(user_info_json=user_info_json))
     ])
 
     analysis_text = response.content

@@ -1,6 +1,6 @@
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
 from apps.users.models import Client, Dietician
@@ -47,6 +47,11 @@ class DieticianViewSet(viewsets.ModelViewSet):
         return Dietician.objects.filter(
             verification_status = 'Accepted',
         )
+
+    def get_permissions(self):
+        if self.action == 'list':
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def get_serializer_class(self):
         if self.action == 'list':

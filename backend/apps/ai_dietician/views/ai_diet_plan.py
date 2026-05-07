@@ -1,15 +1,17 @@
 import uuid
 
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from apps.ai_dietician.agent.dietician_agent.graph import diet_graph
-from apps.ai_dietician.models.ai_diet_plan import AiDietPlan, AiDietMeal
+from apps.ai_dietician.models.ai_diet_plan import AiDietPlan, AiDietMeal, AiDietMealItem
 from apps.ai_dietician.agent.dietician_agent.tools import get_user_details, get_past_ai_diet_summary
 from apps.ai_dietician.serializers.ai_diet_plan import AiDietPlanListSerializer, AiDietPlanDetailSerializer
+from apps.subscription.models.ai_dietician_subscription import AIDieticianSubscription
 
 
 class AICreateDietView(APIView):
@@ -17,6 +19,14 @@ class AICreateDietView(APIView):
 
     def post(self, request):
         user = request.user
+
+        active_sub = AIDieticianSubscription.objects.filter(
+            client=user.client,
+            expires_at__gt=timezone.now()
+        ).exists()
+        if not active_sub:
+            return Response({"error": "Aktif aboneliğiniz bulunmuyor."}, status=403)
+
         thread_id = request.data.get("thread_id")
         revision_note = request.data.get("revision_note")
         action = request.data.get("action", "start")
@@ -65,12 +75,19 @@ class AICreateDietView(APIView):
 
                     diet_meals_data = final_state.get("diet_plan", [])
                     for meal in diet_meals_data:
-                        AiDietMeal.objects.create(
+                       ai_meal = AiDietMeal.objects.create(
                             diet_plan = diet_plan,
                             day = meal.get("day"),
                             meal_type = meal.get("meal_type"),
                             contents = meal.get("contents"),
                             calories = meal.get("calories", 0),
+                        )
+                       for item in meal.get("items", []):
+                          AiDietMealItem.objects.create(
+                             meal = ai_meal,
+                             food_name = item.get("food_name", ""),
+                             amount = item.get("amount", 0),
+                             unit = item.get("unit", ""),
                         )
 
                 return Response({

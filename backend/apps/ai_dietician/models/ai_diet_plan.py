@@ -36,3 +36,17 @@ class AiDietMeal(models.Model):
     def __str__(self):
         username = self.diet_plan.user.username if self.diet_plan.user else "Bilinmeyen"
         return f"{username} | {self.day} - {self.meal_type}"
+
+
+class AiDietMealItem(models.Model):
+    meal = models.ForeignKey(AiDietMeal,on_delete=models.CASCADE,related_name="items")
+    food_name = models.CharField(max_length=255)
+    amount = models.FloatField()
+    unit = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ['id']
+
+
+    def __str__(self):
+        return f"{self.food_name} - {self.amount} {self.unit}"
