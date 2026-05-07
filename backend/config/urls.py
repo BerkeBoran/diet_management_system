@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/appointments/', include('apps.appointments.urls')),
     path("api/auth/", include("dj_rest_auth.urls")),
     path("api/auth/", include("dj_rest_auth.registration.urls")),
+    path('api/subscription/', include('apps.subscription.urls')),
 
 ]
 if settings.DEBUG:

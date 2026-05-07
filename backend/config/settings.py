@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.appointments',
     'apps.ai_dietician',
+    'apps.subscription',
 ]
 
 MIDDLEWARE = [
