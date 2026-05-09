@@ -14,6 +14,7 @@ urlpatterns = [
     path("api/auth/", include("dj_rest_auth.urls")),
     path("api/auth/", include("dj_rest_auth.registration.urls")),
     path('api/subscription/', include('apps.subscription.urls')),
+    path('api/payment/', include('apps.payment.urls')),
 
 ]
 if settings.DEBUG:

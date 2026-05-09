@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'apps.appointments',
     'apps.ai_dietician',
     'apps.subscription',
+    'apps.payment',
 ]
 
 MIDDLEWARE = [
@@ -197,6 +198,13 @@ CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+
+IYZICO_API_KEY    = os.environ.get('IYZICO_API_KEY', '')
+IYZICO_SECRET_KEY = os.environ.get('IYZICO_SECRET_KEY', '')
+IYZICO_BASE_URL   = os.environ.get('IYZICO_BASE_URL', 'https://sandbox-api.iyzipay.com')
+
+# Ödeme sistemi hazır olduğunda True yap
+REQUIRE_AI_SUBSCRIPTION = False
 
 
 GOOGLE_CALLBACK_URL = os.environ.get(
