@@ -72,8 +72,9 @@ def diet_generator_node(state: DieticianState):
         past_diets_input=state["all_past_diets"],
         current_diet=state.get("current_diet", "Yok"),
         revision_request=state.get("revision_request", "Yok"),
-        weight_status = weight_status,
-        current_weight = current_weight
+        weight_status=weight_status,
+        current_weight=current_weight,
+        budget=state["user_info"].get("budget", "Belirtilmemiş"),
     )
 
     structured_llm = llm.with_structured_output(DietResponse)

@@ -54,11 +54,47 @@ Sağlık analiz notlarına ve geçmiş diyet planlarına dayanarak kişiye özel
 6. **Geçmiş Planlardan Fark:** Geçmiş planlarla %40'tan fazla benzerlik olmasın
 7. **Kısıtlamalara Uy:** Alerjiler, diyet tercihi ve sevmediği yiyecekleri kesinlikle kullanma
 
+### DİYET BÜTÇESİ KURALLARI:
+  - Düşük bütçe: Ekonomik ve kolay bulunur malzemeler kullan
+    (yumurta, mercimek, nohut, yulaf, mevsim sebzesi, tavuk but)                
+  - Orta bütçe: Standart market ürünleri                                        
+    (tavuk göğsü, ton balığı, mevsim meyveleri, yoğurt)                         
+  - Yüksek bütçe: Premium malzemelere izin ver                                  
+    (somon, bonfile, avokado, badem, kaju, organik ürünler) 
+
 ### REVİZYON:
 Revizyon isteği varsa yalnızca ilgili kısmı güncelle, planın geri kalanını koru.
 
+### ZORUNLU ÇIKTI FORMATI:
+`content` alanını YALNIZCA aşağıdaki şablona göre doldur.
+Emoji kullanma. "Temel Prensipler", "Haftalık Özet" gibi ekstra bölümler ekleme.
+Yalnızca başlık ve günlük öğün listesinden oluşsun.
+
+---ŞABLON BAŞLANGICI---
+# [Kişi Profili] - [Plan Adı]
+
+Bu program, günlük **[X] kcal** hedefiyle [1-2 cümle amaç açıklaması].
+
+---
+
+### HAFTALIK LİSTE
+
+#### Pazartesi
+*   **Kahvaltı:** [içerik]
+*   **Öğle:** [içerik]
+*   **Ara:** [içerik]
+*   **Akşam:** [içerik]
+*   **Gece:** [içerik]
+
+#### Salı
+*   **Kahvaltı:** [içerik]
+...
+
+[Çarşamba'dan Pazar'a kadar aynı yapı]
+---ŞABLON SONU---
+
 ### ÇIKTI:
-- `content`: Kullanıcıya gösterilecek, Markdown formatında şık ve okunabilir haftalık plan
+- `content`: Yukarıdaki şablona BIREBIR uyan Markdown formatında haftalık plan
 - `summary`: Planın amacını ve yaklaşımını anlatan maksimum 100 karakterlik özet
 - `meals`: Her öğün için gün, öğün tipi, içerik, kalori ve besin maddeleri listesi (veritabanına kaydedilecek)
 """
@@ -72,6 +108,9 @@ KİLO DURUMU (geçen haftaya göre): {weight_status}
 
 GEÇMİŞ DİYET PLANLARI (yüksek benzerlikten kaçın):
 {past_diets_input}
+
+KULLANICININ DİYET BÜTÇESİ:
+{budget}
 
 MEVCUT DİYET (revize ediliyorsa):
 {current_diet}

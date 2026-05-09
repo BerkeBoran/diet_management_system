@@ -9,9 +9,12 @@ def get_past_ai_diet_summary(user):
 
     summary = ""
 
-    for plan in past_plans:
+    for i,plan in enumerate(past_plans, 1):
         weight = plan.client_snapshot.get('weight', 'Bilinmiyor')
-        summary += f"Tarih: {plan.created_at.date()} -(Kilo: {weight}\nİçerik Özeti: {plan.content[:300]}...\n---\n"
+        summary += f" Plan: {i} Tarih: {plan.created_at.date()} Kilo:{weight} ...\n---\n"
+        for meal in plan.meals.all():
+            summary += f"{meal.day} {meal.meal_type}: {meal.contents} \n"
+            summary += "---\n"
 
     return summary
 
@@ -47,6 +50,7 @@ def get_user_details(user):
             "dislike_foods": client_health_snapshot.dislike_foods,
             "medications": client_health_snapshot.medications,
             "sugar_intake": client_health_snapshot.sugar_intake,
+            "budget": client_health_snapshot.budget,
         })
 
     return context
