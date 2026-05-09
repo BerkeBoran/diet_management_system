@@ -23,6 +23,8 @@ class AIDieticianSubscription(models.Model):
         max_length=5,
         choices=SubscriptionDuration.choices,
     )
+    is_paid = models.BooleanField(default=False)
+    payment_reference = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         ordering = ['-started_at']
@@ -37,5 +39,5 @@ class AIDieticianSubscription(models.Model):
 
     @property
     def is_active(self):
-        return self.expires_at > timezone.now()
+        return self.is_paid and self.expires_at > timezone.now()
 

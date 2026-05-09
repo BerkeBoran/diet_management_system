@@ -1,3 +1,4 @@
+from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,7 +23,14 @@ class SubscriptionStatusView(APIView):
             status=DieticianAssignment.Status.INPROGRESS
         ).order_by('-created_at').first()
 
-        if ai_active:
+        pending_assignment = DieticianAssignment.objects.filter(
+            client=client,
+            status=DieticianAssignment.Status.PENDING
+        ).select_related('dietician').order_by('-created_at').first()
+
+        if not getattr(settings, 'REQUIRE_AI_SUBSCRIPTION', True):
+            redirect_to = 'ai'
+        elif ai_active:
             redirect_to = 'ai'
         elif dietician_subscription:
             redirect_to = 'dietician'
@@ -33,7 +41,8 @@ class SubscriptionStatusView(APIView):
         data = {
             'redirect_to': redirect_to,
             'ai_subscription': None,
-            'dietician_subscription': None
+            'dietician_subscription': None,
+            'pending_assignment': None
         }
 
         if ai_subscription:
@@ -43,6 +52,15 @@ class SubscriptionStatusView(APIView):
             data['dietician_subscription'] = {
                 'id': dietician_subscription.id,
                 'duration': dietician_subscription.duration,
+            }
+
+        if pending_assignment:
+            dietician = pending_assignment.dietician
+            data['pending_assignment'] = {
+                'id': pending_assignment.id,
+                'dietician_id': dietician.id if dietician else None,
+                'dietician_name': dietician.full_name if dietician else None,
+                'created_at': pending_assignment.created_at
             }
 
         return Response(data)
