@@ -5,10 +5,18 @@ from apps.users.models import Client
 
 class ClientHealthSnapshot(models.Model):
     client = models.ForeignKey('users.Client', on_delete=models.CASCADE, related_name='client_health_snapshots', null=True, blank=True)
+
+    class BudgetLevel(models.TextChoices):
+        LOW = 'LOW', 'Düşük'
+        MEDIUM = 'MEDIUM', 'Orta'
+        HIGH = 'HIGH', 'Yüksek'
+
+
     class DietaryPreference(models.TextChoices):
         VEGAN = 'VEGAN', 'Vegan'
         VEGETARIAN = 'VEGETARIAN', 'Vejetaryan'
         NORMAL = 'NORMAL', 'Normal'
+
 
     class SugarIntake(models.TextChoices):
         NONE = 'NONE', 'Hiç'
@@ -51,10 +59,17 @@ class ClientHealthSnapshot(models.Model):
         choices=Goal.choices
     )
 
+    budget = models.CharField(
+        max_length=20,
+        choices=BudgetLevel.choices,
+        blank=True,
+    )
+
     is_pregnant = models.BooleanField(default=False)
     is_breastfeeding = models.BooleanField(default=False)
     alcohol_use = models.BooleanField(default=False)
     smoking_use = models.BooleanField(default=False)
     medications = models.JSONField(blank=True)
     dislike_foods = models.JSONField(default=list, blank=True, null=True)
+
 

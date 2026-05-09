@@ -81,6 +81,7 @@ class DieticianSchedule(models.Model):
     weekend_workings = models.BooleanField(default=False)
     weekend_work_time_start = models.TimeField(null=True, blank=True,)
     weekend_work_time_end = models.TimeField(null=True, blank=True,)
+    monthly_price = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True,verbose_name='Aylık Danışmanlık Ücreti')
 
     appointment_duration = models.IntegerField(
         choices=AppointmentDuration.choices,

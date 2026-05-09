@@ -27,19 +27,33 @@ class DieticianProfileSerializer(serializers.ModelSerializer):
 class DieticianListSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
     review_count = serializers.IntegerField(read_only=True)
+    monthly_price = serializers.SerializerMethodField()
+
+    def get_monthly_price(self, obj):
+        try:
+            return obj.dietician_schedule.monthly_price
+        except Exception:
+            return None
 
     class Meta:
         model = Dietician
-        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo','title']
+        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo', 'title', 'monthly_price']
 
 class DieticianDetailSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
     review_count = serializers.IntegerField(read_only=True)
     reviews = DieticianReviewSerializer(many=True, read_only=True)
+    monthly_price = serializers.SerializerMethodField()
+
+    def get_monthly_price(self, obj):
+        try:
+            return obj.dietician_schedule.monthly_price
+        except Exception:
+            return None
 
     class Meta:
         model = Dietician
-        fields = ['id', 'first_name', 'last_name', 'profile_photo', 'biography', 'average_rating', 'review_count', 'reviews', 'title']
+        fields = ['id', 'first_name', 'last_name', 'profile_photo', 'biography', 'average_rating', 'review_count', 'reviews', 'title', 'monthly_price']
 
 
 class ClientCompleteProfileSerializer(serializers.Serializer):
@@ -71,4 +85,4 @@ class ClientCompleteProfileSerializer(serializers.Serializer):
 class DieticianUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dietician
-        fields = ['biography', 'title']
+        fields = ['biography', 'title', 'monthly_price']

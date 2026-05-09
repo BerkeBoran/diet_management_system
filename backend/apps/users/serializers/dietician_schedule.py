@@ -3,15 +3,12 @@ from rest_framework import serializers
 from apps.users.models.dietician import DieticianSchedule
 
 
-class DieticianScheduleSerializer(serializers.Serializer):
+class DieticianScheduleSerializer(serializers.ModelSerializer):
 
-    work_time_start = serializers.TimeField()
-    work_time_end = serializers.TimeField()
-    weekend_workings = serializers.BooleanField()
-    weekend_work_time_start = serializers.TimeField()
-    weekend_work_time_end = serializers.TimeField()
-    appointment_duration = serializers.ChoiceField(choices=DieticianSchedule.AppointmentDuration.choices)
 
+    class Meta:
+        model = DieticianSchedule
+        fields = ['work_time_start', 'work_time_end', 'appointment_duration', 'weekend_workings', 'weekend_work_time_start', 'weekend_work_time_end']
 
     def validate(self, attrs):
         work_time_start = attrs.get('work_time_start')
