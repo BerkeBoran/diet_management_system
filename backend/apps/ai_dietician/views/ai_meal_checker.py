@@ -1,11 +1,13 @@
 import base64
 
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.ai_dietician.agent.meal_checker_agent.graph import meal_checker_graph
+from apps.ai_dietician.models.ai_meal_checker import AiMealChecker
 
 
 class AIMealCheckerView(APIView):
@@ -13,6 +15,21 @@ class AIMealCheckerView(APIView):
 
 
     def post(self, request):
+        today = timezone.now().date()
+        daily_count = AiMealChecker.objects.filter(
+            user=request.user,
+            logged_at=today
+        ).count()
+
+        if daily_count >= 8:
+            return Response({
+                "error": "Günlük 8 analiz limitine ulaştınız. Yarın tekrar deneyin.",
+                "daily_count": daily_count,
+                "remaining": 0
+            }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
+
+
         meal_type = request.data.get('meal_type')
         target_date = request.data.get('target_date')
         image_file = request.FILES.get('image_file')
@@ -67,8 +84,10 @@ class AIMealCheckerView(APIView):
             "calorie_diff": result.get("calorie_diff", 0),
             "vision_summary": {
                 "total_calories": vision.total_calories if vision else 0,
-                "foods": vision.foods if vision else [],
+                "foods": [f.model_dump() for f in vision.foods] if vision else [],
             },
             "message": result.get("message", ""),
+            "daily_count": daily_count + 1,
+            "remaining": 8 - daily_count,
         }, status=status.HTTP_200_OK)
 

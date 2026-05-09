@@ -1,6 +1,5 @@
 import base64
-from datetime import date
-
+from datetime import date as dt
 from langchain_core.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -8,7 +7,6 @@ from apps.ai_dietician.agent.config import DIETICIAN_AGENT_MODEL_NAME, MODEL_TEM
 from apps.ai_dietician.agent.meal_checker_agent.prompts import VISION_ANALYSIS_PROMPT, MEAL_CHECKER_FEEDBACK_PROMPT
 from apps.ai_dietician.agent.meal_checker_agent.schemas import VisionAnalysis
 from apps.ai_dietician.agent.meal_checker_agent.state import MealCheckerState
-from apps.ai_dietician.agent.meal_checker_agent.utils import get_mime_type
 from apps.ai_dietician.models.ai_diet_plan import AiDietMeal, AiDietPlan
 from apps.ai_dietician.models.ai_meal_checker import AiMealChecker
 
@@ -65,14 +63,17 @@ def vision_analysis_node(state: MealCheckerState) -> dict:
 
 
 def fetch_food_node(state: MealCheckerState) -> dict:
-
     if state.get("error"):
         return {}
 
     try:
+        target = dt.fromisoformat(state["target_date"])
+        day_map = {0: "Pazartesi", 1: "Salı", 2: "Çarşamba", 3: "Perşembe", 4: "Cuma", 5: "Cumartesi", 6: "Pazar"}
+        day_name = day_map[target.weekday()]
+
         plan = AiDietMeal.objects.filter(
             diet_plan__user_id = state["user_id"],
-            day = state["target_date"],
+            day = day_name,
             meal_type = state["meal_type"]
         ).first()
 
