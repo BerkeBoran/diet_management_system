@@ -1,5 +1,7 @@
 import uuid
+from datetime import timedelta
 
+from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from rest_framework import generics
@@ -20,12 +22,13 @@ class AICreateDietView(APIView):
     def post(self, request):
         user = request.user
 
-        active_sub = AIDieticianSubscription.objects.filter(
-            client=user.client,
-            expires_at__gt=timezone.now()
-        ).exists()
-        if not active_sub:
-            return Response({"error": "Aktif aboneliğiniz bulunmuyor."}, status=403)
+        if getattr(settings, 'REQUIRE_AI_SUBSCRIPTION', True):
+            active_sub = AIDieticianSubscription.objects.filter(
+                client=user.client,
+                expires_at__gt=timezone.now()
+            ).exists()
+            if not active_sub:
+                return Response({"error": "Aktif aboneliğiniz bulunmuyor."}, status=403)
 
         thread_id = request.data.get("thread_id")
         revision_note = request.data.get("revision_note")
@@ -36,6 +39,17 @@ class AICreateDietView(APIView):
 
         try:
             if action == "start":
+                active_plan = AiDietPlan.objects.filter(
+                    user=user,
+                    expires_at__gt=timezone.now()
+                ).first()
+                if active_plan:
+                    remaining_days = (active_plan.expires_at - timezone.now()).days + 1
+                    return Response({
+                        "error": "Aktif planın devam ediyor. Süresi dolmadan yeni plan oluşturamazsın",
+                        "expires_at": active_plan.expires_at,
+                        "remaining_days": remaining_days
+                    },status=403)
                 user_context = get_user_details(user)
                 past_diets_text = get_past_ai_diet_summary(user)
 
@@ -71,6 +85,7 @@ class AICreateDietView(APIView):
                         summary=final_state["summary"],
                         client_snapshot=final_state["user_info"],
                         analysis_notes=final_state["analysis_notes"],
+                        expires_at=timezone.now() + timedelta(days=7)
                     )
 
                     diet_meals_data = final_state.get("diet_plan", [])
@@ -100,6 +115,7 @@ class AICreateDietView(APIView):
                 "thread_id": config["configurable"]["thread_id"],
                 "content": current_state.get("current_diet"),
                 "summary": current_state.get("summary"),
+                "diet_plan": current_state.get("diet_plan", []),
                 "options": ["Onayla", "Değişiklik Yap"]
             })
 

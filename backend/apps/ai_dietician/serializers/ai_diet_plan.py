@@ -20,7 +20,7 @@ class AiDietMealSerializer(serializers.ModelSerializer):
 class AiDietPlanListSerializer(serializers.ModelSerializer):
     class Meta:
         model =AiDietPlan
-        fields = ['id', 'summary', 'created_at']
+        fields = ['id', 'summary', 'created_at', 'expires_at']
 
 
 class AiDietPlanDetailSerializer(serializers.ModelSerializer):

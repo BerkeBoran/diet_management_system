@@ -11,6 +11,7 @@ class AiDietPlan(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     summary = models.CharField(max_length=500)
     analysis_notes = models.JSONField(blank=True, null=True)
+    expires_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         ordering = ["-created_at"]
