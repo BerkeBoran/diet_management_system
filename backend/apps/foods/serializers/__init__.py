@@ -1,1 +1,1 @@
-from .food import FoodSerializer, FoodDetailSerializer, FoodCategorySerializer
+from .food import FoodSerializer, FoodDetailSerializer

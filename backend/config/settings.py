@@ -5,8 +5,9 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-SECRET_KEY = 'django-insecure-8(#yj35#lh6yoxmx%_q%vx(===_8h*&@j_p+$*jx@$+!$(sals'
+FATSECRET_CLIENT_ID = os.environ.get('FATSECRET_CLIENT_ID')
+FATSECRET_CLIENT_SECRET = os.environ.get('FATSECRET_CLIENT_SECRET')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost', 'diet_backend']
