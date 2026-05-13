@@ -171,7 +171,7 @@ def save_log_node(state: dict) -> dict:
 
     try:
         is_cheat = (state.get("meal_type") == "Kaçamak")
-        logged_at = date.fromisoformat(state.get("target_date"))
+        logged_at = dt.fromisoformat(state.get("target_date"))
         vision: VisionAnalysis = state.get("vision_analysis")
 
 
