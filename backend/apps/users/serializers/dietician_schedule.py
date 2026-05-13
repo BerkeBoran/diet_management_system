@@ -8,7 +8,7 @@ class DieticianScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DieticianSchedule
-        fields = ['work_time_start', 'work_time_end', 'appointment_duration', 'weekend_workings', 'weekend_work_time_start', 'weekend_work_time_end']
+        fields = ['work_time_start', 'work_time_end', 'appointment_duration', 'weekend_workings', 'weekend_work_time_start', 'weekend_work_time_end', 'monthly_price']
 
     def validate(self, attrs):
         work_time_start = attrs.get('work_time_start')

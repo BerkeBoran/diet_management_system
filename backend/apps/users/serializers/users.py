@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from apps.users.models import Client, Dietician
 from apps.users.serializers.review import DieticianReviewSerializer
@@ -28,6 +31,13 @@ class DieticianListSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
     review_count = serializers.IntegerField(read_only=True)
     monthly_price = serializers.SerializerMethodField()
+    weekend_workings = serializers.SerializerMethodField()
+
+    def get_weekend_workings(self, obj):
+        try:
+            return obj.dietician_schedule.weekend_workings
+        except Exception:
+            return None
 
     def get_monthly_price(self, obj):
         try:
@@ -37,7 +47,7 @@ class DieticianListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Dietician
-        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo', 'title', 'monthly_price']
+        fields = ['id', 'first_name', 'last_name', 'average_rating', 'review_count', 'profile_photo', 'title', 'monthly_price', 'biography', 'weekend_workings']
 
 class DieticianDetailSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(read_only=True)
@@ -85,4 +95,13 @@ class ClientCompleteProfileSerializer(serializers.Serializer):
 class DieticianUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dietician
-        fields = ['biography', 'title', 'monthly_price']
+        fields = ['biography', 'title']
+
+
+class PlatformStatsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            'dietician_count': Dietician.objects.filter(verification_status='Accepted').count(),
+        })

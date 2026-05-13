@@ -2,6 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
+from apps.users.serializers.users import PlatformStatsView
 from apps.users.views import CustomTokenObtainPairView
 from apps.users.views.auth import GoogleLoginView, AppleLoginView
 from apps.users.views.client_health_snapshot import ClientHealthSnapshotViewSet
@@ -26,5 +27,6 @@ urlpatterns = [
     path('reviews/', DieticianReviewView.as_view(), name='dietician_review'),
     path("social/google/", GoogleLoginView.as_view(), name="google-login"),
     path("social/apple/", AppleLoginView.as_view(), name="apple-login"),
+    path('stats/', PlatformStatsView.as_view(), name='platform_stats')
 
 ]

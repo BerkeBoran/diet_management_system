@@ -12,6 +12,8 @@ class DieticianScheduleSerializer(serializers.Serializer):
     work_time_start = serializers.TimeField()
     work_time_end = serializers.TimeField()
     appointment_duration = serializers.ChoiceField(choices=DieticianSchedule.AppointmentDuration.choices)
+    monthly_price = serializers.DecimalField(max_digits=10, decimal_places=2,required=False,allow_null=True)
+
 
     class Meta:
         model = DieticianSchedule
