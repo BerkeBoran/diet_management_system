@@ -2,6 +2,10 @@ from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.conf import settings
 
+from apps.users.models import Client
+
+
+
 
 class CustomAccountAdapter(DefaultAccountAdapter):
 
@@ -40,10 +44,15 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         user.is_active = True
         user.save()
 
-        from .models import Client
-        Client.objects.get_or_create(
-            user=user,
-            defaults={"gender": "other", "age": 0, "height": 0, "weight": 0, "allergies": "", "chronic_conditions": ""},
-        )
+        if not Client.objects.filter(pk=user.pk).exists():
+            client_instance = Client(pk=user.pk, height=0, weight=0,gender='')
+            client_instance.email = user.email
+            client_instance.first_name = user.first_name
+            client_instance.last_name = user.last_name
+            client_instance.phone_number = user.phone_number
+            client_instance.role = user.role
+            client_instance.is_active = user.is_active
+            client_instance._state.adding = False
+            client_instance.save()
 
         return user
