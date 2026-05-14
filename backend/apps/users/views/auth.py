@@ -16,8 +16,8 @@ class GoogleLoginView(SocialLoginView):
 
     adapter_class = GoogleOAuth2Adapter
     client_class  = OAuth2Client
-    callback_url  = getattr(settings, "GOOGLE_CALLBACK_URL",
-                            "http://localhost:8000/api/auth/social/google/callback/")
+    callback_url  = getattr(settings, "GOOGLE_CALLBACK_URL", "")
+    authentication_classes = []
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
@@ -56,15 +56,14 @@ class AppleLoginView(SocialLoginView):
 
     adapter_class = AppleOAuth2Adapter
     client_class  = OAuth2Client
-    callback_url  = getattr(settings, "APPLE_CALLBACK_URL",
-                            "https://yourdomain.com/api/auth/social/apple/callback/")
+    callback_url  = getattr(settings, "APPLE_CALLBACK_URL", "")
 
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)
 
         if response.status_code == 200:
             user = self.user
-            if user.role == "dietician":
+            if user.role == "Dietician":
                 from rest_framework_simplejwt.tokens import RefreshToken
                 try:
                     refresh = RefreshToken(response.data.get("refresh"))
