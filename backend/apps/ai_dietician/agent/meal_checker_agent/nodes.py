@@ -53,8 +53,6 @@ def vision_analysis_node(state: MealCheckerState) -> dict:
 
     except Exception as e:
 
-        print(f"[Vision Node Error]: {str(e)}")
-
         return {
             "vision_analysis": None,
             "error": str(e)
