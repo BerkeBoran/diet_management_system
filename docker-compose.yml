@@ -3,9 +3,9 @@ services:
     image: postgres:15
     container_name: diet_db
     environment:
-      POSTGRES_DB: diet_db
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: ${DB_NAME:-diet_db}
+      POSTGRES_USER: ${DB_USER:-admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5433:5432"
     networks:
@@ -23,22 +23,14 @@ services:
     command: daphne -b 0.0.0.0 -p 8000 config.asgi:application
     volumes:
       - ./backend:/app
-    ports:
-      - "8000:8000"
     depends_on:
       - db
-      - libretranslate
       - redis
     env_file:
       - .env
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_NAME=diet_db
-      - DB_USER=admin
-      - DB_PASSWORD=admin123
-      - LIBRETRANSLATE_URL=http://libretranslate:5000
-      - CELERY_BROKER_URL=redis://redis:6379/0
     networks:
       - diet_network
 
@@ -57,10 +49,6 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_NAME=diet_db
-      - DB_USER=admin
-      - DB_PASSWORD=admin123
-      - CELERY_BROKER_URL=redis://redis:6379/0
     networks:
       - diet_network
 
@@ -79,39 +67,21 @@ services:
     environment:
       - DB_HOST=db
       - DB_PORT=5432
-      - DB_NAME=diet_db
-      - DB_USER=admin
-      - DB_PASSWORD=admin123
-      - CELERY_BROKER_URL=redis://redis:6379/0
     networks:
       - diet_network
 
   frontend:
     build: ./frontend
     container_name: diet_frontend
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     ports:
-      - "5173:5173"
-    env_file:
-      - .env
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     depends_on:
       - backend
     networks:
       - diet_network
-
-  libretranslate:
-    image: libretranslate/libretranslate:latest
-    container_name: diet_libretranslate
-    environment:
-      - LT_LOAD_ONLY=en,tr
-      - LT_UPDATE_MODELS=true
-    ports:
-      - "5000:5000"
-    networks:
-      - diet_network
-    restart: unless-stopped
 
 networks:
   diet_network:
