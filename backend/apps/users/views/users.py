@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -23,6 +23,8 @@ class ProfileView(generics.RetrieveAPIView):
             serializer = DieticianProfileSerializer(dietician)
             return Response(serializer.data)
 
+        return Response({"detail":"Profil Bulunamadı"}, status=status.HTTP_404_NOT_FOUND)
+
     def patch(self, request):
         if hasattr(request.user, 'client'):
             client = Client.objects.get(id=request.user.id)
@@ -39,6 +41,9 @@ class ProfileView(generics.RetrieveAPIView):
                 serializer.save()
                 return Response(serializer.data)
             return Response(serializer.errors, status=400)
+
+        return Response({"detail":"Profil Bulunamadı"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class DieticianViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
