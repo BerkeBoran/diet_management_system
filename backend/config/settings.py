@@ -8,21 +8,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 FATSECRET_CLIENT_ID = os.environ.get('FATSECRET_CLIENT_ID')
 FATSECRET_CLIENT_SECRET = os.environ.get('FATSECRET_CLIENT_SECRET')
 SECRET_KEY = os.environ.get('SECRET_KEY')
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['0.0.0.0', '127.0.0.1', 'localhost', 'diet_backend']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,diet_backend').split(',')
 
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = [o for o in [
     FRONTEND_URL,
-    'http://127.0.0.1:5173',
-]
+    os.environ.get('CORS_EXTRA_ORIGIN', ''),
+] if o]
 
-CSRF_TRUSTED_ORIGINS = [
+CSRF_TRUSTED_ORIGINS = [o for o in [
     FRONTEND_URL,
-    'http://127.0.0.1:5173',
-]
+    os.environ.get('CORS_EXTRA_ORIGIN', ''),
+] if o]
 
 
 INSTALLED_APPS = [
@@ -92,11 +92,11 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'diet_db',
-        'USER': 'admin',
-        'PASSWORD': 'admin123',
-        'HOST': 'db',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'diet_db'),
+        'USER': os.environ.get('DB_USER', 'admin'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', 'db'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
 
@@ -124,6 +124,7 @@ USE_TZ = True
 
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -185,16 +186,16 @@ ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', "django.core.mail.backends.console.EmailBackend")
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your@gmail.com')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'app-password')
-DEFAULT_FROM_EMAIL = f"Dietician App <{EMAIL_HOST_USER}>"
+DEFAULT_FROM_EMAIL = f"Lifeetics <{EMAIL_HOST_USER}>"
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL','redis://redis:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND','redis://redis:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
@@ -234,5 +235,11 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['email', 'name'],
     },
 }
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('SECURE_SSL_REDIRECT', 'False') =='True'
+CSRF_COOKIE_SECURE = os.environ.get('SECURE_SSL_REDIRECT', 'False') == 'True'
+SECURE_HSTS_SECONDS = 31536000 if os.environ.get('SECURE_SSL_REDIRECT') =='True' else 0
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
 
 
