@@ -45,7 +45,7 @@ export default function ClientProfile() {
 
   if (loading) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}><div className="spinner" /></div>;
 
-  const latestSnapshot = snapshots[snapshots.length - 1];
+  const latestSnapshot = snapshots[0];
 
   return (
     <div>
@@ -103,7 +103,24 @@ export default function ClientProfile() {
         <div style={{ background: 'white', border: '1px solid var(--parchment-dark)', borderRadius: 20, padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ink)' }}>Yaşam Tarzı Profili</div>
-            <button className="btn-ghost" style={{ fontSize: 12, padding: '7px 14px' }} onClick={() => setShowSnapshotForm(v => !v)}>
+            <button className="btn-ghost" style={{ fontSize: 12, padding: '7px 14px' }} onClick={() => {
+              if (!showSnapshotForm && latestSnapshot) {
+                setSnapshotForm({
+                  dietary_preference: latestSnapshot.dietary_preference || 'NORMAL',
+                  sugar_intake: latestSnapshot.sugar_intake || 'NONE',
+                  activity_level: latestSnapshot.activity_level || 'NONE',
+                  goal: latestSnapshot.goal || 'Maintain',
+                  budget: latestSnapshot.budget || 'MEDIUM',
+                  is_pregnant: latestSnapshot.is_pregnant || false,
+                  is_breastfeeding: latestSnapshot.is_breastfeeding || false,
+                  alcohol_use: latestSnapshot.alcohol_use || false,
+                  smoking_use: latestSnapshot.smoking_use || false,
+                  medications: latestSnapshot.medications || [],
+                  dislike_foods: latestSnapshot.dislike_foods || [],
+                });
+              }
+              setShowSnapshotForm(v => !v);
+            }}>
               {showSnapshotForm ? 'İptal' : '+ Güncelle'}
             </button>
           </div>
