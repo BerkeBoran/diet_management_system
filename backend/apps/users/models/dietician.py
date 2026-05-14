@@ -17,8 +17,6 @@ class Dietician(User):
         INTERN_DIETICIAN = 'INTERN_DIETICIAN', 'Stajyer Diyetisyen'
 
 
-    tc_no = models.CharField(max_length=11, unique=True)
-    tc_verified = models.BooleanField(default=False)
     license_number = models.CharField(max_length=50, blank=True)
     license_document = models.FileField(upload_to='licenses/%Y/%m/%d/', blank=True)
     biography = models.TextField(blank=True)

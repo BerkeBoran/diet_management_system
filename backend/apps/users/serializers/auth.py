@@ -10,7 +10,7 @@ class DieticianProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model  = Dietician
         fields = [
-            "tc_no", "license_number", "title",
+            "license_number", "title",
             "biography", "license_document", "is_verified",
         ]
         read_only_fields = ["is_verified"]
@@ -32,7 +32,7 @@ class CustomUserDetailsSerializer(serializers.ModelSerializer):
         model  = User
         fields = [
             "pk", "email", "first_name", "last_name",
-            "phone", "role", "dietician_profile", "client_profile",
+            "phone_number", "role", "dietician_profile", "client_profile",
         ]
         read_only_fields = ["email", "role"]
 

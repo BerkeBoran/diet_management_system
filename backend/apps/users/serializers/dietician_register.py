@@ -38,7 +38,6 @@ class DieticianRegisterSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=8)
     password_confirm = serializers.CharField(write_only=True)
 
-    tc_no = serializers.CharField(max_length=11, min_length=11)
     license_number = serializers.CharField(max_length=50)
     age = serializers.IntegerField(min_value=18, max_value=100)
     title = serializers.ChoiceField(choices=Dietician.Title.choices)
@@ -52,13 +51,6 @@ class DieticianRegisterSerializer(serializers.Serializer):
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("Bu e-posta adresi zaten kayıtlı.")
-        return value
-
-    def validate_tc_no(self, value):
-        if not value.isdigit():
-            raise serializers.ValidationError("TC kimlik no yalnızca rakamlardan oluşmalıdır.")
-        if Dietician.objects.filter(tc_no=value).exists():
-            raise serializers.ValidationError("Bu TC kimlik no zaten kayıtlı.")
         return value
 
     def validate_license_no(self, value):
@@ -94,7 +86,6 @@ class DieticianRegisterSerializer(serializers.Serializer):
             role=User.Role.DIETICIAN,
             is_active=True,
 
-            tc_no=data["tc_no"],
             license_number=data["license_number"],
             age=data["age"],
             title=data["title"],
