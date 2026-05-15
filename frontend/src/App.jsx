@@ -13,6 +13,7 @@ import ResetPasswordPage from './pages/public/ResetPasswordPage';
 import SupportPage from './pages/public/SupportPage';
 import KvkkPage from './pages/public/KvkkPage';
 import FoodsCalorieGuidePage from './pages/public/FoodsCalorieGuidePage';
+import VerifyEmailPage from './pages/public/VerifyEmailPage';
 
 import ChoosePlanPage from './pages/client/ChoosePlanPage';
 import AISubscribePage from './pages/client/AISubscribePage';
@@ -60,6 +61,7 @@ export default function App() {
       <Route path="/support" element={<SupportPage />} />
       <Route path="/kvkk" element={<KvkkPage />} />
       <Route path="/foods/kac-kalori" element={<FoodsCalorieGuidePage />} />
+      <Route path="/verify-email/:key" element={<VerifyEmailPage />} />
 
       <Route
         path="/client/choose-plan"
