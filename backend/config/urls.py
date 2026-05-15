@@ -4,6 +4,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.views.generic import TemplateView
 
+from apps.users.views.register import CustomVerifyEmailView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('apps.users.urls')),
@@ -12,6 +14,7 @@ urlpatterns = [
     path('api/chat/', include('apps.chat.urls')),
     path('api/ai-dietician/', include('apps.ai_dietician.urls')),
     path('api/appointments/', include('apps.appointments.urls')),
+    path('api/auth/registration/verify-email/', CustomVerifyEmailView.as_view(), name='rest_verify_email'),
     path("api/auth/", include("dj_rest_auth.urls")),
     path("api/auth/", include("dj_rest_auth.registration.urls")),
     path('api/subscription/', include('apps.subscription.urls')),

@@ -3,11 +3,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
 export default function VerifyEmailPage() {
-  const { key } = useParams();
+  const params = useParams();
+  const rawKey = params['*'] || '';
+  const key = decodeURIComponent(rawKey.replace(/\/$/, ''));
   const navigate = useNavigate();
   const [status, setStatus] = useState('loading');
 
   useEffect(() => {
+    if (!key) {
+      setStatus('error');
+      return;
+    }
     api.post('/auth/registration/verify-email/', { key })
       .then(() => setStatus('success'))
       .catch(() => setStatus('error'));

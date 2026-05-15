@@ -5,8 +5,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from allauth.account.models import EmailAddress
+from dj_rest_auth.registration.views import VerifyEmailView
 from apps.users.serializers.dietician_register import  DieticianRegisterSerializer
 from apps.users.serializers.client_register import ClientRegisterSerializer
+
+
+class CustomVerifyEmailView(VerifyEmailView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
 
 
 class DieticianRegisterView(APIView):

@@ -7,8 +7,9 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token');
-  const isSocialEndpoint = config.url?.includes('/social/');
-  if (token && !isSocialEndpoint) config.headers.Authorization = `Bearer ${token}`;
+  const url = config.url || '';
+  const skipAuth = url.includes('/social/') || url.includes('/auth/registration/');
+  if (token && !skipAuth) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
