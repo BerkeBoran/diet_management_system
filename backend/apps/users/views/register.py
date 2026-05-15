@@ -11,6 +11,7 @@ from apps.users.serializers.client_register import ClientRegisterSerializer
 
 class DieticianRegisterView(APIView):
 
+    authentication_classes = []
     permission_classes = [AllowAny]
     parser_classes     = [MultiPartParser, FormParser]
 
@@ -45,6 +46,7 @@ class DieticianRegisterView(APIView):
 
 class ClientRegisterView(APIView):
 
+    authentication_classes = []
     permission_classes = [AllowAny]
     parser_classes     = [JSONParser]
 
