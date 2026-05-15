@@ -439,7 +439,7 @@ function RegForm({ role, onBack, googleData = null }) {
                 <Section title="Bilgilerin Kullanımı">Toplanan veriler; hizmetlerin sunulması, kişiselleştirme, ödeme ve muhasebe işlemleri, güvenlik, analiz ve pazarlama amaçlarıyla kullanılır. Kişisel veriler hiçbir şekilde izinsiz üçüncü kişilerle paylaşılmaz veya satılmaz.</Section>
                 <Section title="Google Kullanıcı Verileri">Lifeetics, Google üzerinden giriş yapan kullanıcılardan yalnızca e-posta adresi ve ad/soyad bilgisi toplar. Bu veriler yalnızca kimlik doğrulama ve hesap oluşturma amacıyla kullanılır; hiçbir üçüncü tarafla paylaşılmaz.</Section>
                 <Section title="İstisnai Haller">Yasal zorunluluklar, yetkili adli/idari makam talepleri ve kullanıcı güvenliğinin korunması gereken durumlarda gizlilik hükümleri dışına çıkılabilir.</Section>
-                <Section title="Güvenlik">Lifeetics, gizli bilgileri özel ve gizli tutmayı, güvenliğini ve bütünlüğünü sağlamayı KVKK ve yürürlükteki mevzuat gereği taahhüt eder. Güvenlik açığı bildirimi: destek@lifeetics.com</Section>
+                <Section title="Güvenlik">Lifeetics, gizli bilgileri özel ve gizli tutmayı, güvenliğini ve bütünlüğünü sağlamayı KVKK ve yürürlükteki mevzuat gereği taahhüt eder. Güvenlik açığı bildirimi: support@lifeetics.com</Section>
                 <Section title="Değişiklikler">Lifeetics bu politikayı önceden bildirmeksizin güncelleme hakkını saklı tutar. Güncel politika her zaman platform üzerinden erişilebilir olacaktır.</Section>
               </>
             )}

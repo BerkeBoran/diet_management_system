@@ -431,7 +431,7 @@ export default function LoginPage() {
               Ana sayfa
             </Link>
             <div className="login-right-help">
-              Yardım mı lazım? <a href="#">Destek ekibi</a>
+              Yardım mı lazım? <a href="mailto:support@lifeetics.com">Destek ekibi</a>
             </div>
           </div>
 

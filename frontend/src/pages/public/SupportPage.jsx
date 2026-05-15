@@ -116,7 +116,11 @@ export default function SupportPage() {
               </svg>
             </div>
             <div className="sp-card-label">E-posta</div>
-            <div className="sp-card-value">destek@lifeetics.com</div>
+            <div className="sp-card-value">
+              <a href="mailto:support@lifeetics.com" style={{ color: 'inherit', textDecoration: 'none' }}>
+                support@lifeetics.com
+              </a>
+            </div>
             <div className="sp-card-note">1 iş günü içinde yanıt</div>
           </div>
 
