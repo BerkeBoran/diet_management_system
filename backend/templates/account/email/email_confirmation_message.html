@@ -1,0 +1,79 @@
+{% load account %}{% user_display user as user_display %}<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E-posta Doğrulama – Lifeetics</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f0f4f1;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f0f4f1;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;background:#ffffff;border-radius:16px;overflow:hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background-color:#2d5a3d;padding:36px 48px 28px;">
+              <p style="margin:0;color:#ffffff;font-size:26px;font-weight:bold;letter-spacing:1px;">Lifeetics</p>
+              <p style="margin:6px 0 0;color:#a8d5b5;font-size:13px;">Kişisel Beslenme Platformu</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 48px 32px;">
+              <p style="margin:0 0 6px;color:#333333;font-size:15px;">Merhaba <strong>{{ user_display }}</strong>,</p>
+              <p style="margin:0 0 24px;color:#2d5a3d;font-size:20px;font-weight:bold;">Lifeetics'e hoş geldin! 🎉</p>
+              <p style="margin:0 0 24px;color:#555555;font-size:14px;line-height:1.7;">
+                Kişisel beslenme yolculuğuna başlamana çok az kaldı.<br />
+                Hesabını aktif hale getirmek için lütfen aşağıdaki butona tıklayarak e-posta adresini doğrula:
+              </p>
+
+              <!-- Button -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
+                <tr>
+                  <td align="center" style="background-color:#2d5a3d;border-radius:8px;">
+                    <a href="{{ activate_url }}"
+                       style="display:inline-block;padding:14px 40px;color:#ffffff;text-decoration:none;font-size:15px;font-weight:bold;">
+                      👉 E-postamı Doğrula
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 10px;color:#555555;font-size:14px;">Bu işlem sadece birkaç saniye sürecek ve sana şunları kazandıracak:</p>
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
+                <tr>
+                  <td style="padding:5px 0;color:#333333;font-size:14px;">🧠&nbsp; Yapay zeka destekli kişisel beslenme planları</td>
+                </tr>
+                <tr>
+                  <td style="padding:5px 0;color:#333333;font-size:14px;">🥗&nbsp; Uzman diyetisyenlerle bağlantı</td>
+                </tr>
+                <tr>
+                  <td style="padding:5px 0;color:#333333;font-size:14px;">📊&nbsp; Hedeflerine özel takip ve analiz</td>
+                </tr>
+              </table>
+
+              <p style="margin:0;color:#999999;font-size:12px;line-height:1.6;">
+                Eğer bu hesabı sen oluşturmadıysan, bu e-postayı güvenle görmezden gelebilirsin.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#f0f4f1;padding:20px 48px;border-top:1px solid #e0e8e2;text-align:center;">
+              <p style="margin:0 0 4px;color:#666666;font-size:13px;">
+                Herhangi bir sorunda buradayız:
+                <a href="mailto:support@lifeetics.com" style="color:#2d5a3d;text-decoration:none;font-weight:bold;">support@lifeetics.com</a>
+              </p>
+              <p style="margin:0;color:#999999;font-size:12px;">Sağlıklı günler dileriz, <strong>Lifeetics Ekibi</strong></p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
