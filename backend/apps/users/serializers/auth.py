@@ -1,6 +1,8 @@
 from dj_rest_auth.serializers import PasswordResetSerializer as BasePasswordResetSerializer, UserDetailsSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from allauth.account.models import EmailAddress
+from rest_framework.exceptions import AuthenticationFailed
 
 from apps.users.models import Dietician, Client, User
 
@@ -62,10 +64,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             return False
 
     def validate(self, attrs):
+
         request = self.context.get("request")
         requested_role = request.data.get("role") if request else None
 
         data = super().validate(attrs)
+
+        if not EmailAddress.objects.filter(user=self.user, verified=True).exists():
+            raise AuthenticationFailed({
+                "detail": "E-posta adresinizi doğrulamanız gerekmektedir. Lütfen gelen kutunuzu kontrol edin."
+            })
 
         if requested_role and self.user.role.upper() != requested_role.upper():
             from rest_framework.exceptions import PermissionDenied
