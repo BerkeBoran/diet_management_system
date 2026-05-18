@@ -60,9 +60,10 @@ class DieticianAssignmentSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         dietician = validated_data.get('dietician')
-        if dietician and dietician.monthly_price:
-            validated_data['agreed_monthly_price'] = dietician.monthly_price
-            return super().create(validated_data)
+        schedule = getattr(dietician, 'dietician_schedule', None)
+        if schedule and schedule.monthly_price:
+            validated_data['agreed_monthly_price'] = schedule.monthly_price
+        return super().create(validated_data)
 
 
 
