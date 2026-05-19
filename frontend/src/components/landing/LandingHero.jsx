@@ -4,13 +4,13 @@ import Icons from './LandingIcons';
 import api from '../../services/api';
 
 function getSharedCount(min = 10, max = 50) {
-  // 10 saniyelik dilimlere böl — tüm kullanıcılar aynı dilimde aynı sayıyı hesaplar
-  const t = Date.now() / 10000;
-  const mid = (min + max) / 2;
-  const amp = (max - min) / 2;
-  // İki farklı frekanslı sinüs dalgasını birleştir → doğal görünümlü dalgalanma
-  const val = mid + amp * 0.55 * (0.6 * Math.sin(t * 0.31) + 0.4 * Math.sin(t * 0.73));
-  return Math.round(Math.min(max, Math.max(min, val)));
+  // Tam sayı bucket → aynı 10s penceresinde herkes aynı değeri hesaplar
+  const bucket = Math.floor(Date.now() / 10000);
+  const mid = Math.round((min + max) / 2);
+  const amp = Math.floor((max - min) / 4);
+  // İrrasyonel frekanslı dalgalar → ardışık bucket'lar arasında küçük (~1-2 birim) değişim
+  const wave = Math.sin(bucket * 0.113) * 0.6 + Math.sin(bucket * 0.307) * 0.4;
+  return Math.round(Math.min(max, Math.max(min, mid + amp * wave)));
 }
 
 function useSimulatedOnline(min = 10, max = 50) {
