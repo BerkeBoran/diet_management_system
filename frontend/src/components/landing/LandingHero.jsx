@@ -3,16 +3,20 @@ import { Link } from 'react-router-dom';
 import Icons from './LandingIcons';
 import api from '../../services/api';
 
+function getSharedCount(min = 10, max = 50) {
+  // 10 saniyelik dilimlere böl — tüm kullanıcılar aynı dilimde aynı sayıyı hesaplar
+  const t = Date.now() / 10000;
+  const mid = (min + max) / 2;
+  const amp = (max - min) / 2;
+  // İki farklı frekanslı sinüs dalgasını birleştir → doğal görünümlü dalgalanma
+  const val = mid + amp * 0.55 * (0.6 * Math.sin(t * 0.31) + 0.4 * Math.sin(t * 0.73));
+  return Math.round(Math.min(max, Math.max(min, val)));
+}
+
 function useSimulatedOnline(min = 10, max = 50) {
-  const [count, setCount] = useState(() => Math.floor(Math.random() * (max - min + 1)) + min);
+  const [count, setCount] = useState(() => getSharedCount(min, max));
   useEffect(() => {
-    const tick = () => {
-      setCount(prev => {
-        const delta = Math.floor(Math.random() * 9) - 4;
-        return Math.min(max, Math.max(min, prev + delta));
-      });
-    };
-    const id = setInterval(tick, 10000);
+    const id = setInterval(() => setCount(getSharedCount(min, max)), 10000);
     return () => clearInterval(id);
   }, [min, max]);
   return count;
