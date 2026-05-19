@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Icons from './LandingIcons';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -8,11 +8,25 @@ export default function LandingNavbar() {
   const [open, setOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const dashboardPath = user?.role === 'Dietician' ? '/dietician/dashboard' : '/client/dashboard';
 
   const handleLogout = async () => {
     await logout();
     navigate('/');
+  };
+
+  const scrollToSection = (sectionId) => {
+    const doScroll = () => {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    if (location.pathname === '/') {
+      doScroll();
+    } else {
+      navigate('/');
+      setTimeout(doScroll, 300);
+    }
   };
 
   useEffect(() => {
@@ -23,10 +37,10 @@ export default function LandingNavbar() {
 
   const links = [
     { label: 'Kaç kalori?', to: '/foods/kac-kalori' },
-    { label: 'Nasıl çalışır', href: '#nasil' },
-    { label: 'Diyetisyenler', href: '#diyetisyen' },
-    { label: 'Fiyatlandırma', href: '#fiyat' },
-    { label: 'Destek', href: '#destek' },
+    { label: 'Nasıl çalışır', section: 'nasil' },
+    { label: 'Diyetisyenler', section: 'diyetisyen' },
+    { label: 'Fiyatlandırma', section: 'fiyat' },
+    { label: 'Destek', section: 'destek' },
   ];
 
   return (
@@ -50,9 +64,9 @@ export default function LandingNavbar() {
                 {l.label}
               </Link>
             ) : (
-              <a key={l.href} href={l.href} className="lp-nav-link">
+              <button key={l.section} onClick={() => scrollToSection(l.section)} className="lp-nav-link">
                 {l.label}
-              </a>
+              </button>
             )
           )}
         </nav>
@@ -98,9 +112,9 @@ export default function LandingNavbar() {
                 {l.label}
               </Link>
             ) : (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)}>
+              <button key={l.section} onClick={() => { setOpen(false); scrollToSection(l.section); }} style={{ textAlign: 'left' }}>
                 {l.label}
-              </a>
+              </button>
             )
           )}
           {user ? (
