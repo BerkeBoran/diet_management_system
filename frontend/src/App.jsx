@@ -61,6 +61,7 @@ export default function App() {
       <Route path="/support" element={<SupportPage />} />
       <Route path="/kvkk" element={<KvkkPage />} />
       <Route path="/foods/kac-kalori" element={<FoodsCalorieGuidePage />} />
+      <Route path="/foods/kac-kalori/arama/:query" element={<FoodsCalorieGuidePage />} />
       <Route path="/verify-email/*" element={<VerifyEmailPage />} />
 
       <Route

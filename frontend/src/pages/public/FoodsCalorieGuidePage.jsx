@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import '../../styles/landing.css';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 import LandingFooter from '../../components/landing/LandingFooter';
@@ -15,7 +15,9 @@ const fmt = (val, suffix = '') => {
   return `${rounded}${suffix}`;
 };
 
-// Popüler aramalar — boş durumda kullanıcıya öneri
+// URL slug normalize: "Lahmacun Çorbası" → "lahmacun-corbasi" gibi (URL için)
+const queryToUrlSegment = (q) => encodeURIComponent(q.trim().toLowerCase());
+
 const POPULAR_TERMS = [
   'lahmacun', 'pizza', 'döner', 'hamburger', 'elma', 'muz',
   'tavuk göğüs', 'pilav', 'mercimek çorbası', 'baklava', 'simit', 'yoğurt',
@@ -39,20 +41,34 @@ const CARDS = [
   },
 ];
 
-// --- Sayfa ------------------------------------------------------------------
 export default function FoodsCalorieGuidePage() {
-  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+  const { query: urlQuery } = useParams();
+  const initialQuery = urlQuery ? decodeURIComponent(urlQuery) : '';
+
+  const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [touched, setTouched] = useState(false);
-  const [selectedFood, setSelectedFood] = useState(null);
-  const [detailLoading, setDetailLoading] = useState(false);
   const debounceRef = useRef(null);
+  const urlSyncRef = useRef(null);
   const reqIdRef = useRef(0);
   const searchInputRef = useRef(null);
 
-  // Debounced arama (300ms)
+  // URL'den gelen query değişirse state'i senkronla
+  useEffect(() => {
+    if (urlQuery !== undefined) {
+      const decoded = decodeURIComponent(urlQuery);
+      if (decoded !== query) setQuery(decoded);
+    }
+    // urlQuery undefined olursa (sadece /foods/kac-kalori) input'u boşalt
+    if (urlQuery === undefined && query) {
+      // Kullanıcı manuel boşaltmış olabilir, dokunma
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlQuery]);
+
+  // Arama (debounced 300ms)
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     const term = query.trim();
@@ -63,12 +79,11 @@ export default function FoodsCalorieGuidePage() {
       return undefined;
     }
     setLoading(true);
-    setTouched(true);
     debounceRef.current = setTimeout(async () => {
       const myReqId = ++reqIdRef.current;
       try {
         const { data } = await foodService.searchFoods(term);
-        if (myReqId !== reqIdRef.current) return; // stale response — ignore
+        if (myReqId !== reqIdRef.current) return;
         setResults(Array.isArray(data) ? data : data?.results || []);
         setError(null);
       } catch (err) {
@@ -83,32 +98,20 @@ export default function FoodsCalorieGuidePage() {
     return () => debounceRef.current && clearTimeout(debounceRef.current);
   }, [query]);
 
-  const handleSelect = useCallback(async (food) => {
-    setSelectedFood({ ...food, _detailLoaded: false });
-    setDetailLoading(true);
-    try {
-      const { data } = await foodService.getFoodDetail(food.id);
-      setSelectedFood({ ...data, _detailLoaded: true });
-    } catch (err) {
-      console.error('Detay yükleme hatası:', err);
-      // Detay çekilemese bile list verisiyle göster
-      setSelectedFood({ ...food, _detailLoaded: true });
-    } finally {
-      setDetailLoading(false);
-    }
-  }, []);
-
-  const closeModal = useCallback(() => setSelectedFood(null), []);
-
-  // ESC tuşu modal'ı kapatır
+  // URL'i senkronize et (debounced 600ms — yazarken her harfte history kirlenmesin)
   useEffect(() => {
-    if (!selectedFood) return undefined;
-    const onKey = (e) => {
-      if (e.key === 'Escape') closeModal();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [selectedFood, closeModal]);
+    if (urlSyncRef.current) clearTimeout(urlSyncRef.current);
+    const term = query.trim();
+    urlSyncRef.current = setTimeout(() => {
+      const targetPath = term.length >= 2
+        ? `/foods/kac-kalori/arama/${queryToUrlSegment(term)}`
+        : '/foods/kac-kalori';
+      if (window.location.pathname !== targetPath) {
+        navigate(targetPath, { replace: true });
+      }
+    }, 600);
+    return () => urlSyncRef.current && clearTimeout(urlSyncRef.current);
+  }, [query, navigate]);
 
   const handlePopularClick = (term) => {
     setQuery(term);
@@ -116,7 +119,8 @@ export default function FoodsCalorieGuidePage() {
   };
 
   const showEmpty =
-    touched && !loading && !error && results.length === 0 && query.trim().length >= 2;
+    query.trim().length >= 2 && !loading && !error && results.length === 0;
+  const hasSearched = query.trim().length >= 2;
 
   return (
     <div className="landing-page">
@@ -140,18 +144,16 @@ export default function FoodsCalorieGuidePage() {
               </p>
             </div>
 
-            {/* Arama kutusu */}
             <SearchBox
               query={query}
               setQuery={setQuery}
               loading={loading}
               inputRef={searchInputRef}
               resultCount={results.length}
-              hasSearched={touched && query.trim().length >= 2}
+              hasSearched={hasSearched}
             />
 
-            {/* Popüler aramalar — sadece arama henüz yapılmamışsa göster */}
-            {!touched && (
+            {!hasSearched && (
               <div style={{ marginTop: 28 }}>
                 <p
                   style={{
@@ -211,22 +213,17 @@ export default function FoodsCalorieGuidePage() {
                 }}
               >
                 <p style={{ fontSize: 15, marginBottom: 4 }}>
-                  <strong style={{ color: '#1A2516' }}>"{query.trim()}"</strong> için sonuç
-                  bulunamadı.
+                  <strong style={{ color: '#1A2516' }}>"{query.trim()}"</strong> için sonuç bulunamadı.
                 </p>
                 <p style={{ fontSize: 13 }}>Farklı bir kelime dene veya yazımı kontrol et.</p>
               </div>
             )}
 
-            {/* Sonuçlar */}
-            {!error && results.length > 0 && (
-              <ResultsGrid results={results} onSelect={handleSelect} />
-            )}
+            {!error && results.length > 0 && <ResultsGrid results={results} />}
           </div>
         </section>
 
-        {/* Yardımcı kartlar — sadece arama yapılmadığında göster */}
-        {!touched && (
+        {!hasSearched && (
           <section
             className="section-tight"
             style={{ background: 'var(--bg-warm)', paddingTop: 56, paddingBottom: 72 }}
@@ -264,7 +261,6 @@ export default function FoodsCalorieGuidePage() {
           </section>
         )}
 
-        {/* CTA */}
         <section
           className="section-tight"
           style={{ background: '#1A2516', color: '#FBFAF5', paddingTop: 64, paddingBottom: 80 }}
@@ -273,10 +269,7 @@ export default function FoodsCalorieGuidePage() {
             className="container"
             style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 720 }}
           >
-            <h2
-              className="serif"
-              style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', lineHeight: 1.15 }}
-            >
+            <h2 className="serif" style={{ fontSize: 'clamp(28px, 3.5vw, 40px)', lineHeight: 1.15 }}>
               Planına <em style={{ color: '#BEF264' }}>pratik</em> başla
             </h2>
             <p style={{ fontSize: 16, lineHeight: 1.65, opacity: 0.9, maxWidth: 560 }}>
@@ -305,11 +298,6 @@ export default function FoodsCalorieGuidePage() {
         </section>
       </main>
       <LandingFooter />
-
-      {/* Detay modal */}
-      {selectedFood && (
-        <FoodDetailModal food={selectedFood} loading={detailLoading} onClose={closeModal} />
-      )}
     </div>
   );
 }
@@ -407,7 +395,7 @@ function SearchBox({ query, setQuery, loading, inputRef, resultCount, hasSearche
   );
 }
 
-function ResultsGrid({ results, onSelect }) {
+function ResultsGrid({ results }) {
   return (
     <div
       style={{
@@ -418,27 +406,28 @@ function ResultsGrid({ results, onSelect }) {
       }}
     >
       {results.map((food) => (
-        <FoodCard key={food.id} food={food} onClick={() => onSelect(food)} />
+        <FoodCard key={food.id} food={food} />
       ))}
     </div>
   );
 }
 
-function FoodCard({ food, onClick }) {
+function FoodCard({ food }) {
+  // Slug yoksa fallback: id ile detay sayfası (Django bunu da yakalayamaz ama olmamalı)
+  const slug = food.external_id || `${food.id}`;
+  const href = `/foods/kac-kalori/${slug}`;
   return (
-    <button
-      type="button"
-      onClick={onClick}
+    <a
+      href={href}
       style={{
-        textAlign: 'left',
+        textDecoration: 'none',
+        color: 'inherit',
         background: '#fff',
         border: '1px solid var(--line)',
         borderRadius: 16,
         padding: 20,
         cursor: 'pointer',
         transition: 'transform 0.15s, box-shadow 0.15s, border-color 0.15s',
-        fontFamily: 'inherit',
-        color: 'inherit',
         display: 'flex',
         flexDirection: 'column',
         gap: 14,
@@ -511,7 +500,7 @@ function FoodCard({ food, onClick }) {
         <MacroBadge label="K" value={fmt(food.carbs, 'g')} />
         <MacroBadge label="Y" value={fmt(food.fat, 'g')} />
       </div>
-    </button>
+    </a>
   );
 }
 
@@ -539,267 +528,6 @@ function MacroBadge({ label, value }) {
       >
         {value}
       </span>
-    </div>
-  );
-}
-
-function FoodDetailModal({ food, loading, onClose }) {
-  return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(26, 37, 22, 0.55)',
-        backdropFilter: 'blur(4px)',
-        zIndex: 1000,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-        animation: 'modal-fade 0.18s ease-out',
-      }}
-    >
-      <style>{`
-        @keyframes modal-fade { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes modal-pop { from { opacity: 0; transform: translateY(8px) scale(0.98) } to { opacity: 1; transform: none } }
-      `}</style>
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          background: '#fff',
-          borderRadius: 24,
-          maxWidth: 540,
-          width: '100%',
-          maxHeight: '88vh',
-          overflow: 'auto',
-          boxShadow: '0 24px 64px rgba(0,0,0,0.25)',
-          animation: 'modal-pop 0.22s ease-out',
-          position: 'relative',
-        }}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Kapat"
-          style={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            width: 36,
-            height: 36,
-            borderRadius: '50%',
-            border: '1px solid var(--line)',
-            background: '#fff',
-            color: '#1A2516',
-            fontSize: 20,
-            lineHeight: 1,
-            cursor: 'pointer',
-            display: 'grid',
-            placeItems: 'center',
-          }}
-        >
-          ×
-        </button>
-
-        <div style={{ padding: '36px 32px 32px' }}>
-          <span
-            style={{
-              fontFamily: 'var(--mono)',
-              fontSize: 11,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: '#4D7C0F',
-              fontWeight: 600,
-            }}
-          >
-            {food.serving_description || '1 porsiyon'}
-          </span>
-          <h2
-            className="serif"
-            style={{
-              fontSize: 'clamp(24px, 3vw, 32px)',
-              lineHeight: 1.2,
-              color: '#1A2516',
-              marginTop: 8,
-            }}
-          >
-            {food.name}
-          </h2>
-
-          {/* Kalori büyük göstergesi */}
-          <div
-            style={{
-              marginTop: 28,
-              padding: 24,
-              borderRadius: 18,
-              background: '#F7FBE8',
-              border: '1px solid #DDEBA5',
-              display: 'flex',
-              alignItems: 'baseline',
-              gap: 10,
-            }}
-          >
-            <span
-              style={{
-                fontFamily: 'var(--mono)',
-                fontSize: 56,
-                fontWeight: 700,
-                color: '#1A2516',
-                lineHeight: 1,
-                fontVariantNumeric: 'tabular-nums',
-              }}
-            >
-              {fmt(food.calories)}
-            </span>
-            <span style={{ fontSize: 18, color: '#4D7C0F', fontWeight: 600 }}>kcal</span>
-          </div>
-
-          {/* Makro grid */}
-          <div
-            style={{
-              marginTop: 20,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: 12,
-            }}
-          >
-            <MacroBlock label="Protein" value={fmt(food.protein, ' g')} />
-            <MacroBlock label="Karbonhidrat" value={fmt(food.carbs, ' g')} />
-            <MacroBlock label="Yağ" value={fmt(food.fat, ' g')} />
-          </div>
-
-          {/* Detay (retrieve) — opsiyonel ek alanlar */}
-          {food._detailLoaded && <DetailExtras food={food} />}
-          {loading && (
-            <p
-              style={{
-                marginTop: 16,
-                fontSize: 13,
-                color: '#6B7363',
-                fontFamily: 'var(--mono)',
-                letterSpacing: '0.08em',
-              }}
-            >
-              Detaylar yükleniyor...
-            </p>
-          )}
-
-          <p
-            style={{
-              marginTop: 28,
-              padding: '14px 16px',
-              borderRadius: 12,
-              background: '#FBFAF5',
-              border: '1px solid var(--line-soft)',
-              fontSize: 13,
-              lineHeight: 1.55,
-              color: '#6B7363',
-            }}
-          >
-            Değerler kaynaklarımıza dayalı ortalama tahminlerdir. Marka, pişirme yöntemi ve porsiyon
-            boyutuna göre farklılık gösterebilir. Tıbbi kararlarda mutlaka uzmana danış.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MacroBlock({ label, value }) {
-  return (
-    <div
-      style={{
-        padding: 16,
-        borderRadius: 14,
-        background: '#fff',
-        border: '1px solid var(--line)',
-        textAlign: 'center',
-      }}
-    >
-      <span
-        style={{
-          display: 'block',
-          fontFamily: 'var(--mono)',
-          fontSize: 10,
-          letterSpacing: '0.12em',
-          color: '#6B7363',
-          textTransform: 'uppercase',
-          marginBottom: 6,
-        }}
-      >
-        {label}
-      </span>
-      <span
-        style={{
-          fontFamily: 'var(--mono)',
-          fontSize: 18,
-          fontWeight: 600,
-          color: '#1A2516',
-          fontVariantNumeric: 'tabular-nums',
-        }}
-      >
-        {value}
-      </span>
-    </div>
-  );
-}
-
-function DetailExtras({ food }) {
-  // FoodDetailSerializer ek alanları: saturated_fat, sugar, sodium
-  const rows = [
-    { label: 'Doymuş yağ', value: food.saturated_fat, unit: 'g' },
-    { label: 'Şeker', value: food.sugar, unit: 'g' },
-    { label: 'Sodyum', value: food.sodium, unit: 'mg' },
-  ].filter((r) => r.value !== null && r.value !== undefined && Number(r.value) > 0);
-
-  if (rows.length === 0) return null;
-
-  return (
-    <div
-      style={{
-        marginTop: 22,
-        background: '#FBFAF5',
-        border: '1px solid var(--line-soft)',
-        borderRadius: 14,
-        overflow: 'hidden',
-      }}
-    >
-      <div
-        style={{
-          padding: '10px 16px',
-          background: '#F7FBE8',
-          fontFamily: 'var(--mono)',
-          fontSize: 11,
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: '#4D7C0F',
-          fontWeight: 600,
-        }}
-      >
-        Ek değerler
-      </div>
-      {rows.map((r, i) => (
-        <div
-          key={r.label}
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            padding: '12px 16px',
-            borderTop: i === 0 ? 'none' : '1px solid var(--line-soft)',
-            fontSize: 14,
-          }}
-        >
-          <span style={{ color: '#3F4A38' }}>{r.label}</span>
-          <span
-            style={{ color: '#1A2516', fontWeight: 500, fontVariantNumeric: 'tabular-nums' }}
-          >
-            {fmt(r.value, ` ${r.unit}`)}
-          </span>
-        </div>
-      ))}
     </div>
   );
 }
