@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{% for u in static_urls %}    <url>
+        <loc>{{ u.loc }}</loc>
+        <changefreq>{{ u.changefreq }}</changefreq>
+        <priority>{{ u.priority }}</priority>
+    </url>
+{% endfor %}{% for food in foods %}    <url>
+        <loc>{{ base_url }}/foods/kac-kalori/{{ food.external_id }}</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+{% endfor %}</urlset>

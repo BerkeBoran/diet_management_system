@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+    {# --- SEO meta --- #}
+    <title>{{ food.name }} Kaç Kalori? {{ food.calories|floatformat:0 }} kcal | Lifeetics</title>
+    <meta name="description" content="{{ food.name }} {{ food.serving_description }} {{ food.calories|floatformat:1 }} kalori, {{ food.protein|floatformat:1 }} g protein, {{ food.carbs|floatformat:1 }} g karbonhidrat ve {{ food.fat|floatformat:1 }} g yağ içerir. Diyet planında {{ food.name }} ne kadar yer alır, detaylar Lifeetics'te.">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#1A2516">
+
+    {# --- Open Graph (paylaşım) --- #}
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ food.name }} Kaç Kalori?">
+    <meta property="og:description" content="{{ food.name }} {{ food.serving_description }} → {{ food.calories|floatformat:0 }} kcal. Protein, karbonhidrat ve yağ değerleri Lifeetics besin rehberinde.">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:site_name" content="Lifeetics">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:image" content="https://lifeetics.com/favicon-192.png">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="{{ food.name }} Kaç Kalori?">
+    <meta name="twitter:description" content="{{ food.name }} {{ food.serving_description }} → {{ food.calories|floatformat:0 }} kcal.">
+
+    {# --- Schema.org NutritionInformation --- #}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NutritionInformation",
+      "name": "{{ food.name|escapejs }}",
+      "servingSize": "{{ food.serving_description|escapejs }}",
+      "calories": "{{ food.calories|floatformat:0 }} kcal",
+      "proteinContent": "{{ food.protein|floatformat:2 }} g",
+      "carbohydrateContent": "{{ food.carbs|floatformat:2 }} g",
+      "fatContent": "{{ food.fat|floatformat:2 }} g"{% if food.fiber and food.fiber > 0 %},
+      "fiberContent": "{{ food.fiber|floatformat:2 }} g"{% endif %}{% if food.sodium and food.sodium > 0 %},
+      "sodiumContent": "{{ food.sodium|floatformat:0 }} mg"{% endif %}{% if food.sugar and food.sugar > 0 %},
+      "sugarContent": "{{ food.sugar|floatformat:2 }} g"{% endif %}
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Ana sayfa", "item": "https://lifeetics.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Kaç Kalori?", "item": "https://lifeetics.com/foods/kac-kalori"},
+        {"@type": "ListItem", "position": 3, "name": "{{ food.name|escapejs }}", "item": "{{ canonical_url }}"}
+      ]
+    }
+    </script>
+
+    {# --- Stil --- #}
+    <style>
+        :root {
+            --forest: #1A2516;
+            --lime: #BEF264;
+            --lime-dark: #4D7C0F;
+            --lime-bg: #F7FBE8;
+            --cream: #FBFAF5;
+            --warm: #FAF7EE;
+            --line: #E8E5DA;
+            --line-soft: #F0EEE5;
+            --text: #1A2516;
+            --text-soft: #3F4A38;
+            --muted: #6B7363;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
+            color: var(--text);
+            background: var(--cream);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        a { color: var(--lime-dark); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        .container { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+        header.site {
+            background: #fff;
+            border-bottom: 1px solid var(--line);
+            padding: 18px 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        header.site .container { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Times New Roman', serif; font-size: 22px; font-weight: 700; color: var(--forest); }
+        .brand em { color: var(--lime-dark); font-style: italic; }
+        .nav-cta {
+            background: var(--forest); color: var(--lime); padding: 10px 18px;
+            border-radius: 999px; font-size: 14px; font-weight: 600;
+        }
+
+        nav.crumbs {
+            font-size: 13px; color: var(--muted); padding: 20px 0 12px;
+        }
+        nav.crumbs a { color: var(--muted); }
+        nav.crumbs span { margin: 0 6px; opacity: 0.5; }
+
+        main { padding-bottom: 80px; }
+
+        h1 {
+            font-family: 'Times New Roman', serif;
+            font-size: clamp(32px, 5vw, 48px);
+            line-height: 1.15;
+            color: var(--forest);
+            margin-bottom: 18px;
+            font-weight: 700;
+        }
+        h1 em { color: var(--lime-dark); font-style: italic; }
+
+        .lede {
+            font-size: 17px; line-height: 1.7;
+            color: var(--text-soft);
+            max-width: 720px;
+            margin-bottom: 32px;
+        }
+
+        h2 {
+            font-family: 'Times New Roman', serif;
+            font-size: clamp(24px, 3vw, 32px);
+            color: var(--forest);
+            margin: 48px 0 18px;
+            font-weight: 700;
+        }
+
+        .hero {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 10px 30px rgba(26, 37, 22, 0.06);
+            margin-bottom: 28px;
+        }
+
+        .serving-tag {
+            display: inline-block;
+            font-family: ui-monospace, SF Mono, Menlo, monospace;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--lime-dark);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .kcal-block {
+            display: flex; align-items: baseline; gap: 12px;
+            padding: 24px; margin-top: 24px;
+            background: var(--lime-bg);
+            border: 1px solid #DDEBA5;
+            border-radius: 18px;
+        }
+        .kcal-number {
+            font-family: ui-monospace, SF Mono, Menlo, monospace;
+            font-size: clamp(48px, 8vw, 72px); font-weight: 700;
+            color: var(--forest); line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .kcal-suffix { font-size: 20px; color: var(--lime-dark); font-weight: 600; }
+
+        .macros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 22px; }
+        .macro {
+            background: #fff; border: 1px solid var(--line);
+            border-radius: 14px; padding: 16px; text-align: center;
+        }
+        .macro .label {
+            display: block; font-family: ui-monospace, monospace;
+            font-size: 10px; letter-spacing: 0.12em; color: var(--muted);
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .macro .val {
+            font-family: ui-monospace, monospace;
+            font-size: 22px; font-weight: 600; color: var(--forest);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .extras {
+            margin-top: 22px; background: var(--warm);
+            border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden;
+        }
+        .extras header {
+            padding: 10px 16px; background: var(--lime-bg);
+            font-family: ui-monospace, monospace; font-size: 11px;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--lime-dark); font-weight: 600;
+        }
+        .extras .row {
+            display: flex; justify-content: space-between;
+            padding: 12px 16px; border-top: 1px solid var(--line-soft); font-size: 14px;
+        }
+        .extras .row span:last-child {
+            font-weight: 600; font-variant-numeric: tabular-nums;
+        }
+
+        p.body { font-size: 16px; line-height: 1.75; color: var(--text-soft); margin: 14px 0; }
+
+        .related {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .related a {
+            display: block; background: #fff; padding: 18px;
+            border: 1px solid var(--line); border-radius: 14px;
+            color: var(--forest); text-decoration: none;
+            transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+        }
+        .related a:hover {
+            transform: translateY(-2px); border-color: var(--lime);
+            box-shadow: 0 8px 24px rgba(26, 37, 22, 0.08);
+            text-decoration: none;
+        }
+        .related .rname { font-weight: 600; font-size: 15px; line-height: 1.3; margin-bottom: 8px; }
+        .related .rkcal {
+            font-family: ui-monospace, monospace; color: var(--lime-dark);
+            font-weight: 600; font-size: 14px; font-variant-numeric: tabular-nums;
+        }
+
+        .cta-card {
+            margin-top: 48px; background: var(--forest); color: #fff;
+            border-radius: 20px; padding: 32px; text-align: center;
+        }
+        .cta-card h3 { font-family: 'Times New Roman', serif; font-size: 24px; margin-bottom: 12px; color: #fff; }
+        .cta-card h3 em { color: var(--lime); }
+        .cta-card p { opacity: 0.85; margin-bottom: 20px; }
+        .cta-card a {
+            display: inline-block; background: var(--lime); color: var(--forest);
+            padding: 12px 24px; border-radius: 999px; font-weight: 600; font-size: 15px;
+        }
+
+        .disclaimer {
+            margin-top: 32px; padding: 16px 18px;
+            background: #fff; border: 1px solid var(--line-soft);
+            border-radius: 12px; font-size: 13px; color: var(--muted); line-height: 1.55;
+        }
+
+        footer.site {
+            border-top: 1px solid var(--line); padding: 32px 0;
+            color: var(--muted); font-size: 13px; margin-top: 60px; background: #fff;
+        }
+        footer.site .container { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        footer.site a { color: var(--muted); margin-left: 18px; }
+    </style>
+</head>
+<body>
+    <header class="site">
+        <div class="container">
+            <a href="/" class="brand">life<em>etics</em></a>
+            <a href="/foods/kac-kalori" class="nav-cta">Besin Ara</a>
+        </div>
+    </header>
+
+    <nav class="crumbs container" aria-label="breadcrumb">
+        <a href="/">Ana sayfa</a><span>›</span>
+        <a href="/foods/kac-kalori">Kaç Kalori?</a><span>›</span>
+        {{ food.name }}
+    </nav>
+
+    <main class="container">
+        <article>
+            <h1>{{ food.name }} <em>kaç kalori?</em></h1>
+            <p class="lede">
+                {{ food.name }}, {{ food.serving_description }} porsiyonunda yaklaşık
+                <strong>{{ food.calories|floatformat:0 }} kalori</strong> içerir.
+                Aşağıda protein, karbonhidrat ve yağ değerlerini detaylı görebilir,
+                diyet planlaman için referans alabilirsin.
+            </p>
+
+            <div class="hero">
+                <span class="serving-tag">{{ food.serving_description }}</span>
+                <div class="kcal-block">
+                    <span class="kcal-number">{{ food.calories|floatformat:0 }}</span>
+                    <span class="kcal-suffix">kcal</span>
+                </div>
+
+                <div class="macros">
+                    <div class="macro">
+                        <span class="label">Protein</span>
+                        <span class="val">{{ food.protein|floatformat:1 }} g</span>
+                    </div>
+                    <div class="macro">
+                        <span class="label">Karbonhidrat</span>
+                        <span class="val">{{ food.carbs|floatformat:1 }} g</span>
+                    </div>
+                    <div class="macro">
+                        <span class="label">Yağ</span>
+                        <span class="val">{{ food.fat|floatformat:1 }} g</span>
+                    </div>
+                </div>
+
+                {% if food.fiber or food.saturated_fat or food.sugar or food.sodium %}
+                <div class="extras">
+                    <header>Ek besin değerleri</header>
+                    {% if food.fiber and food.fiber > 0 %}
+                    <div class="row"><span>Lif</span><span>{{ food.fiber|floatformat:1 }} g</span></div>
+                    {% endif %}
+                    {% if food.saturated_fat and food.saturated_fat > 0 %}
+                    <div class="row"><span>Doymuş yağ</span><span>{{ food.saturated_fat|floatformat:1 }} g</span></div>
+                    {% endif %}
+                    {% if food.sugar and food.sugar > 0 %}
+                    <div class="row"><span>Şeker</span><span>{{ food.sugar|floatformat:1 }} g</span></div>
+                    {% endif %}
+                    {% if food.sodium and food.sodium > 0 %}
+                    <div class="row"><span>Sodyum</span><span>{{ food.sodium|floatformat:0 }} mg</span></div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <h2>{{ food.name }} besin değerleri</h2>
+            <p class="body">
+                {{ food.serving_description }} {{ food.name|lower }}, toplam
+                <strong>{{ food.calories|floatformat:0 }} kalori</strong>,
+                <strong>{{ food.protein|floatformat:1 }} g protein</strong>,
+                <strong>{{ food.carbs|floatformat:1 }} g karbonhidrat</strong> ve
+                <strong>{{ food.fat|floatformat:1 }} g yağ</strong> içerir.
+                Bu değerler hazırlama yöntemine, kullanılan malzemelere ve markaya göre
+                farklılık gösterebilir; etiket veya tarife göre güncelleyebilirsin.
+            </p>
+
+            <h2>Diyetinde nasıl yer alır?</h2>
+            <p class="body">
+                Günlük kalori hedefine göre {{ food.name|lower }} tüketmek istiyorsan, porsiyon
+                miktarına dikkat etmen gerekir. {{ food.calories|floatformat:0 }} kcal değerinde
+                {{ food.serving_description }} bir porsiyon, ortalama yetişkin bir bireyin
+                günlük enerji ihtiyacının önemli bir bölümünü karşılayabilir. Diyetisyenine veya
+                Lifeetics AI diyet asistanına danışarak öğün planına uygunluğunu doğrulamanı
+                öneririz.
+            </p>
+
+            {% if related %}
+            <h2>İlgili besinler</h2>
+            <div class="related">
+                {% for r in related %}
+                <a href="/foods/kac-kalori/{{ r.external_id }}">
+                    <div class="rname">{{ r.name }}</div>
+                    <div class="rkcal">{{ r.calories|floatformat:0 }} kcal · {{ r.serving_description }}</div>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="cta-card">
+                <h3>Planına <em>pratik</em> başla</h3>
+                <p>Binlerce besinde arama yap, AI destekli diyet asistanını ücretsiz dene.</p>
+                <a href="/register/client">Ücretsiz hesap aç →</a>
+            </div>
+
+            <div class="disclaimer">
+                Bu sayfadaki değerler ortalama tahminlerdir; marka, pişirme yöntemi ve porsiyon
+                ölçüsüne göre farklılık gösterebilir. Tıbbi kararlar için mutlaka bir diyetisyen
+                veya doktora danışın.
+            </div>
+        </article>
+    </main>
+
+    <footer class="site">
+        <div class="container">
+            <span>© Lifeetics · Türkiye'nin diyet platformu</span>
+            <span>
+                <a href="/foods/kac-kalori">Besin Rehberi</a>
+                <a href="/kvkk">KVKK</a>
+                <a href="/support">Destek</a>
+            </span>
+        </div>
+    </footer>
+</body>
+</html>

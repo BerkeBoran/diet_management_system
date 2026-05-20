@@ -5,6 +5,7 @@ from django.conf import settings
 from django.views.generic import TemplateView
 
 from apps.users.views.register import CustomVerifyEmailView
+from apps.foods.views.seo import food_detail_html, sitemap_xml, robots_txt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,7 +24,11 @@ urlpatterns = [
     path('login-dummy/', TemplateView.as_view(template_name="dummy.html"), name='account_login'),
     path('password-reset/', TemplateView.as_view(template_name="dummy.html"), name='account_reset_password'),
 
-
+    # SEO — server-rendered HTML (besin detay, sitemap, robots)
+    path('foods/kac-kalori/<slug:slug>/', food_detail_html, name='food-detail-html'),
+    path('foods/kac-kalori/<slug:slug>', food_detail_html),  # trailing slash'sız da yakala
+    path('sitemap.xml', sitemap_xml, name='sitemap-xml'),
+    path('robots.txt', robots_txt, name='robots-txt'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
