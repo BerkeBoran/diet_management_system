@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import '../../styles/landing.css';
 import LandingNavbar from '../../components/landing/LandingNavbar';
 import LandingFooter from '../../components/landing/LandingFooter';
@@ -122,8 +123,30 @@ export default function FoodsCalorieGuidePage() {
     query.trim().length >= 2 && !loading && !error && results.length === 0;
   const hasSearched = query.trim().length >= 2;
 
+  // Dinamik SEO başlık + açıklama: arama yapılınca query'ye göre değişir
+  const term = query.trim();
+  const seoTitle = term
+    ? `${term} kaç kalori? — Besin değerleri | Lifeetics`
+    : 'Kaç kalori? — Türk mutfağı besin değerleri arama | Lifeetics';
+  const seoDescription = term
+    ? `"${term}" için kalori, protein, karbonhidrat ve yağ değerleri. Türk mutfağı ve binlerce besinde arama yap, Lifeetics besin rehberi.`
+    : 'Lahmacundan baklavaya, ev yapımından restoran zincirlerine kadar binlerce besinde kalori ve makro değerlerini ara. Lifeetics besin rehberi.';
+  const seoCanonical = term
+    ? `https://lifeetics.com/foods/kac-kalori/arama/${encodeURIComponent(term.toLowerCase())}`
+    : 'https://lifeetics.com/foods/kac-kalori';
+
   return (
     <div className="landing-page">
+      <Helmet>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <link rel="canonical" href={seoCanonical} />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={seoCanonical} />
+        {/* Arama sonuç sayfaları index'lenmesin (thin content) */}
+        {term && <meta name="robots" content="noindex, follow" />}
+      </Helmet>
       <LandingNavbar />
       <main style={{ paddingTop: 96 }}>
         {/* HERO + ARAMA */}

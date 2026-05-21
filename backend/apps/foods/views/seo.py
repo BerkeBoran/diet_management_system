@@ -121,13 +121,29 @@ def sitemap_xml(request):
 
 
 def robots_txt(request):
-    """Crawler için robots.txt — tüm public içeriği aç, sitemap'i göster."""
+    """Crawler için robots.txt — sitemap göster, private/auth route'larını kapa."""
     content = (
         "User-agent: *\n"
         "Allow: /\n"
+        "\n"
+        "# Auth / private route'lar (index'lenmemeli)\n"
+        "Disallow: /login\n"
+        "Disallow: /register\n"
+        "Disallow: /register/client\n"
+        "Disallow: /register/dietician\n"
+        "Disallow: /forgot-password\n"
+        "Disallow: /reset-password\n"
+        "Disallow: /verify-email\n"
+        "Disallow: /client/\n"
+        "Disallow: /dietician/\n"
+        "\n"
+        "# Backend / sistem\n"
         "Disallow: /admin/\n"
         "Disallow: /api/\n"
         "Disallow: /ws/\n"
+        "\n"
+        "# Arama sonuç sayfaları (thin content, yerine besin detayını indexlesin)\n"
+        "Disallow: /foods/kac-kalori/arama/\n"
         "\n"
         f"Sitemap: {SITE_BASE_URL}/sitemap.xml\n"
     )
