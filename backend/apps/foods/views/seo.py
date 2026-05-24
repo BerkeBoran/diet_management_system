@@ -9,7 +9,6 @@ sayfaları Django'da tam HTML olarak render edilir. URL'ler:
 
 from __future__ import annotations
 
-from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils.cache import patch_cache_control
@@ -63,31 +62,65 @@ def _ilk_kelime(metin: str) -> str:
     return (metin or "").strip().split()[0] if metin else ""
 
 
+def _related_besinler(food: Food, hedef_sayi: int = 8) -> list:
+    """Bir besin için "İlgili besinler" listesi üretir.
+
+    3 katmanlı strateji ile her sayfa için GARANTI `hedef_sayi` kadar
+    sonuç döner (sitenin internal link grafiği her zaman doldurulur,
+    orphan page yok). Sıra: en alakalıdan en az alakalıya.
+
+    1. Aynı ilk kelimeyle başlayanlar (en alakalı; ör. "Lahmacun" → "Ev Yapımı Lahmacun")
+    2. Aynı ilk harfle başlayan diğer besinler (alfabetik yakınlık)
+    3. Rastgele yedek (son çare; "tek başına bir besin" diye bir şey kalmasın)
+    """
+    related: list = []
+    eklenmis_idler: set = {food.id}
+
+    # 1. Aynı ilk kelime
+    ilk_kelime = _ilk_kelime(food.name)
+    if ilk_kelime and len(ilk_kelime) >= 3:
+        adaylar = (
+            Food.objects.filter(name__istartswith=ilk_kelime)
+            .exclude(id__in=eklenmis_idler)
+            .order_by("name")[:hedef_sayi]
+        )
+        for f in adaylar:
+            related.append(f)
+            eklenmis_idler.add(f.id)
+
+    # 2. Aynı ilk harf (henüz dolmadıysa)
+    if len(related) < hedef_sayi and food.name:
+        ilk_harf = food.name[0]
+        kalan = hedef_sayi - len(related)
+        adaylar = (
+            Food.objects.filter(name__istartswith=ilk_harf)
+            .exclude(id__in=eklenmis_idler)
+            .order_by("name")[:kalan]
+        )
+        for f in adaylar:
+            related.append(f)
+            eklenmis_idler.add(f.id)
+
+    # 3. Garanti rastgele yedek (orphan engelleyici)
+    if len(related) < hedef_sayi:
+        kalan = hedef_sayi - len(related)
+        adaylar = (
+            Food.objects.exclude(id__in=eklenmis_idler)
+            .order_by("?")[:kalan]
+        )
+        related.extend(list(adaylar))
+
+    return related
+
+
 @cache_page(60 * 60)  # 1 saat cache
 def food_detail_html(request, slug):
     """Tek besin için SEO'ya uygun, server-side rendered HTML sayfası."""
     food = get_object_or_404(Food, external_id=slug)
 
-    # İlgili besinler — ilk kelimeyi paylaşanlar (örn. "Lahmacun" → "Ev Yapımı Lahmacun")
-    ilk_kelime = _ilk_kelime(food.name)
-    related = []
-    if ilk_kelime and len(ilk_kelime) >= 3:
-        related = list(
-            Food.objects.filter(name__istartswith=ilk_kelime)
-            .exclude(id=food.id)
-            .order_by("name")[:8]
-        )
-    # Yedek: aynı kategoriden başkaları
-    if len(related) < 4:
-        ek = (
-            Food.objects.filter(
-                Q(name__icontains=ilk_kelime) if ilk_kelime else Q()
-            )
-            .exclude(id=food.id)
-            .exclude(id__in=[r.id for r in related])
-            .order_by("name")[: 8 - len(related)]
-        )
-        related.extend(list(ek))
+    # İlgili besinler — 3 katmanlı strateji, her sayfa için garanti 8 link üretir
+    # (orphan page sorununu engelliyor: hiçbir besin internal link'siz kalmasın).
+    related = _related_besinler(food, hedef_sayi=8)
 
     response = render(
         request,
