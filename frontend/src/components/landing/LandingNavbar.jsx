@@ -47,14 +47,7 @@ export default function LandingNavbar() {
     <header className={`lp-nav ${scrolled ? 'lp-nav-scrolled' : ''}`} role="banner">
       <div className="lp-nav-inner">
         <Link to="/" className="lp-nav-logo" aria-label="Lifeetics Ana Sayfa">
-          <span style={{
-            fontFamily: '"Instrument Serif", serif',
-            fontWeight: 700,
-            fontSize: '40px',
-            lineHeight: 1,
-            letterSpacing: '-0.02em',
-            color: '#1A1A1A',
-          }}>LIFEETICS</span>
+          <span className="lp-nav-logo-text">LIFEETICS</span>
         </Link>
 
         <nav className="lp-nav-links" aria-label="Birincil navigasyon">
@@ -157,6 +150,14 @@ export default function LandingNavbar() {
           letter-spacing: -0.02em; color: #1A2516; text-decoration: none;
         }
         .lp-nav-logo-mark { display: inline-flex; }
+        .lp-nav-logo-text {
+          font-family: "Instrument Serif", serif;
+          font-weight: 700;
+          font-size: 36px;
+          line-height: 1;
+          letter-spacing: -0.02em;
+          color: #1A1A1A;
+        }
         .lp-nav-links {
           display: flex; gap: 4px; align-items: center;
           margin-left: 16px;
@@ -201,12 +202,20 @@ export default function LandingNavbar() {
         .lp-nav-mobile a:hover { background: #FBFAF5; }
 
         @media (max-width: 980px) {
+          .lp-nav-inner { padding: 0 20px; gap: 16px; }
           .lp-nav-links { display: none; }
           .lp-nav-cta .lp-nav-link-quiet { display: none; }
           .lp-nav-burger { display: flex; }
+          .lp-nav-logo-text { font-size: 30px; }
         }
-        @media (max-width: 520px) {
-          .lp-nav-btn span { display: none; }
+        @media (max-width: 640px) {
+          /* Burger zaten var — primary CTA'yı da gizle, mobile menüden erişilebilir */
+          .lp-nav-cta { display: none; }
+          .lp-nav-logo-text { font-size: 26px; }
+        }
+        @media (max-width: 380px) {
+          .lp-nav-inner { padding: 0 14px; }
+          .lp-nav-logo-text { font-size: 22px; }
         }
       `}</style>
     </header>

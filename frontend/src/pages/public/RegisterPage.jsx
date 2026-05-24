@@ -1576,6 +1576,12 @@ export default function RegisterPage() {
           .reg-form-card { padding: 28px 24px; }
           .reg-field-row { grid-template-columns: 1fr; }
         }
+        @media (max-width: 480px) {
+          .reg-form-shell { padding: 16px; }
+          .reg-form-card { padding: 22px 18px; }
+          .reg-topbar { padding: 14px 16px; }
+          .reg-foot { padding: 16px; }
+        }
       `}</style>
 
       <div className="reg-shell">

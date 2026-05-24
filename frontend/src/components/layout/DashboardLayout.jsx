@@ -255,7 +255,7 @@ const LAYOUT_CSS = `
   border-radius: 50%;
   border: 1.5px solid white;
 }
-.dash-menu-btn { display: none; }
+.dash-menu-btn { display: none !important; }
 .dash-plan-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 7px 14px; border-radius: 999px;
@@ -317,6 +317,14 @@ const LAYOUT_CSS = `
   .dash-side.open { transform: translateX(0); }
   .dash-menu-btn { display: flex !important; }
   .dash-body { padding: 20px 16px; }
+  .dash-topbar { padding: 0 16px; }
+  .dash-plan-btn { padding: 7px 12px; font-size: 11.5px; }
+}
+@media (max-width: 480px) {
+  .dash-body { padding: 16px 12px; }
+  .dash-topbar { padding: 0 12px; }
+  .dash-crumb { font-size: 12px; gap: 5px; }
+  .dash-plan-btn span { display: none; }
 }
 `;
 
@@ -343,7 +351,6 @@ export default function DashboardLayout() {
               className="dash-icon-btn dash-menu-btn"
               aria-label="Menü"
               onClick={() => setSidebarOpen(true)}
-              style={{ display: 'none' }}
             >
               <Icons.Menu size={18} />
             </button>

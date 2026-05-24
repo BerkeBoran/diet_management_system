@@ -277,7 +277,7 @@ export default function LandingHero() {
         .lp-hero-eyebrow { margin-bottom: 4px; }
         .lp-hero-title {
           font-family: "Instrument Serif", serif; font-weight: 400;
-          font-size: clamp(44px, 6.4vw, 88px);
+          font-size: clamp(34px, 6.4vw, 88px);
           line-height: 1.08; letter-spacing: -0.025em;
           color: #1A2516; max-width: 16ch; margin-bottom: 24px;
         }
@@ -422,6 +422,14 @@ export default function LandingHero() {
           .lp-hero-vignette {
             background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.95) 100%);
           }
+        }
+        @media (max-width: 520px) {
+          .lp-hero { padding-top: 100px; padding-bottom: 56px; }
+          .lp-hero-title { max-width: none; margin-bottom: 16px; }
+          .lp-hero-ctas { flex-direction: column; align-items: stretch; }
+          .lp-hero-ctas .btn { justify-content: center; }
+          .lp-hero-trust { flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+          .lp-hero-scroll { display: none; }
         }
       `}</style>
     </section>

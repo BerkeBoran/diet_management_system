@@ -375,6 +375,9 @@ export default function LoginPage() {
           .login-left { display: none; }
           .login-right { padding: 24px 28px 32px; min-height: 100vh; }
         }
+        @media (max-width: 480px) {
+          .login-right { padding: 20px 18px 28px; }
+        }
       `}</style>
 
       <div className="login-shell">
