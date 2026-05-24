@@ -1,0 +1,36 @@
+# Lifeetics — Disavow file
+# Oluşturulma tarihi: 2026-05-24
+# Sebep: Ahrefs tarafından SPAM olarak işaretlenen, 18-24 May 2026 arasında
+#        toplu olarak görünen backlink farm'ları. SEO hizmeti satın alınmadı —
+#        muhtemelen otomatik spam veya negatif SEO. Hepsi tek bir hafta içinde
+#        ve hiçbiri gerçek içerik barındırmıyor.
+#
+# Format: "domain:" öneki tüm subdomain'leri kapsar.
+# Yükleme: https://search.google.com/search-console/disavow-links
+#          → lifeetics.com property'sini seç → bu dosyayı yükle.
+
+domain:itxoft-cost-effective-seo-services.site
+domain:itxoft-seo-for-higher-rankings.site
+domain:itxoft-professional-seo-services.site
+domain:fiverr-quality-seo-at-affordable-rates.site
+domain:fiverr-cost-effective-seo.site
+domain:seodaro.com
+domain:rankxlinks.shop
+domain:linkrankpro.shop
+domain:ranklinkerpro.shop
+domain:buyseobacklinks.shop
+domain:seorankflow.shop
+domain:primeseo.xyz
+domain:zoldexlinks.shop
+domain:rglinks.org
+domain:rank-your-website.shop
+domain:toplinkranker.shop
+domain:linkrankboost.shop
+domain:authoritybacklinks.shop
+domain:pbnseolinks.shop
+domain:ranklinkx.shop
+domain:premiumseolinks.shop
+domain:seolinkpro.shop
+domain:linkseopro.shop
+domain:ranklinkpro.shop
+domain:netranko.shop
