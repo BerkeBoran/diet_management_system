@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import '../../styles/landing.css';
 
 import LandingNavbar   from '../../components/landing/LandingNavbar';
@@ -36,6 +37,14 @@ export default function LandingPage() {
 
   return (
     <div className="landing-page">
+      <Helmet>
+        <title>Lifeetics: Yapay zeka destekli diyet platformu</title>
+        <meta name="description" content="Lifeetics; AI asistanı ve uzman diyetisyenleri tek çatı altında buluşturur. 90 saniyede sana özel diyet planı, 24 saatte uzman onayı." />
+        <link rel="canonical" href="https://lifeetics.com/" />
+        <meta property="og:title" content="Lifeetics: Yapay zeka destekli diyet platformu" />
+        <meta property="og:description" content="AI asistanı ve uzman diyetisyenleri tek çatı altında buluşturan kişisel diyet yönetim platformu." />
+        <meta property="og:url" content="https://lifeetics.com/" />
+      </Helmet>
       <LandingNavbar />
       <main>
         <LandingHero />

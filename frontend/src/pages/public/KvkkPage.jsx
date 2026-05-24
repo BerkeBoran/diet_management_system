@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const SECTIONS = [
   {
@@ -257,6 +258,14 @@ function Table({ headers, rows }) {
 export default function KvkkPage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--parchment)', fontFamily: 'var(--font-sans)' }}>
+      <Helmet>
+        <title>KVKK Aydınlatma Metni | Lifeetics</title>
+        <meta name="description" content="Lifeetics KVKK aydınlatma metni: kişisel verilerinizin hangi amaçla, nasıl işlendiği ve KVKK kapsamındaki haklarınız." />
+        <link rel="canonical" href="https://lifeetics.com/kvkk" />
+        <meta property="og:title" content="KVKK Aydınlatma Metni | Lifeetics" />
+        <meta property="og:description" content="Lifeetics KVKK aydınlatma metni: kişisel verilerin işlenmesi ve haklarınız." />
+        <meta property="og:url" content="https://lifeetics.com/kvkk" />
+      </Helmet>
       {/* Header */}
       <div style={{ background: 'var(--forest)', padding: '48px 0 40px' }}>
         <div style={{ maxWidth: 860, margin: '0 auto', padding: '0 24px' }}>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -65,6 +66,14 @@ export default function SupportPage() {
 
   return (
     <>
+      <Helmet>
+        <title>Destek ve SSS | Lifeetics</title>
+        <meta name="description" content="Lifeetics destek merkezi: sık sorulan sorular, hesap ve plan yönetimi, randevu ve ödeme konularında yardım." />
+        <link rel="canonical" href="https://lifeetics.com/support" />
+        <meta property="og:title" content="Destek ve SSS | Lifeetics" />
+        <meta property="og:description" content="Lifeetics destek merkezi ve sık sorulan sorular." />
+        <meta property="og:url" content="https://lifeetics.com/support" />
+      </Helmet>
       <style>{SP_CSS}</style>
       <div className="sp-root">
 
