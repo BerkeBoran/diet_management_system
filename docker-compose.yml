@@ -6,6 +6,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-diet_db}
       POSTGRES_USER: ${DB_USER:-admin}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
     networks:
@@ -86,3 +88,7 @@ services:
 networks:
   diet_network:
     driver: bridge
+
+volumes:
+  postgres_data:
+    name: diet_postgres_data
