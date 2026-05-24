@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
 
-    {# --- SEO meta --- #}
-    <title>{{ food.name }} Kaç Kalori? {{ food.calories|floatformat:0 }} kcal | Lifeetics</title>
-    <meta name="description" content="{{ food.name }} {{ food.serving_description }} {{ food.calories|floatformat:1 }} kalori, {{ food.protein|floatformat:1 }} g protein, {{ food.carbs|floatformat:1 }} g karbonhidrat ve {{ food.fat|floatformat:1 }} g yağ içerir. Diyet planında {{ food.name }} ne kadar yer alır, detaylar Lifeetics'te.">
+    {# --- SEO meta — title <60 chars, description <160 chars için kısaltıldı --- #}
+    <title>{{ food.name|truncatechars:40 }} Kaç Kalori? | Lifeetics</title>
+    <meta name="description" content="{{ food.name|truncatechars:50 }} ({{ food.serving_description|truncatechars:25 }}): {{ food.calories|floatformat:0 }} kcal, {{ food.protein|floatformat:0 }}g protein, {{ food.carbs|floatformat:0 }}g karbonhidrat, {{ food.fat|floatformat:0 }}g yağ. Lifeetics besin rehberi.">
     <link rel="canonical" href="{{ canonical_url }}">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="theme-color" content="#1A2516">
