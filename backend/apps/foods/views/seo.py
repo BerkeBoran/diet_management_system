@@ -1,10 +1,12 @@
 """SEO için server-side rendered HTML sayfaları.
 
-React SPA içerik Google tarafından indexlenemediği için besin detay
+React SPA içerik Google tarafından indexlenemediği için kritik SEO
 sayfaları Django'da tam HTML olarak render edilir. URL'ler:
+    /foods/kac-kalori           → Hub: alfabetik harf gezintisi + popüler besinler
     /foods/kac-kalori/<slug>/   → Food detay sayfası
-    /sitemap.xml                 → Dinamik sitemap (4418 besin URL'i)
-    /robots.txt                  → Robots direktifleri
+    /kvkk                       → KVKK Aydınlatma Metni (statik)
+    /sitemap.xml                → Dinamik sitemap
+    /robots.txt                 → Robots direktifleri
 """
 
 from __future__ import annotations
@@ -111,6 +113,81 @@ def _related_besinler(food: Food, hedef_sayi: int = 8) -> list:
         related.extend(list(adaylar))
 
     return related
+
+
+@cache_page(60 * 60 * 6)  # 6 saat cache (içerik nadiren değişir)
+def foods_hub_html(request):
+    """`/foods/kac-kalori` — server-rendered hub sayfası.
+
+    SEO açısından kritik: Google'ın 1,220 orphan besin sayfasını bu hub
+    üzerinden bulmasını sağlar, "kaç kalori" araması için sitelinks
+    olasılığını artırır.
+
+    İçerik: alfabetik harf gezintisi + her harf altında ilk 20 besin.
+    """
+    from collections import defaultdict
+    from string import ascii_uppercase
+
+    # Tüm besinleri tek query'de çek
+    tum_besinler = list(
+        Food.objects.all().only("name", "external_id", "calories", "serving_description")
+    )
+
+    # İlk harfe göre grupla (Türkçe büyük harfe çevir)
+    harfli_gruplar: dict = defaultdict(list)
+    for f in tum_besinler:
+        if not f.name:
+            continue
+        harf = f.name[0].upper()
+        # Türkçe karakterleri normalize et (görüntü için)
+        harf = {"Ş": "S", "Ç": "C", "Ğ": "G", "Ü": "U", "Ö": "O", "İ": "I", "I": "I"}.get(harf, harf)
+        if harf.isalpha() and harf in ascii_uppercase + "ŞÇĞÜÖİ":
+            harfli_gruplar[harf].append(f)
+        elif harf.isalpha():
+            harfli_gruplar[harf].append(f)
+        else:
+            harfli_gruplar["#"].append(f)
+
+    # Sıralı liste — her harf için max 20 besin (alfabetik)
+    bolumler = []
+    for harf in sorted(harfli_gruplar.keys()):
+        besinler = sorted(harfli_gruplar[harf], key=lambda x: x.name.lower())[:20]
+        bolumler.append({
+            "harf": harf,
+            "toplam": len(harfli_gruplar[harf]),
+            "besinler": besinler,
+        })
+
+    response = render(
+        request,
+        "foods/hub.html",
+        {
+            "bolumler": bolumler,
+            "toplam_besin": len(tum_besinler),
+            "canonical_url": f"{SITE_BASE_URL}/foods/kac-kalori",
+        },
+    )
+    patch_cache_control(response, public=True, max_age=21600)
+    return response
+
+
+def kvkk_html(request):
+    """KVKK Aydınlatma Metni — server-rendered statik sayfa.
+
+    React SPA versiyonu Ahrefs'te "H1 missing, low word count, duplicate
+    canonical" olarak görünüyordu çünkü bot JS render etmiyor. Bu Django
+    versiyonu gerçek H1, içerik ve canonical sağlar.
+    """
+    response = render(
+        request,
+        "foods/kvkk.html",
+        {
+            "canonical_url": f"{SITE_BASE_URL}/kvkk",
+            "guncelleme_tarihi": "10 Mayıs 2026",
+        },
+    )
+    patch_cache_control(response, public=True, max_age=86400)
+    return response
 
 
 @cache_page(60 * 60)  # 1 saat cache
