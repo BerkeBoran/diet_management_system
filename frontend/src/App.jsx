@@ -16,7 +16,9 @@ const DieticianRegisterPage = lazy(() => import('./pages/public/DieticianRegiste
 const ForgotPasswordPage = lazy(() => import('./pages/public/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/public/ResetPasswordPage'));
 const SupportPage = lazy(() => import('./pages/public/SupportPage'));
-const KvkkPage = lazy(() => import('./pages/public/KvkkPage'));
+// /kvkk artık Django SSR ile servisleniyor (SEO için) — React route'u kaldırıldı.
+// /foods/kac-kalori (root) artık Django SSR ile servisleniyor.
+// Arama (/foods/kac-kalori/arama/:query) hâlâ React, JS interaktif arama lazım.
 const FoodsCalorieGuidePage = lazy(() => import('./pages/public/FoodsCalorieGuidePage'));
 const VerifyEmailPage = lazy(() => import('./pages/public/VerifyEmailPage'));
 
@@ -80,8 +82,7 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/support" element={<SupportPage />} />
-        <Route path="/kvkk" element={<KvkkPage />} />
-        <Route path="/foods/kac-kalori" element={<FoodsCalorieGuidePage />} />
+        {/* /kvkk ve /foods/kac-kalori (root) artık Django SSR — nginx üzerinden */}
         <Route path="/foods/kac-kalori/arama/:query" element={<FoodsCalorieGuidePage />} />
         <Route path="/verify-email/*" element={<VerifyEmailPage />} />
 
