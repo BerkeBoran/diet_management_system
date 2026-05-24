@@ -8,7 +8,7 @@ class Food(models.Model):
         FATSECRET = 'FATSECRET', 'Fatsecret'
 
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     source = models.CharField(
         max_length=255,
         choices=Source.choices,
