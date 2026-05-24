@@ -28,6 +28,11 @@ STATIK_URLLER = [
         "changefreq": "weekly",
     },
     {
+        "loc": f"{SITE_BASE_URL}/foods/kac-kalori/rehber",
+        "priority": "0.9",
+        "changefreq": "weekly",
+    },
+    {
         "loc": f"{SITE_BASE_URL}/register",
         "priority": "0.7",
         "changefreq": "monthly",
@@ -124,6 +129,9 @@ def foods_hub_html(request):
     olasılığını artırır.
 
     İçerik: alfabetik harf gezintisi + her harf altında ilk 20 besin.
+
+    NOT: `/foods/kac-kalori` (root) React arama sayfası. Bu hub `/rehber`
+    URL'inde — kullanıcı genelde aramayı kullanır, hub Google için.
     """
     from collections import defaultdict
     from string import ascii_uppercase
@@ -164,7 +172,7 @@ def foods_hub_html(request):
         {
             "bolumler": bolumler,
             "toplam_besin": len(tum_besinler),
-            "canonical_url": f"{SITE_BASE_URL}/foods/kac-kalori",
+            "canonical_url": f"{SITE_BASE_URL}/foods/kac-kalori/rehber",
         },
     )
     patch_cache_control(response, public=True, max_age=21600)

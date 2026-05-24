@@ -27,9 +27,10 @@ urlpatterns = [
     path('password-reset/', TemplateView.as_view(template_name="dummy.html"), name='account_reset_password'),
 
     # SEO — server-rendered HTML
-    # Hub sayfası — alfabetik besin listesi (orphan fix + sitelinks adayı)
-    path('foods/kac-kalori', foods_hub_html, name='foods-hub-html'),
-    path('foods/kac-kalori/', foods_hub_html),
+    # Hub sayfası — alfabetik besin rehberi (orphan fix + sitelinks adayı)
+    # NOT: /foods/kac-kalori (root) React arama sayfası, /rehber Django SSR hub.
+    path('foods/kac-kalori/rehber', foods_hub_html, name='foods-hub-html'),
+    path('foods/kac-kalori/rehber/', foods_hub_html),
     # Tek besin detayı
     path('foods/kac-kalori/<slug:slug>/', food_detail_html, name='food-detail-html'),
     path('foods/kac-kalori/<slug:slug>', food_detail_html),  # trailing slash'sız
