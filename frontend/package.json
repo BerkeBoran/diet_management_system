@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/dm-serif-display": "^5.2.8",
+    "@fontsource/instrument-sans": "^5.2.8",
+    "@fontsource/instrument-serif": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/plus-jakarta-sans": "^5.2.8",
     "@react-oauth/google": "^0.13.5",
     "@react-pdf/renderer": "^4.5.1",
     "axios": "^1.13.6",

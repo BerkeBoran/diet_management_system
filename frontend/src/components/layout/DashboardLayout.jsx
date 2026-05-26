@@ -3,6 +3,8 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Sidebar from './Sidebar';
 import Icons from '../landing/LandingIcons';
+// Dashboard'a özel fontlar — landing bundle'ına sızmaması için burada lazy yüklenir
+import '../../styles/dashboard-fonts.css';
 
 const CRUMB = {
   '/client/dashboard':      ['Danışan Paneli', 'Genel Bakış'],

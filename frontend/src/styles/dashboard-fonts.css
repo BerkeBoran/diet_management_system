@@ -1,0 +1,12 @@
+/* Dashboard route'larında ihtiyaç duyulan fontlar — DashboardLayout import eder, landing'e sızmaz. */
+
+/* DM Serif Display — dashboard başlıkları (var(--font-serif)). */
+@import '@fontsource/dm-serif-display/400.css';
+@import '@fontsource/dm-serif-display/400-italic.css';
+
+/* Instrument Sans — dashboard body fontu (var(--font-sans)). */
+@import '@fontsource/instrument-sans/400.css';
+@import '@fontsource/instrument-sans/500.css';
+@import '@fontsource/instrument-sans/600.css';
+@import '@fontsource/instrument-sans/700.css';
+@import '@fontsource/instrument-sans/400-italic.css';
