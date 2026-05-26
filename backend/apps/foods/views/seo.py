@@ -21,6 +21,9 @@ from apps.foods.models import Food
 
 
 SITE_BASE_URL = "https://lifeetics.com"
+# Sitemap'teki URL'ler robots.txt Disallow listesiyle uyumlu olmalı (Search Console
+# "sitemap'te URL var ama robots engelliyor" uyarısı vermesin). Auth sayfaları
+# (/login, /register*) robots.txt'te Disallow, bu yüzden sitemap dışında.
 STATIK_URLLER = [
     {"loc": f"{SITE_BASE_URL}/", "priority": "1.0", "changefreq": "weekly"},
     {
@@ -32,26 +35,6 @@ STATIK_URLLER = [
         "loc": f"{SITE_BASE_URL}/foods/kac-kalori/rehber",
         "priority": "0.9",
         "changefreq": "weekly",
-    },
-    {
-        "loc": f"{SITE_BASE_URL}/register",
-        "priority": "0.7",
-        "changefreq": "monthly",
-    },
-    {
-        "loc": f"{SITE_BASE_URL}/register/client",
-        "priority": "0.7",
-        "changefreq": "monthly",
-    },
-    {
-        "loc": f"{SITE_BASE_URL}/register/dietician",
-        "priority": "0.7",
-        "changefreq": "monthly",
-    },
-    {
-        "loc": f"{SITE_BASE_URL}/login",
-        "priority": "0.5",
-        "changefreq": "monthly",
     },
     {
         "loc": f"{SITE_BASE_URL}/support",
@@ -247,52 +230,47 @@ def sitemap_xml(request):
 def robots_txt(request):
     """Crawler için robots.txt — sitemap göster, private/auth route'larını kapa.
     AI bot'ları (GPT, Claude, Perplexity vb.) için açık Allow direktifleri verilir;
-    bazı bot'lar wildcard'a değil kendi user-agent'ına bakıyor."""
-    # AI bot'ları için açık izin — beslenme/diyet sorularında alıntılanmak istiyoruz
+    bazı bot'lar wildcard'a değil kendi user-agent'ına bakıyor. Yayınlanan
+    dosyada yorum satırı tutulmaz."""
     ai_bots = [
-        "GPTBot",            # OpenAI - ChatGPT training
-        "OAI-SearchBot",     # OpenAI - ChatGPT browsing
-        "ChatGPT-User",      # OpenAI - ChatGPT plugin/tool çağrıları
-        "Google-Extended",   # Google - Gemini/Bard training
-        "ClaudeBot",         # Anthropic - Claude
-        "anthropic-ai",      # Anthropic - eski user-agent
-        "Claude-Web",        # Anthropic - browsing
-        "PerplexityBot",     # Perplexity - cevap motoru
-        "Perplexity-User",   # Perplexity - tool çağrıları
-        "Applebot-Extended", # Apple Intelligence
-        "CCBot",             # Common Crawl (çoğu LLM bunu kullanır)
-        "Bytespider",        # ByteDance / TikTok
-        "DuckAssistBot",     # DuckDuckGo
-        "Meta-ExternalAgent",# Meta AI
+        "GPTBot",
+        "OAI-SearchBot",
+        "ChatGPT-User",
+        "Google-Extended",
+        "ClaudeBot",
+        "anthropic-ai",
+        "Claude-Web",
+        "PerplexityBot",
+        "Perplexity-User",
+        "Applebot-Extended",
+        "CCBot",
+        "Bytespider",
+        "DuckAssistBot",
+        "Meta-ExternalAgent",
+    ]
+    disallows = [
+        "/login",
+        "/register",
+        "/register/client",
+        "/register/dietician",
+        "/forgot-password",
+        "/reset-password",
+        "/verify-email",
+        "/client/",
+        "/dietician/",
+        "/admin/",
+        "/api/",
+        "/ws/",
+        "/foods/kac-kalori/arama/",
     ]
     ai_block = "".join(f"User-agent: {bot}\nAllow: /\n\n" for bot in ai_bots)
+    wildcard_block = "User-agent: *\nAllow: /\n" + "".join(
+        f"Disallow: {path}\n" for path in disallows
+    )
     content = (
-        "# AI bot'ları için açık izin (Lifeetics, AI motorlarının diyet/beslenme\n"
-        "# sorularında alıntılayabileceği güvenilir içerik üretmeyi hedefler).\n"
-        + ai_block
-        + "User-agent: *\n"
-        "Allow: /\n"
-        "\n"
-        "# Auth / private route'lar (index'lenmemeli)\n"
-        "Disallow: /login\n"
-        "Disallow: /register\n"
-        "Disallow: /register/client\n"
-        "Disallow: /register/dietician\n"
-        "Disallow: /forgot-password\n"
-        "Disallow: /reset-password\n"
-        "Disallow: /verify-email\n"
-        "Disallow: /client/\n"
-        "Disallow: /dietician/\n"
-        "\n"
-        "# Backend / sistem\n"
-        "Disallow: /admin/\n"
-        "Disallow: /api/\n"
-        "Disallow: /ws/\n"
-        "\n"
-        "# Arama sonuç sayfaları (thin content, yerine besin detayını indexlesin)\n"
-        "Disallow: /foods/kac-kalori/arama/\n"
-        "\n"
-        f"Sitemap: {SITE_BASE_URL}/sitemap.xml\n"
+        ai_block
+        + wildcard_block
+        + f"\nSitemap: {SITE_BASE_URL}/sitemap.xml\n"
     )
     response = HttpResponse(content, content_type="text/plain; charset=utf-8")
     patch_cache_control(response, public=True, max_age=86400)
