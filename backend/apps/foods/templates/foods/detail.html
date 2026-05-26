@@ -55,6 +55,48 @@
     }
     </script>
 
+    {# --- MedicalWebPage: E-E-A-T sinyalleri (yazar + tıbbi inceleme + son güncelleme) --- #}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalWebPage",
+      "headline": "{{ food.name|escapejs }} Kaç Kalori? Besin Değerleri",
+      "description": "{{ food.name|escapejs }} ({{ food.serving_description|escapejs }}) kalori, protein, karbonhidrat ve yağ değerleri. Lifeetics besin rehberi.",
+      "url": "{{ canonical_url }}",
+      "datePublished": "{{ published_date }}",
+      "dateModified": "{{ last_reviewed }}",
+      "lastReviewed": "{{ last_reviewed }}",
+      "inLanguage": "tr-TR",
+      "isPartOf": { "@id": "https://lifeetics.com/#website" },
+      "publisher": {
+        "@type": "Organization",
+        "@id": "https://lifeetics.com/#organization",
+        "name": "Lifeetics",
+        "url": "https://lifeetics.com",
+        "logo": { "@type": "ImageObject", "url": "https://lifeetics.com/logo.png" }
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "Lifeetics Beslenme Ekibi",
+        "url": "https://lifeetics.com"
+      },
+      "reviewedBy": {
+        "@type": "Organization",
+        "name": "Lifeetics Diyetisyen Kurulu",
+        "description": "Sertifikalı diyetisyenlerden oluşan editör kurulu"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "{{ food.name|escapejs }} Beslenme Değerleri"
+      },
+      "specialty": "Nutrition",
+      "citation": [
+        "Türkiye Beslenme Rehberi (TÜBER) 2022",
+        "USDA FoodData Central"
+      ]
+    }
+    </script>
+
     {# --- Stil --- #}
     <style>
         :root {
@@ -117,6 +159,19 @@
             font-weight: 700;
         }
         h1 em { color: var(--lime-dark); font-style: italic; }
+
+        /* E-E-A-T byline (yazar/inceleme/güncelleme) */
+        .article-meta {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+            font-size: 13px; color: var(--muted);
+            margin: 8px 0 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line-soft);
+            font-family: ui-monospace, 'JetBrains Mono', monospace;
+        }
+        .article-meta .meta-label { color: var(--text-soft); font-weight: 500; }
+        .article-meta .meta-sep { color: var(--line); }
+        .article-meta time { font-variant-numeric: tabular-nums; }
 
         .lede {
             font-size: 17px; line-height: 1.7;
@@ -268,6 +323,21 @@
     <main class="container">
         <article>
             <h1>{{ food.name }} <em>kaç kalori?</em></h1>
+            <div class="article-meta" itemscope itemtype="https://schema.org/MedicalWebPage">
+                <span class="meta-author">
+                    <span class="meta-label">Hazırlayan:</span>
+                    <span itemprop="author">Lifeetics Beslenme Ekibi</span>
+                </span>
+                <span class="meta-sep">·</span>
+                <span class="meta-review">
+                    <span class="meta-label">İnceleyen:</span>
+                    Diyetisyen Kurulu
+                </span>
+                <span class="meta-sep">·</span>
+                <time class="meta-date" itemprop="lastReviewed" datetime="{{ last_reviewed }}">
+                    Son güncelleme: {{ last_reviewed }}
+                </time>
+            </div>
             <p class="lede">
                 {{ food.name }}, {{ food.serving_description }} porsiyonunda yaklaşık
                 <strong>{{ food.calories|floatformat:0 }} kalori</strong> içerir.

@@ -7,6 +7,7 @@ sayfaları Django'da tam HTML olarak render edilir. URL'ler:
     /kvkk                       → KVKK Aydınlatma Metni (statik)
     /sitemap.xml                → Dinamik sitemap
     /robots.txt                 → Robots direktifleri
+    /llms.txt                   → LLM/AI bot'lar için markdown site özeti
 """
 
 from __future__ import annotations
@@ -201,6 +202,8 @@ def kvkk_html(request):
 @cache_page(60 * 60)  # 1 saat cache
 def food_detail_html(request, slug):
     """Tek besin için SEO'ya uygun, server-side rendered HTML sayfası."""
+    from datetime import date
+
     food = get_object_or_404(Food, external_id=slug)
 
     # İlgili besinler — 3 katmanlı strateji, her sayfa için garanti 8 link üretir
@@ -214,6 +217,9 @@ def food_detail_html(request, slug):
             "food": food,
             "related": related,
             "canonical_url": f"{SITE_BASE_URL}/foods/kac-kalori/{food.external_id}",
+            # E-E-A-T için yayın/inceleme tarihi (AI motorları "lastReviewed" sinyali okur)
+            "published_date": (food.updated_at.date() if _has_updated_at() and food.updated_at else date.today()).isoformat(),
+            "last_reviewed": date.today().isoformat(),
         },
     )
     patch_cache_control(response, public=True, max_age=3600)
@@ -239,9 +245,32 @@ def sitemap_xml(request):
 
 
 def robots_txt(request):
-    """Crawler için robots.txt — sitemap göster, private/auth route'larını kapa."""
+    """Crawler için robots.txt — sitemap göster, private/auth route'larını kapa.
+    AI bot'ları (GPT, Claude, Perplexity vb.) için açık Allow direktifleri verilir;
+    bazı bot'lar wildcard'a değil kendi user-agent'ına bakıyor."""
+    # AI bot'ları için açık izin — beslenme/diyet sorularında alıntılanmak istiyoruz
+    ai_bots = [
+        "GPTBot",            # OpenAI - ChatGPT training
+        "OAI-SearchBot",     # OpenAI - ChatGPT browsing
+        "ChatGPT-User",      # OpenAI - ChatGPT plugin/tool çağrıları
+        "Google-Extended",   # Google - Gemini/Bard training
+        "ClaudeBot",         # Anthropic - Claude
+        "anthropic-ai",      # Anthropic - eski user-agent
+        "Claude-Web",        # Anthropic - browsing
+        "PerplexityBot",     # Perplexity - cevap motoru
+        "Perplexity-User",   # Perplexity - tool çağrıları
+        "Applebot-Extended", # Apple Intelligence
+        "CCBot",             # Common Crawl (çoğu LLM bunu kullanır)
+        "Bytespider",        # ByteDance / TikTok
+        "DuckAssistBot",     # DuckDuckGo
+        "Meta-ExternalAgent",# Meta AI
+    ]
+    ai_block = "".join(f"User-agent: {bot}\nAllow: /\n\n" for bot in ai_bots)
     content = (
-        "User-agent: *\n"
+        "# AI bot'ları için açık izin (Lifeetics, AI motorlarının diyet/beslenme\n"
+        "# sorularında alıntılayabileceği güvenilir içerik üretmeyi hedefler).\n"
+        + ai_block
+        + "User-agent: *\n"
         "Allow: /\n"
         "\n"
         "# Auth / private route'lar (index'lenmemeli)\n"
@@ -265,6 +294,49 @@ def robots_txt(request):
         "\n"
         f"Sitemap: {SITE_BASE_URL}/sitemap.xml\n"
     )
+    response = HttpResponse(content, content_type="text/plain; charset=utf-8")
+    patch_cache_control(response, public=True, max_age=86400)
+    return response
+
+
+def llms_txt(request):
+    """LLM/AI bot'lar için markdown formatlı site özeti (llmstxt.org standardı).
+
+    AI motorlarının (ChatGPT, Claude, Perplexity, Gemini) Lifeetics'i
+    beslenme/diyet sorularında alıntılayabilmesi için temel meta veriler.
+    """
+    food_count = Food.objects.count()
+    content = f"""# Lifeetics
+
+> Yapay zeka destekli kişisel diyet yönetim platformu. AI asistanı ve uzman diyetisyenleri tek çatı altında buluşturur. Türkiye'de geliştirildi; {food_count:,}+ Türk yerel besin verisiyle kalori ve makro besin hesaplaması yapar.
+
+## Ne yapar
+- **AI Diyet Planı**: 90 saniyede kullanıcıya özel haftalık menü üretir, makro hedeflerini hesaplar.
+- **Uzman Diyetisyen**: Diyetisyenler AI önerilerini onaylar; 24 saatte plan ve revizyon sunar.
+- **Türk besin veritabanı**: {food_count:,}+ yerel besin (simit, ayran, pide, çorba, ev yemekleri, marketten ürünler) için kalori, protein, karbonhidrat ve yağ değerleri.
+- **Kalori arama**: Tek besin sorgusuyla porsiyon bazlı besin değerleri.
+
+## Önemli sayfalar
+- [Ana sayfa](https://lifeetics.com/): Platform tanıtımı, AI ve uzman diyetisyen akışları.
+- [Besin kalori arama](https://lifeetics.com/foods/kac-kalori): Türk besin veritabanı arama arayüzü.
+- [Alfabetik besin rehberi](https://lifeetics.com/foods/kac-kalori/rehber): A'dan Z'ye tüm besinler.
+- [KVKK Aydınlatma Metni](https://lifeetics.com/kvkk): Veri işleme politikası.
+
+## Veri ve metodoloji
+Tüm besin değerleri Türkiye Beslenme Rehberi (TÜBER) ve USDA FoodData Central referans alınarak işlenir. AI önerileri sertifikalı diyetisyen incelemesinden geçer. Platform, tıbbi tanı yerine geçmez; kronik rahatsızlığı olan kullanıcılar için diyetisyen onayı zorunludur.
+
+## Hedef kitle ve kullanım alanları
+- Kilo verme, kilo alma veya kilo koruma hedefi olan bireyler
+- PCOS, diyabet, kalp-damar, hipotiroidi gibi kronik durumlar için kişisel beslenme
+- Sporcular ve aktif yaşam tarzı olanlar (sporcu beslenmesi)
+- Hamilelik ve emzirme dönemi beslenmesi
+- Glutensiz, vegan, ketojenik ve Akdeniz diyeti gibi özel diyetler
+
+## İletişim ve kaynak
+- Site: https://lifeetics.com
+- Destek: https://lifeetics.com/support
+- Dil: Türkçe (tr-TR)
+"""
     response = HttpResponse(content, content_type="text/plain; charset=utf-8")
     patch_cache_control(response, public=True, max_age=86400)
     return response

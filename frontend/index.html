@@ -31,17 +31,104 @@
   <meta name="twitter:description" content="Lifeetics; AI asistanı ve uzman diyetisyenleri tek çatı altında buluşturur." />
   <meta name="twitter:image" content="https://lifeetics.com/logo.png" />
 
-  <!-- Structured Data (Google Logo) -->
+  <!-- Structured Data: Organization + WebSite + SoftwareApplication + FAQPage
+       AI motorlarının (ChatGPT, Gemini, Perplexity, Claude) diyet/beslenme
+       sorularında Lifeetics'i alıntılayabilmesi için zengin schema'lar. -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Lifeetics",
-    "url": "https://lifeetics.com",
-    "logo": "https://lifeetics.com/logo.png",
-    "description": "Yapay zeka destekli kişisel diyet yönetim platformu",
-    "sameAs": []
-  }
+  [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://lifeetics.com/#organization",
+      "name": "Lifeetics",
+      "url": "https://lifeetics.com",
+      "logo": "https://lifeetics.com/logo.png",
+      "description": "Yapay zeka destekli kişisel diyet yönetim platformu. AI asistanı ve uzman diyetisyenleri tek çatı altında buluşturur.",
+      "areaServed": { "@type": "Country", "name": "Turkey" },
+      "knowsAbout": [
+        "Beslenme", "Diyet", "Kilo yönetimi", "Kalori hesaplama",
+        "PCOS beslenmesi", "Diyabet diyeti", "Sporcu beslenmesi",
+        "Akdeniz diyeti", "Ketojenik diyet", "Aralıklı oruç",
+        "Türk mutfağı kalori", "Yapay zeka diyetisyen"
+      ],
+      "sameAs": []
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": "https://lifeetics.com/#website",
+      "url": "https://lifeetics.com",
+      "name": "Lifeetics",
+      "inLanguage": "tr-TR",
+      "publisher": { "@id": "https://lifeetics.com/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://lifeetics.com/foods/kac-kalori/arama/{search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Lifeetics AI Diyetisyen",
+      "applicationCategory": "HealthApplication",
+      "operatingSystem": "Web",
+      "url": "https://lifeetics.com",
+      "description": "AI ile 90 saniyede kişisel haftalık diyet planı, uzman diyetisyen onayı, 4400+ Türk besin için kalori veritabanı.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TRY",
+        "description": "14 gün ücretsiz deneme, kart bilgisi gerekmez"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Lifeetics nedir?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Lifeetics, yapay zeka destekli kişisel diyet yönetim platformudur. AI asistanı ile 90 saniyede sana özel haftalık menü oluşturur, uzman diyetisyenler 24 saatte planı onaylar. 4400+ Türk yerel besin için kalori ve makro besin değeri hesaplar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Lifeetics ücretsiz mi?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet, 14 gün boyunca tüm özellikleri ücretsiz deneyebilirsin. Kart bilgisi gerekmez, dilediğin zaman iptal edebilirsin."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Türk yemekleri için kalori hesaplıyor mu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Evet. 4400+ Türk yerel besin (simit, ayran, pide, çorba, ev yemekleri, kebap, marketten ürünler) için porsiyon bazlı kalori, protein, karbonhidrat ve yağ değerleri içerir. Veriler TÜBER ve USDA referans alınarak hazırlanmıştır."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "AI mı yoksa gerçek diyetisyen mi diyet planı hazırlıyor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "İkisi de. AI sana 90 saniyede taslak haftalık menü üretir; sertifikalı uzman diyetisyen 24 saat içinde inceler, gerekirse revize eder ve onaylar. AI hız sağlar, diyetisyen güvence sağlar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Hangi diyet türlerini destekliyor?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Kilo verme, kilo alma, kilo koruma; PCOS, diyabet, hipotiroidi, kalp-damar gibi kronik durumlar için tıbbi beslenme; sporcu beslenmesi; hamilelik/emzirme; Akdeniz, ketojenik, vegan, glutensiz, aralıklı oruç gibi özel diyet protokolleri."
+          }
+        }
+      ]
+    }
+  ]
   </script>
 
   <!-- Self-hosted fonts: Google Fonts CDN'i kaldırdık. LCP-kritik Instrument Serif preload edilir. -->

@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from apps.users.views.register import CustomVerifyEmailView
 from apps.foods.views.seo import (
-    food_detail_html, foods_hub_html, kvkk_html, sitemap_xml, robots_txt,
+    food_detail_html, foods_hub_html, kvkk_html, sitemap_xml, robots_txt, llms_txt,
 )
 
 urlpatterns = [
@@ -40,6 +40,8 @@ urlpatterns = [
     # Sitemap + robots
     path('sitemap.xml', sitemap_xml, name='sitemap-xml'),
     path('robots.txt', robots_txt, name='robots-txt'),
+    # LLM/AI bot'lar için site özeti (llmstxt.org standardı)
+    path('llms.txt', llms_txt, name='llms-txt'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
