@@ -125,25 +125,25 @@ export default function LandingHero() {
       </div>
 
       <div className="container lp-hero-inner">
-        <div className="lp-hero-eyebrow reveal in">
+        <div className="lp-hero-eyebrow">
           <span className="eyebrow live">
             <span className="eyebrow-dot" />
             Şu an {onlineCount !== null ? onlineCount.toLocaleString('tr-TR') : '…'} kişi plan oluşturuyor
           </span>
         </div>
 
-        <h1 className="lp-hero-title reveal in reveal-delay-1">
+        <h1 className="lp-hero-title">
           Bilim destekli<br />
           <em className="serif" style={{ fontStyle: 'italic' }}>kişisel beslenme,</em><br />
           bir tık uzakta.
         </h1>
 
-        <p className="lp-hero-lede reveal in reveal-delay-2">
+        <p className="lp-hero-lede">
           Lifeetics; AI asistanı ve uzman diyetisyenleri tek çatı altında buluşturur.
           90 saniyede sana özel plan, 24 saatte uzman onayı.
         </p>
 
-        <div className="lp-hero-ctas reveal in reveal-delay-3">
+        <div className="lp-hero-ctas">
           <Link to="/register/client" className="btn btn-accent lp-hero-cta-primary">
             <Icons.Sparkle size={16} />
             AI ile başla
@@ -155,7 +155,7 @@ export default function LandingHero() {
           </Link>
         </div>
 
-        <div className="lp-hero-trust reveal in reveal-delay-4">
+        <div className="lp-hero-trust">
           <div className="lp-hero-avatars" aria-hidden="true">
             {['#D4A574', '#C97B5C', '#8FA876', '#B8927D'].map((c, n) => (
               <span key={n} className="lp-hero-avatar" style={{ background: c }} />
@@ -168,7 +168,7 @@ export default function LandingHero() {
       </div>
 
       {/* Floating AI card */}
-      <div className="lp-hero-card lp-hero-card-ai reveal in reveal-delay-2" aria-label="AI asistan önizlemesi">
+      <div className="lp-hero-card lp-hero-card-ai" aria-label="AI asistan önizlemesi">
         <div className="lp-hero-card-head">
           <span className="lp-hero-card-tag">
             <Icons.Sparkle size={12} /> AI Asistan
@@ -191,7 +191,7 @@ export default function LandingHero() {
       </div>
 
       {/* Floating dietician card — rotates every 5s */}
-      <div className="lp-hero-card lp-hero-card-uzman reveal in reveal-delay-3" aria-label="Uzman diyetisyen önizlemesi">
+      <div className="lp-hero-card lp-hero-card-uzman" aria-label="Uzman diyetisyen önizlemesi">
         {(() => {
           const u = uzmanList[uzmanIdx] || uzmanList[0];
           return (

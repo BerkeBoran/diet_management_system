@@ -62,7 +62,7 @@ export default function HowSection() {
   return (
     <section id="nasil" className="section">
       <div className="container">
-        <div className="section-head reveal">
+        <div className="section-head">
           <span className="eyebrow"><span className="eyebrow-dot" />Nasıl çalışır</span>
           <h2 className="display serif">
             Plan oluşturmak <em>düşündüğünden</em><br />çok daha basit.
@@ -70,7 +70,7 @@ export default function HowSection() {
           <p className="lede">İki yol, iki uzmanlık. Sana uygun olanı seç ve hemen başla.</p>
         </div>
 
-        <div className="how-tabs reveal" role="tablist" aria-label="Diyet türü seçimi">
+        <div className="how-tabs" role="tablist" aria-label="Diyet türü seçimi">
           <button
             role="tab" aria-selected={tab === 'ai'}
             className={tab === 'ai' ? 'active' : ''}
