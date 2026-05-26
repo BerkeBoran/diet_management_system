@@ -110,10 +110,10 @@
   background: #4D7C0F; transform: translateY(-1px);
   box-shadow: 0 12px 28px -10px rgba(77,124,15,0.55);
 }
-.landing-page .btn-accent { background: #65A30D; color: #fff; }
+.landing-page .btn-accent { background: #4D7C0F; color: #fff; }
 .landing-page .btn-accent:hover {
-  background: #4D7C0F; transform: translateY(-1px);
-  box-shadow: 0 12px 28px -10px rgba(77,124,15,0.55);
+  background: #3F6C0A; transform: translateY(-1px);
+  box-shadow: 0 12px 28px -10px rgba(63,108,10,0.6);
 }
 .landing-page .btn-ghost {
   background: rgba(255,255,255,0.92); color: #1A2516;

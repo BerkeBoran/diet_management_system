@@ -99,7 +99,7 @@ export default function LandingFooter() {
           font-size: clamp(36px, 4.5vw, 56px); line-height: 1.02; color: #fff; letter-spacing: -0.02em;
         }
         .lp-foot-cta-title em { color: #65A30D; }
-        .lp-foot-cta-sub { color: rgba(255,255,255,0.6); margin-top: 12px; font-size: 15px; }
+        .lp-foot-cta-sub { color: rgba(255,255,255,0.78); margin-top: 12px; font-size: 15px; }
         .lp-foot-cta-btns { display: flex; gap: 12px; flex-wrap: wrap; }
 
         .lp-foot-grid {
@@ -108,7 +108,7 @@ export default function LandingFooter() {
           border-bottom: 1px solid rgba(255,255,255,0.08);
         }
         .lp-foot-brand { display: flex; flex-direction: column; gap: 18px; }
-        .lp-foot-tag { font-size: 14px; color: rgba(255,255,255,0.6); max-width: 280px; line-height: 1.6; }
+        .lp-foot-tag { font-size: 14px; color: rgba(255,255,255,0.78); max-width: 280px; line-height: 1.6; }
         .lp-foot-social { display: flex; gap: 8px; }
         .lp-foot-social a {
           width: 36px; height: 36px; border-radius: 50%;
@@ -121,7 +121,7 @@ export default function LandingFooter() {
         .lp-foot-col-title {
           font-family: "JetBrains Mono", monospace; font-size: 11px;
           text-transform: uppercase; letter-spacing: 0.14em;
-          color: rgba(255,255,255,0.45); margin-bottom: 18px;
+          color: rgba(255,255,255,0.72); margin-bottom: 18px;
         }
         .lp-foot-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
         .lp-foot-col a { font-size: 14px; color: rgba(255,255,255,0.78); transition: color .2s; text-decoration: none; }
