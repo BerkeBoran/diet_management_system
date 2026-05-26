@@ -6,7 +6,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import App from './App';
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const tree = (
   <React.StrictMode>
     <HelmetProvider>
       <BrowserRouter>
@@ -17,3 +17,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </HelmetProvider>
   </React.StrictMode>
 );
+
+const rootEl = document.getElementById('root');
+
+// Prerendered HTML varsa hydrate et; aksi takdirde standart SPA render
+if (rootEl.hasChildNodes()) {
+  ReactDOM.hydrateRoot(rootEl, tree);
+} else {
+  ReactDOM.createRoot(rootEl).render(tree);
+}

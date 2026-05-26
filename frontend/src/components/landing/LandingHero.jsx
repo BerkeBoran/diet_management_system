@@ -14,8 +14,11 @@ function getSharedCount(min = 10, max = 50) {
 }
 
 function useSimulatedOnline(min = 10, max = 50) {
-  const [count, setCount] = useState(() => getSharedCount(min, max));
+  // SSR/prerender'da Date.now() farkı hydration mismatch yaratır → null'la başla,
+  // gerçek değeri client'ta useEffect'te hesapla.
+  const [count, setCount] = useState(null);
   useEffect(() => {
+    setCount(getSharedCount(min, max));
     const id = setInterval(() => setCount(getSharedCount(min, max)), 10000);
     return () => clearInterval(id);
   }, [min, max]);
@@ -125,7 +128,7 @@ export default function LandingHero() {
         <div className="lp-hero-eyebrow reveal in">
           <span className="eyebrow live">
             <span className="eyebrow-dot" />
-            Şu an {onlineCount.toLocaleString('tr-TR')} kişi plan oluşturuyor
+            Şu an {onlineCount !== null ? onlineCount.toLocaleString('tr-TR') : '…'} kişi plan oluşturuyor
           </span>
         </div>
 

@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 
 // --- Public sayfalar — landing direkt import (ilk yükleme hızı için) ---
@@ -71,12 +70,6 @@ function RouteFallback() {
 }
 
 export default function App() {
-  const { loading } = useAuth();
-
-  if (loading) {
-    return <RouteFallback />;
-  }
-
   return (
     <Suspense fallback={<RouteFallback />}>
       <Routes>
