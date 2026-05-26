@@ -2,12 +2,17 @@ import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
-import DashboardLayout from './components/layout/DashboardLayout';
 
 // --- Public sayfalar — landing direkt import (ilk yükleme hızı için) ---
 import LandingPage from './pages/public/LandingPage';
 
+// --- DashboardLayout lazy: landing kullanıcısı dashboard fontlarını/JS'ini indirmesin ---
+const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'));
+
 // --- Diğer tüm sayfalar lazy: kullanıcı o route'a gidince inecek ---
+// Google OAuth provider — yalnız auth route'larında yüklensin (GSI script'i landing'e indirmeyelim)
+const GoogleAuthBoundary = lazy(() => import('./components/auth/GoogleAuthBoundary'));
+
 // Public
 const LoginPage = lazy(() => import('./pages/public/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/public/RegisterPage'));
@@ -76,10 +81,12 @@ export default function App() {
     <Suspense fallback={<RouteFallback />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/register/client" element={<ClientRegisterPage />} />
-        <Route path="/register/dietician" element={<DieticianRegisterPage />} />
+        <Route element={<GoogleAuthBoundary />}>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register/client" element={<ClientRegisterPage />} />
+          <Route path="/register/dietician" element={<DieticianRegisterPage />} />
+        </Route>
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/support" element={<SupportPage />} />
